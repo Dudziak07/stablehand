@@ -53,7 +53,7 @@ You write the skill before watching the agent fail. Warning signs:
    3. Run 1 to 3 scenarios **without** the skill: use the task tool with the agent `scenario-runner`, mode `baseline`, working directory `<scratch>`. Never the target checkout itself.
    4. Record the failures verbatim, including the agent's own excuses.
    5. Keep `<scratch>` for step 5; do not delete it yet.
-   6. If the baseline already passes, remove the scratch (`git -C "<target>" worktree remove "<scratch>"`, or delete the copy), tell the user the skill is not needed (or narrow it), and stop.
+   6. If the baseline already passes, remove the scratch (`git -C "<target>" worktree remove "<scratch>"`, or delete the copy), tell the user the skill is not needed (or narrow it), and stop. If the user still wants it, keep it only on their explicit say-so: record "kept on user override, no measured gain" in the results file and say the same in the hand-over. Suggest folding the guidance into the project instructions instead.
    7. If the user explicitly asks to skip testing, remove the scratch, skip this step and step 5, and say "untested" in the hand-over.
 
 3. **Draft** `SKILL.md` with `references/writing-for-agents.md` open.
@@ -92,7 +92,7 @@ You write the skill before watching the agent fail. Warning signs:
    - the absolute paths of the **target** platform's card (`references/opencode.md`, `references/claude-code.md` or `references/antigravity.md` in this skill's folder) and of `references/writing-for-agents.md`;
    - the results file.
 
-   Fix blocking findings. Tell the user about any you disagree with.
+   Fix blocking findings. Tell the user about any you disagree with. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 
 7. **Hand over.** Use this template:
 ```

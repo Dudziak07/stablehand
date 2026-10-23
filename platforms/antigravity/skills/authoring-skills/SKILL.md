@@ -51,7 +51,7 @@ You write the skill before watching the agent fail. Warning signs:
    - Run commands inside the target: always execute target code from inside the target directory (`cd "<target>" && uv run …`, never `--project` from stablehand).
    - Run 1–3 scenarios **without** the skill. Delegate to `scenario-runner` using `invoke_subagent` in mode `baseline`. The working directory must be a scratch copy or a git worktree of the target repo (e.g. `<target>/../<target>-stablehand-scratch` or `git -C <target> worktree add <scratch> HEAD`), never the target checkout itself. Ensure the scratch directory is added to the workspace so `run_command` can operate. Clean up the scratch copy or worktree afterwards.
    - Record failures verbatim, including the agent's excuses.
-   - If the baseline already passes, inform the user that the skill is not needed (or narrow it) and stop.
+   - If the baseline already passes, inform the user that the skill is not needed (or narrow it) and stop. If the user still wants it, keep it only on their explicit say-so: record "kept on user override, no measured gain" in the results file and say the same in the hand-over. Suggest folding the guidance into the project instructions instead.
    - If the user explicitly asks to skip testing, skip this step and step 5, and state "untested" in the hand-over.
 
 3. **Draft** `SKILL.md` with `references/writing-for-agents.md` open.
@@ -86,7 +86,7 @@ You write the skill before watching the agent fail. Warning signs:
    - the skill folder path and the brief;
    - absolute paths to the **target** platform's card (`references/antigravity.md`, `references/claude-code.md`, or `references/opencode.md`) and `references/writing-for-agents.md` inside this skill's folder;
    - the results file.
-   Fix blocking findings. Tell the user about any you disagree with.
+   Fix blocking findings. Tell the user about any you disagree with. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 
 7. **Hand over.** Show the final `SKILL.md`, baseline vs with-skill table, invocation instructions (`/<name>` or `/<plugin>:<name>`), and known gaps.
 

@@ -174,6 +174,8 @@ Keep shell patterns exact. A trailing wildcard such as `"git diff*"` or `"git lo
 - Claude tool names (`Read`, `Grep`, `Agent`, …) mean nothing here. Express capabilities through `permission` keys, and in prose say "read the file", "run the command".
 - `tools:` in agent frontmatter is deprecated; use `permission`.
 - The agent name is the file name. A `name:` key is not documented.
+- `opencode run --agent <name>` selects only **primary** agents. A subagent name silently falls back to the default agent (a warning goes to stderr), which then runs with the default permissions. To test a subagent, delegate to it with `@name` or the task tool, or copy it as `mode: primary` for the test.
+- On Windows, the `opencode.ps1` and `pnpm.ps1` shims are blocked by the default PowerShell execution policy; `opencode.cmd` and `pnpm.cmd` work.
 - Subagents silently inherit the invoking primary's model. Set `model` explicitly when a subagent needs a different tier.
 
 ## 9. Hooks (plugins)

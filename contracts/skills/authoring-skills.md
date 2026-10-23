@@ -1,7 +1,7 @@
 ---
 id: authoring-skills
 kind: skill
-version: 2026.10.0
+version: 2026.10.1
 references: [targets.md, writing-for-agents.md, eval-protocol.md, decision-guide.md, coexistence.md, "@all-platforms"]
 ---
 # authoring-skills
@@ -42,7 +42,7 @@ Create or improve **one** skill for a target repository and target platform (def
    - Write the evals following `eval-protocol.md`: 3 realistic scenarios plus a trigger set (5–8 should, 5–8 near-miss should-not).
    - Run 1–3 scenarios without the skill through the scenario-runner agent, in isolation.
    - Record the failures verbatim.
-   - If the baseline already passes, say so and stop, or narrow the skill.
+   - If the baseline already passes, say so and stop, or narrow the skill. If the user still wants it, keep it only on their explicit say-so: record "kept on user override, no measured gain" in the results file and say the same in the hand-over. Suggest folding the guidance into the project instructions instead.
 3. **Draft.**
    - Follow `writing-for-agents.md` and the platform card:
      - description first: triggers first, near-miss exclusions, double-quoted;
@@ -56,7 +56,7 @@ Create or improve **one** skill for a target repository and target platform (def
 5. **Re-test (GREEN).**
    - Re-run the same scenarios with the skill, then the trigger set, using the platform's real loader.
    - Iterate at most 3 times. Change one thing per iteration.
-6. **Review.** Send the skill folder, the brief and the platform card to the artifact-reviewer agent. Fix blocking findings and report any disagreements.
+6. **Review.** Send the skill folder, the brief and the platform card to the artifact-reviewer agent. Fix blocking findings and report any disagreements. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 7. **Hand over.** Give:
    - the final path;
    - baseline vs with-skill results;

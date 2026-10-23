@@ -1,6 +1,6 @@
 # stablehand for OpenCode (with DeepSeek)
 
-**Status: ✅ implemented (evals: 3 runs).** Contracts: 2026.10.0. See [evals/RESULTS.md](evals/RESULTS.md). [BOOTSTRAP.md](BOOTSTRAP.md) records how the port was made.
+**Status: ✅ implemented (evals: 3 runs).** Contracts: 2026.10.1. See [evals/RESULTS.md](evals/RESULTS.md). [BOOTSTRAP.md](BOOTSTRAP.md) records how the port was made.
 
 ## Target layout
 
@@ -26,6 +26,8 @@ platforms/opencode/
 
 The workspace install links this implementation into `.opencode/skills` and `.opencode/agents` inside the stablehand checkout. Artifacts still go to the target repo, never into stablehand.
 
+Headless (`opencode run`): the session stops after showing the plan and asking for approval. Approve it with a follow-up `opencode run "Approved, go ahead." --continue` (or `--session <id>`), or use the interactive TUI.
+
 ## Install
 
 ```bash
@@ -37,7 +39,8 @@ OpenCode also reads `.claude/skills` and `.agents/skills`. If you keep different
 
 ## Windows
 
-- **Execution policy:** only if the `skill` tool fails with a PowerShell execution-policy error, set `$env:PSExecutionPolicyPreference = "Bypass"` for that session. Do not set it by default.
+- **Starting OpenCode in PowerShell:** a global npm or pnpm install puts an `opencode.ps1` shim on `PATH`, and Windows' default execution policy refuses to run it ("running scripts is disabled"). Run `opencode.cmd` instead, or allow local scripts once with `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`. The same applies to `pnpm.ps1`.
+- **Execution policy for the skill tool:** only if the `skill` tool fails with a PowerShell execution-policy error, set `$env:PSExecutionPolicyPreference = "Bypass"` for that session. Do not set it by default.
 - **Node / fnm path:** if `opencode` is installed as a global npm package under `fnm`, its binary lives in `<fnm-dir>\aliases\default`. Add that folder to your user `PATH` so it survives Node version changes, or evaluate fnm in each session with `fnm env --use-on-cd | Out-String | Invoke-Expression`.
 - **Coexistence:** if the repo also has `.claude/skills` with platform-specific Claude variants, set `$env:OPENCODE_DISABLE_CLAUDE_CODE_SKILLS = "1"` so OpenCode loads only its own skills.
 - **The linter is Python.** Run it through uv, for example `uv run "<path>/scripts/lint.py" --platform opencode <path>`; it is not a PowerShell script.

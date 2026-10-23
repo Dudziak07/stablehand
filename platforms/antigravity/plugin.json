@@ -1,5 +1,5 @@
 {
   "name": "stablehand",
-  "version": "2026.10.0",
+  "version": "2026.10.1",
   "description": "A stable for building agents: skills and agents that design, write, test, port and validate a project's own Antigravity skills, agents and rules."
 }

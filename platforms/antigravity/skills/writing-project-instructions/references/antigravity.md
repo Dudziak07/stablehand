@@ -187,7 +187,8 @@ Primary sources:
   - Plugin servers are namespaced `<plugin>_<server>`.
 
 ## 7. Testing
-- **List what loaded:** `agy -p "/skills" --output-format json` lists skills without an agent turn (CI-friendly).
+- **List what loaded:** `agy -p "/skills" --output-format json` lists standalone skills without an agent turn (CI-friendly). It does **not** list plugin skills (`/<plugin>:<skill>`), and `agy plugin list` shows only global installs (checked on agy 1.4.6). To check a workspace plugin, run `agy plugin validate <plugin folder>` and invoke one of its skills.
+- **Workspace from the CLI:** `agy --add-dir <path>` (repeatable) adds a folder to the workspace, so `run_command` may use it.
 - **Headless behavior run:** `agy -p "<prompt>" --output-format json`. Inspect the output for skill activation or `invoke_subagent` calls. Exact output fields: verify on the installed version.
 - **Interactive:** `/skills reload`, `/agents`, `@agent`.
 - **Validation:** `agy plugin validate`. It warns on missing frontmatter, name/folder mismatch, body > 24 KB, duplicate names, and Claude-style `commands/` or top-level `"hooks"`.

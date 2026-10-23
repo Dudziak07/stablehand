@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml/badge.svg)](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![version](https://img.shields.io/badge/version-2026.10.0-informational)
+![version](https://img.shields.io/badge/version-2026.10.1-informational)
 
 **A stable for building agents.** stablehand is not a pack of ready-made coding agents. It is the tack room you visit to build the *right* skills, subagents and instructions for **your** repository, on the platform you use: Claude Code, Google Antigravity or OpenCode.
 
@@ -51,7 +51,7 @@ uv run tools/install.py claude-code --scope workspace    # or: antigravity, open
 | Platform | How |
 |---|---|
 | Claude Code | `claude --add-dir ../shop-api` (or `/add-dir ../shop-api` in a session), then accept the trust prompt |
-| Antigravity | open the stablehand folder, then add `../shop-api` to the workspace (multi-root); Antigravity runs commands only inside workspace folders |
+| Antigravity | IDE or App: open the stablehand folder, then add `../shop-api` to the workspace (multi-root). CLI: `agy --add-dir ../shop-api` in the stablehand folder. Antigravity runs commands only inside workspace folders |
 | OpenCode | run `opencode` in the stablehand folder; approve the `external_directory` prompt when it reaches `../shop-api` |
 
 **3. Ask for what you need:**
@@ -84,7 +84,7 @@ Evals and results are saved in your repository under `.stablehand/`. You can com
 | [Google Antigravity](platforms/antigravity/) (App, IDE, `agy` CLI) | ✅ implemented | outcome gain in 4 of 4 conclusive scenarios, 3 runs per arm ([results](platforms/antigravity/evals/RESULTS.md)) |
 | [OpenCode](platforms/opencode/) (with DeepSeek or any provider) | ✅ implemented | outcome gain in 4 of 5 behavior scenarios, 3 runs per arm ([results](platforms/opencode/evals/RESULTS.md)) |
 
-On every platform the negative control passes: no stablehand skill fires on an unrelated request. Each platform implements the same [contracts](contracts/) (2026.10.0) and was ported and tested by that platform's own agent. More platforms can be added: see [docs/adding-a-platform.md](docs/adding-a-platform.md).
+On every platform the negative control passes: no stablehand skill fires on an unrelated request. Each platform implements the same [contracts](contracts/) (2026.10.1) and was ported and tested by that platform's own agent. More platforms can be added: see [docs/adding-a-platform.md](docs/adding-a-platform.md).
 
 ## What's inside
 
