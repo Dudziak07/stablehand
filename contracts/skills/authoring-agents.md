@@ -1,7 +1,7 @@
 ---
 id: authoring-agents
 kind: skill
-version: 2026.10.0
+version: 2026.10.1
 references: [targets.md, decision-guide.md, writing-for-agents.md, eval-protocol.md, coexistence.md, "@all-platforms"]
 ---
 # authoring-agents
@@ -51,7 +51,7 @@ Create or improve **one** subagent or custom agent for a target repository and t
    - Run each benchmark through explicit delegation and compare the results with the expected ones.
    - Run 2 natural prompts through the real loader to check automatic delegation.
    - Iterate at most 3 times.
-6. **Review** with the artifact-reviewer agent, giving it the **target** platform's card, and fix blocking findings.
+6. **Review** with the artifact-reviewer agent, giving it the **target** platform's card, and fix blocking findings. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 7. **Hand over.** Give:
    - the path;
    - how to invoke the agent;

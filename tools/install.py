@@ -216,7 +216,7 @@ def wire_workspace(platform: str, args: argparse.Namespace) -> int:
     status = installer.finish(platform)
     hint = {
         "claude-code": "Open this folder in Claude Code and accept the trust prompt; the skills appear as /stablehand:<skill>\n(already open? run /reload-plugins).",
-        "antigravity": "Open this folder in Antigravity; the skills appear as /stablehand:<skill> (CLI: /skills reload).",
+        "antigravity": "Open this folder in Antigravity; the skills appear as /stablehand:<skill>. Check with: agy plugin validate .agents/plugins/stablehand (/skills does not list plugin skills).",
         "opencode": "Open this folder in OpenCode; check with: opencode agent list",
     }[platform]
     print(hint)
@@ -248,7 +248,7 @@ def install_antigravity(args: argparse.Namespace) -> int:
     installer = Installer(target_root, args.dry_run, args.force, args.copy)
     installer.place_dir(src, target_root / "stablehand")
     status = installer.finish("antigravity")
-    print("\nReload in Antigravity (CLI: /skills reload) and check that /stablehand:designing-agent-setups is listed.")
+    print("\nReload in Antigravity (CLI: /skills reload), then check with: agy plugin validate <plugin folder>, or run /stablehand:designing-agent-setups. /skills does not list plugin skills.")
     return status
 
 

@@ -79,7 +79,7 @@ You create a "developer", "tester" or "architect" agent because the user named a
    - the agent file and the contract;
    - the absolute paths of the **target** platform's card (`claude-code.md`, `antigravity.md` or `opencode.md` in `${CLAUDE_PLUGIN_ROOT}/references/`) and of `${CLAUDE_PLUGIN_ROOT}/references/writing-for-agents.md`.
 
-   Fix blocking findings.
+   Fix blocking findings. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 
 7. **Hand over:** the path, the stated justification, how to invoke the agent, the benchmark results, and any restart needed.
 

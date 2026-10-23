@@ -2,6 +2,21 @@
 
 stablehand uses calendar versioning, `YYYY.M.N` (see [contracts/README.md](contracts/README.md#versioning)).
 
+## 2026.10.1
+
+Fixes from the pre-release reviews on Antigravity and OpenCode.
+
+- **`authoring-skills`:** when the baseline already passes, a skill is kept only on the user's explicit override. The results file and the hand-over then say "kept on user override, no measured gain".
+- **`authoring-skills` and `authoring-agents`:** after fixing the reviewer's findings, the reviewer runs once more and its final verdict is recorded.
+- **Antigravity:**
+  - `agy --add-dir` documented for the CLI workspace;
+  - `/skills` and `agy plugin list` do not show workspace plugin skills, so the install hint now points to `agy plugin validate`.
+- **OpenCode:**
+  - Windows PowerShell blocks the `opencode.ps1` and `pnpm.ps1` shims, so the docs point to `opencode.cmd` or `RemoteSigned`;
+  - `opencode run --agent` selects only primary agents;
+  - headless runs need a follow-up `--continue` to approve the plan;
+  - a results claim about `git status` is corrected.
+
 ## 2026.10.0
 
 First release.

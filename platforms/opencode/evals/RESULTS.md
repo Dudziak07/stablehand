@@ -34,7 +34,7 @@ Re-run with the current `porting-artifacts` skill, with-artifact arm only, 3 run
 
 Every Expected item holds in 3/3 runs. Decision: **ship**.
 
-Behavioral check (run 1): on a staged change, the produced reviewer was asked to run `git status` and `git diff --staged --output=x.txt`. Both were denied by the permission allow-list, and no file appeared.
+Behavioral check (run 1): on a staged change, the produced reviewer was asked to run `git status` and `git diff --staged --output=x.txt`. Both are outside its allow-list and were denied, and no file appeared.
 
 Corrected grading of the earlier arms:
 
@@ -72,6 +72,6 @@ From a fresh clone of this branch, workspace-installed for OpenCode, against a s
 | Read-only agent | `opencode run "<request>" --format json --dir "<clone>" --auto` | `authoring-agents` loaded; agent written only in `demo-api`; clone clean; `validating-artifacts` ran. |
 | Skill | same, then an explicit request to proceed after the baseline passed | `authoring-skills` loaded; skill written only in `demo-api`; GREEN trigger run fired 6/6 and near-misses 0/6. |
 | Port | same | `porting-artifacts` loaded; `code-reviewer` written only in `demo-api`; clone clean; `validating-artifacts` ran. |
-| Permission check | reviewer subagents in a scratch copy with a staged change | `git status` and `git diff --output=x.txt` denied by the `bash` allow-list; no file appeared; `edit: deny` removed the edit tools, so no file changed. |
+| Permission check | reviewer subagents in a scratch copy with a staged change | commands outside each reviewer's `bash` allow-list (such as `git diff --output=x.txt`) were denied; no file appeared; `edit: deny` removed the edit tools, so no file changed. |
 
 The first skill request stopped correctly because the baseline already passed; a follow-up request asked to build and trigger-test the skill anyway. Trigger-probe was copied into the scratch's `.opencode/agents/` before probing, which is the fixed path.

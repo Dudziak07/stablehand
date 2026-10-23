@@ -81,7 +81,7 @@ You create a "developer", "tester" or "architect" agent because the user named a
 6. **Independent review.** Delegate to `artifact-reviewer` using `invoke_subagent`. Pass:
    - the agent file and the contract;
    - absolute paths to the **target** platform's card (`references/antigravity.md`, `references/claude-code.md`, or `references/opencode.md`) and `references/writing-for-agents.md` inside this skill's folder.
-   Fix blocking findings. Tell the user about any you disagree with.
+   Fix blocking findings. Tell the user about any you disagree with. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 
 7. **Hand over:** file path, stated justification, how to invoke the agent (`invoke_subagent` or `@<name>`), benchmark results, and reload instructions. For another target platform, deliver the hand-off prompt and mark the hand-over "untested on <platform>".
 

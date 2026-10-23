@@ -86,7 +86,7 @@ You create a "developer", "tester" or "architect" agent because the user named a
    - the agent file and the contract;
    - the absolute paths of the **target** platform's card (`references/opencode.md`, `references/claude-code.md` or `references/antigravity.md` in this skill's folder) and of `references/writing-for-agents.md`.
 
-   Fix blocking findings.
+   Fix blocking findings. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 
 7. **Hand over.** Use this template:
 ```

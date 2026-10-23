@@ -1,6 +1,6 @@
 # stablehand for Antigravity
 
-**Status: [✅ implemented (evals: 3 runs)](evals/RESULTS.md).** Implements contracts 2026.10.0. Tested on Antigravity IDE 2.5.5, App 2.0.10, and CLI agy 1.4.5. See [PORT-NOTES.md](PORT-NOTES.md) for mapping decisions and [evals/RESULTS.md](evals/RESULTS.md) for evaluation runs.
+**Status: [✅ implemented (evals: 3 runs)](evals/RESULTS.md).** Implements contracts 2026.10.1. Tested on Antigravity IDE 2.5.5, App 2.0.10, and CLI agy 1.4.5. See [PORT-NOTES.md](PORT-NOTES.md) for mapping decisions and [evals/RESULTS.md](evals/RESULTS.md) for evaluation runs.
 
 ## Use it from the stablehand repo
 
@@ -9,7 +9,7 @@
    uv run tools/install.py antigravity --scope workspace
    ```
 2. Open this folder in Antigravity.
-3. Add the target repository to the workspace as a multi-root folder (`File -> Add Folder to Workspace...`).
+3. Add the target repository to the workspace: in the IDE or App as a multi-root folder (`File -> Add Folder to Workspace...`); in the CLI with `agy --add-dir <target-path>`.
 4. Ask the agent for what you need (e.g., "I need a skill for <target-path> that...").
 
 ## Layout (an Antigravity plugin)
@@ -28,6 +28,7 @@ platforms/antigravity/
 ## Install
 
 ```bash
+uv run tools/install.py antigravity --scope workspace   # this checkout: .agents/plugins/stablehand (main flow)
 uv run tools/install.py antigravity                  # links into ~/.gemini/config/plugins/stablehand
 uv run tools/install.py antigravity --scope project --project /path/to/repo   # .agents/plugins/stablehand
 # or, with the CLI:
