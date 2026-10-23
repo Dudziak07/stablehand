@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "stablehand",
+  "description": "A stable for building agents: tools to design, write, test, port and validate a project's own skills and subagents.",
+  "owner": {
+    "name": "Filip Dudziec"
+  },
+  "plugins": [
+    {
+      "name": "stablehand",
+      "source": "./platforms/claude-code",
+      "description": "Skills and subagents that design, author, evaluate, port and lint a project's Claude Code skills, subagents and instructions.",
+      "category": "development",
+      "tags": ["skills", "subagents", "agent-authoring", "evals"]
+    }
+  ]
+}

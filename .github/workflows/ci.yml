@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+
+      - name: Generated copies are in sync
+        run: uv run tools/sync.py --check
+
+      - name: Tool tests
+        run: uv run --with pytest --with pyyaml pytest tools/tests -q
+
+      - name: Platform cards are recent
+        run: uv run tools/lint.py --cards shared/references --strict
+
+      - name: Lint platform implementations
+        shell: bash
+        run: |
+          for p in claude-code antigravity opencode; do
+            if [ -d "platforms/$p/skills" ]; then
+              echo "::group::$p"
+              uv run tools/lint.py --platform "$p" "platforms/$p"
+              echo "::endgroup::"
+            fi
+          done

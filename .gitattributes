@@ -1,0 +1,5 @@
+# Agents and parsers trip over CRLF in YAML frontmatter; keep every text file LF.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.gif binary

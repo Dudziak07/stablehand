@@ -1,0 +1,7 @@
+{
+  "platforms": {
+    "claude-code": { "references": "root" },
+    "antigravity": { "references": "per-skill" },
+    "opencode": { "references": "per-skill" }
+  }
+}

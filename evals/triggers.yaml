@@ -1,0 +1,104 @@
+# Trigger sets for stablehand's own skills.
+# should_trigger: realistic phrasings, including indirect ones.
+# should_not_trigger: near misses sharing vocabulary — none of these may load the skill.
+
+designing-agent-setups:
+  should_trigger:
+    - "Set up agents and skills for this repository."
+    - "What agents and skills does the repo at ../shop-api need? Build them for OpenCode."
+    - "What customization should this project have so the agent stops breaking our build?"
+    - "I want a developer agent, a tester agent and an orchestrator for this repo."
+    - "Audit our CLAUDE.md, skills and agents and tell me what to change."
+    - "Our agent keeps ignoring the migration rules here. Fix the setup."
+  should_not_trigger:
+    - "Add a unit test for parseInvoice."
+    - "Explain how Claude Code subagents work."
+    - "Fix the typo in this skill's description."
+    - "Run the test suite."
+    - "Write a README for this project."
+
+authoring-skills:
+  should_trigger:
+    - "I need a skill for ../shop-api that adds endpoints the way that repo does it."
+    - "Write a skill that releases this package to npm."
+    - "Turn what we just did into a reusable skill."
+    - "My deploy skill never triggers; fix it."
+    - "Refactor this SKILL.md, it's 900 lines long."
+    - "Create a project skill for our database migrations."
+  should_not_trigger:
+    - "Create a code reviewer subagent."
+    - "Update our AGENTS.md with the new test command."
+    - "Port this skill to OpenCode."
+    - "Use the release skill to publish 1.2.0."
+    - "What skills do I have installed?"
+
+authoring-agents:
+  should_trigger:
+    - "I need a review agent for the repo at C:/code/shop, for Antigravity."
+    - "Create a read-only code review agent for this repo."
+    - "Add a tester agent to our setup."
+    - "Claude never delegates to my security-auditor agent. Why?"
+    - "Make a research subagent that uses a cheaper model."
+    - "Fix the frontmatter of .claude/agents/reviewer.md."
+  should_not_trigger:
+    - "Review this pull request."
+    - "Write a skill for writing tests."
+    - "Port our reviewer agent to Antigravity."
+    - "Explain the difference between skills and agents."
+    - "Run the reviewer on my last commit."
+
+writing-project-instructions:
+  should_trigger:
+    - "Write an AGENTS.md for this repo."
+    - "Our CLAUDE.md is 600 lines, trim it."
+    - "Add a rule that nobody edits files in migrations/ by hand."
+    - "Set up instructions that both Claude Code and OpenCode will read."
+    - "/init generated a huge file; clean it up."
+  should_not_trigger:
+    - "Write the README introduction."
+    - "Document this function."
+    - "Create a skill for our release process."
+    - "What does our AGENTS.md say about tests?"
+    - "Add a CONTRIBUTING guide for humans."
+
+porting-artifacts:
+  should_trigger:
+    - "Port this Claude Code agent to OpenCode."
+    - "Make the same skill work in Antigravity."
+    - "Convert .claude/agents/reviewer.md for our DeepSeek OpenCode setup."
+    - "Bring stablehand to a new platform."
+    - "We moved from Claude Code to Antigravity; migrate our skills."
+  should_not_trigger:
+    - "Create a new agent for Antigravity."
+    - "Port this Python 2 code to Python 3."
+    - "Translate the README into Polish."
+    - "Fix the reviewer agent's description."
+    - "Install stablehand for OpenCode."
+
+evaluating-artifacts:
+  should_trigger:
+    - "Test whether this skill actually helps."
+    - "Benchmark my reviewer agent."
+    - "Does the deploy skill trigger on 'ship it'?"
+    - "Compare version 1 and version 2 of this skill."
+    - "Run the evals for our skills."
+  should_not_trigger:
+    - "Run the unit tests."
+    - "Lint this SKILL.md."
+    - "Write tests for the parser."
+    - "Evaluate this business plan."
+    - "Check the CI results."
+
+validating-artifacts:
+  should_trigger:
+    - "Lint this skill."
+    - "Why doesn't my agent show up in Claude Code?"
+    - "Check our agent setup for conflicts between Claude and OpenCode."
+    - "Validate the files in .agents/ before I commit."
+    - "Is this agent frontmatter valid for Antigravity?"
+  should_not_trigger:
+    - "Run eslint on src/."
+    - "Validate this JSON schema."
+    - "Does this skill make the agent better?"
+    - "Review the logic of this function."
+    - "Format the YAML in config.yml."
