@@ -8,6 +8,14 @@ Thank you for your interest in contributing to stablehand. This guide supplement
 2. Review [`docs/architecture.md`](docs/architecture.md) to understand how contracts, shared references, and platform implementations fit together.
 3. If adding support for another harness, read [`docs/adding-a-platform.md`](docs/adding-a-platform.md).
 
+## Contribution workflow
+
+- **Issues first for larger changes:** open an issue using the matching template (`New skill, agent, or tool feature` or `Platform card or format update`) before implementing a new platform, new skill/agent, or contract change. Small bug fixes, unit tests, documentation fixes, and platform card refreshes can go straight to a pull request.
+- **Adding a skill or agent:** add the platform-neutral specification under `contracts/skills/` or `contracts/agents/` -> add eval scenarios in `evals/scenarios/` -> implement in every platform under `platforms/` -> run `uv run tools/sync.py` and `self_check.py --strict`.
+- **Adding a linter rule or CLI tool change:** keep Python tools as PEP 723 `uv` scripts under `tools/` -> add unit tests in `tools/tests/` -> run `uv run tools/sync.py` (to refresh vendored `lint.py` copies) and `self_check.py --strict`.
+- **Adding a platform:** follow [`docs/adding-a-platform.md`](docs/adding-a-platform.md) (including registering the platform in `PLATFORMS` in [`.agents/skills/auditing-stablehand/scripts/self_check.py`](.agents/skills/auditing-stablehand/scripts/self_check.py)).
+- **Pull requests:** fork the repository and work on a feature branch (`main` is protected). Link any related issue with `Closes #<number>` and ensure CI passes on both Linux and Windows.
+
 ## Where to edit
 
 - **Behavior changes:** update [`contracts/`](contracts/) first (see [`contracts/README.md`](contracts/README.md)), bump contract/release versions when required, then update every implementation under [`platforms/`](platforms/) and the status table in [`platforms/README.md`](platforms/README.md).

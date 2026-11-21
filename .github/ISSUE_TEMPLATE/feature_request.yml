@@ -1,0 +1,39 @@
+name: New skill, agent, or tool feature
+description: Propose a new skill, subagent, linter rule, or CLI tool improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For new skills, new subagents, or breaking contract changes, please open an issue first to align on scope before implementing across all platforms. See `CONTRIBUTING.md` for repository conventions.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - New skill or agent
+        - Existing skill or agent behavior
+        - Linter rule or CLI tool (tools/)
+        - Eval scenario
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Problem or motivation
+      description: What gap, failure mode, or use case does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior or design
+      description: Describe the contract outline, linter rule, or CLI behavior you have in mind.
+    validations:
+      required: true
+  - type: textarea
+    id: platforms
+    attributes:
+      label: Affected platforms (optional)
+      description: List which platforms are affected, or note if this applies to all platforms.

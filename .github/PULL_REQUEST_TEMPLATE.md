@@ -2,6 +2,8 @@
 
 <!-- Briefly describe what changed and why. -->
 
+Closes #<!-- issue number, or remove if none -->
+
 ## Verification
 
 - [ ] `uv run .agents/skills/auditing-stablehand/scripts/self_check.py --strict` passes
