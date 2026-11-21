@@ -1,0 +1,35 @@
+name: Platform card or format update
+description: Report an outdated platform card, schema change, or new harness capability
+labels: ["platform"]
+body:
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Claude Code
+        - Google Antigravity
+        - OpenCode
+        - New platform
+    validations:
+      required: true
+  - type: input
+    id: docs-url
+    attributes:
+      label: Official documentation URL
+      description: Link to the official documentation, changelog, or schema showing the change.
+      placeholder: "https://..."
+    validations:
+      required: true
+  - type: textarea
+    id: what-changed
+    attributes:
+      label: What changed?
+      description: Describe the outdated fact, renamed field, new capability, or breaking change.
+    validations:
+      required: true
+  - type: textarea
+    id: affected-files
+    attributes:
+      label: Affected files (optional)
+      description: List any platform cards, linter rules, or skills that need updating.

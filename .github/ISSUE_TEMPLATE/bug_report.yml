@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a bug in a skill, agent, platform card, or CLI tool
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform or component
+      options:
+        - Claude Code
+        - Google Antigravity
+        - OpenCode
+        - Tools (lint / sync / install)
+        - Multiple / other
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Environment and versions
+      description: Include OS, stablehand release/commit, uv version, and target platform CLI/IDE version if relevant.
+      placeholder: "e.g. Linux, stablehand 2026.11.0, uv 0.9.x, agy 1.5.x"
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the unexpected behavior or error output clearly.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact command, prompt, or artifact used to trigger the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead?
