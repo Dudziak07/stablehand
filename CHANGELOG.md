@@ -18,6 +18,9 @@ Antigravity platform refresh (verified 2026-11-21 against App 2.34.0, IDE 2.8.0 
   - updated `P002` deprecation wording for legacy workflows and added unit tests covering the new checks and shipped platform cleanliness.
 - **Maintainer self-check (`.agents/skills/auditing-stablehand/`):**
   - added a repo-local, cross-platform self-check skill and `scripts/self_check.py` runner verifying sync, tool tests, card freshness, artifact linters, contract parity, version consistency, and native plugin validators.
+- **Public release readiness & CI hardening (`SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `.github/`):**
+  - added `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, issue/PR templates, and weekly Dependabot updates for GitHub Actions;
+  - hardened `.github/workflows/ci.yml` with read-only permissions, concurrency limits, timeouts, SHA-pinned actions, and strict repository self-checks across Linux and Windows.
 
 ## 2026.10.1
 

@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml/badge.svg)](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![version](https://img.shields.io/badge/version-2026.11.0-informational)
+[![version](https://img.shields.io/badge/version-2026.11.0-informational)](https://github.com/Dudziak07/stablehand/releases)
 
 **A stable for building agents.** stablehand is not a pack of ready-made coding agents. It is the tack room you visit to build the *right* skills, subagents and instructions for **your** repository, on the platform you use: Claude Code, Google Antigravity or OpenCode.
 
@@ -178,10 +178,12 @@ Details: [docs/architecture.md](docs/architecture.md).
 
 ## Contributing
 
-Read [AGENTS.md](AGENTS.md). In short:
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). In short:
 1. Change behavior in `contracts/` first, then in every platform implementation.
 2. Edit knowledge in `shared/references/`, never in its generated copies.
-3. Run `uv run tools/sync.py`, the linter and the tests before committing. CI runs the same checks on Linux and Windows.
+3. Run `uv run .agents/skills/auditing-stablehand/scripts/self_check.py --strict` before committing. CI runs the same checks on Linux and Windows.
+
+Community participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md). Please report vulnerabilities privately using [SECURITY.md](SECURITY.md).
 
 ## License
 
