@@ -1,5 +1,27 @@
 {
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "stablehand",
-  "version": "2026.10.1",
-  "description": "A stable for building agents: skills and agents that design, write, test, port and validate a project's own Antigravity skills, agents and rules."
+  "displayName": "stablehand",
+  "version": "2026.11.0",
+  "description": "A stable for building agents: skills and agents that design, write, test, port and validate a project's own Antigravity skills, agents and rules.",
+  "logo": "assets/logo.svg",
+  "suggestedPrompts": [
+    "Set up agents and skills for ../my-repo — what does it need?",
+    "Create a project skill for ../my-repo that runs our tests safely",
+    "Validate all agent skills, rules and subagents in ../my-repo"
+  ],
+  "author": {
+    "name": "Filip Dudziec"
+  },
+  "homepage": "https://github.com/Dudziak07/stablehand",
+  "repository": "https://github.com/Dudziak07/stablehand",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "subagents",
+    "agent-authoring",
+    "evals",
+    "claude-code",
+    "opencode"
+  ]
 }

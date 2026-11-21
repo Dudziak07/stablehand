@@ -25,7 +25,7 @@ You create a "developer", "tester" or "architect" agent because the user named a
 
 0. **Target** (details in `references/targets.md`).
    - **Target repository.** Take it from the request; ask if missing. Use the current directory only if it is not the stablehand repo. **Never write the agent into stablehand.**
-   - **Access & Workspace.** `run_command` in Antigravity requires `Cwd` to be within the active workspace. When running commands in the target, ensure the target folder is added to the workspace (multi-root workspace in Antigravity IDE) or launch `agy` from the target folder.
+   - **Access & Workspace.** `run_command` in Antigravity requires `Cwd` to be within the active workspace. When running commands in the target, ensure the target folder is added to the workspace (multi-root workspace in App/IDE, or `agy --add-dir <target>` / `/add-dir` in CLI) or launch `agy` from the target folder.
    - **Target platform.** Antigravity by default. For **Claude Code or OpenCode**:
      - write the file from that platform's card: folder, fields, valid tool names or permissions, model tiers;
      - validate with `--platform <target>`;
@@ -48,9 +48,9 @@ You create a "developer", "tester" or "architect" agent because the user named a
    - **Tools (least privilege):**
      - Reviewer: read-only (`view_file`, `grep_search`, `find_by_name`, `list_dir`). Grant no write tools and no unrestricted shell. If the review role needs read-only commands (e.g. `git diff --staged`), allow read-only commands only through enforcement: a `PreToolUse` hook in `hooks.json` with a strict regex that rejects everything else, or an exact allow-list whose patterns cannot admit writing flags such as `--output`.
      - Researcher: read-only plus web (`search_web`, `read_url_content`, `view_file`, `grep_search`, `list_dir`, `find_by_name`).
-     - Worker: add edit and execution tools (`replace_file_content`, `multi_replace_file_content`, `write_to_file`, `run_command`, `command_status`).
-     - Use ONLY tool names from `references/antigravity.md` section 5. An unknown tool name can hang the agent.
-   - **Model:** `inherit` by default; `flash` for fast sweeps; `pro` for complex reasoning.
+     - Worker: add edit and execution tools (`replace_file_content`, `multi_replace_file_content`, `write_to_file`, `run_command`, `manage_task`).
+     - Use ONLY canonical Cortex tool names from `references/antigravity.md` section 5 (never model-facing aliases like `read_file`, `edit_file`, or `write_file`). An unknown tool name can hang the agent.
+   - **Model:** `inherit` by default; `flash_lite` for lightest high-volume sweeps; `flash` for fast/cheap; `pro` for complex reasoning.
    - **Benchmarks:** 3–5 tasks with expected outputs, saved in `<target>/.stablehand/evals/agents/<name>/scenarios/`.
 
 3. **Draft** `<target>/.agents/agents/<name>.md` (or workspace plugin `<target>/.agents/plugins/<set>/agents/<name>.md` per `references/coexistence.md`).
@@ -70,11 +70,11 @@ You create a "developer", "tester" or "architect" agent because the user named a
 5. **Test.**
    - Prepare a scratch copy or git worktree of the target repository (never run tests in the live target checkout or stablehand). Ensure it is added to the workspace if running commands in-session.
    - **Benchmarks:** run each benchmark with explicit delegation using `invoke_subagent` or:
-     `agy -p "Use the <name> agent to: <task>" --output-format json` (started in the scratch copy or worktree).
+     `agy -p "Use the <name> agent to: <task>" --output-format stream-json` (started in the scratch copy or worktree).
      Compare against expected outputs.
    - **Auto-delegation:** test 2 natural prompts via real loader:
-     `agy -p "<prompt>" --output-format json` (started in the scratch copy or worktree).
-     Verify that the output records delegation to `<name>`.
+     `agy -p "<prompt>" --output-format stream-json` (started in the scratch copy or worktree).
+     Verify that NDJSON `step_update.subagent_info.subagents[].type_name` records delegation to `<name>`.
    - Clean up the scratch copy or worktree afterwards.
    - Iterate at most 3 times and record `<target>/.stablehand/evals/agents/<name>/results/<date>.md`.
 

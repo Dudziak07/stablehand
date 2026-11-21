@@ -25,7 +25,7 @@ You write the skill before watching the agent fail. Warning signs:
 
 0. **Target** (details in `references/targets.md`).
    - **Target repository.** Take it from the request; ask if missing. Use the current directory only if it is not the stablehand repo (stablehand has top-level `contracts/` and `platforms/`). **Never write the skill into stablehand.**
-   - **Access & Workspace.** `run_command` in Antigravity requires `Cwd` to be within the active workspace. When running commands in the target, ensure the target folder is added to the workspace (multi-root workspace in Antigravity IDE) or launch `agy` from the target folder.
+   - **Access & Workspace.** `run_command` in Antigravity requires `Cwd` to be within the active workspace. When running commands in the target, ensure the target folder is added to the workspace (multi-root workspace in App/IDE, or `agy --add-dir <target>` / `/add-dir` in CLI) or launch `agy` from the target folder.
    - **Target platform.** Antigravity by default. For **Claude Code or OpenCode**:
      - draft from that platform's card;
      - place the skill in that platform's native location (respecting `references/coexistence.md`);
@@ -40,7 +40,7 @@ You write the skill before watching the agent fail. Warning signs:
    - The name: kebab-case, ≤ 64 chars, gerund preferred (`applying-migrations`).
    - The type: workflow, reference, posture, or tool wrapper.
    - Invocation:
-     - side effects (deploy, migrate, publish, post) → explicitly state "run only when requested" in description;
+     - side effects (deploy, migrate, publish, post) → set `disable-model-invocation: true` AND explicitly state "run only when explicitly requested" in description (for defense-in-depth);
      - internal helper not intended as a slash command → `disable-slash-command: true`.
    - Scope: project `<target>/.agents/skills/<name>/` (or workspace plugin `<target>/.agents/plugins/<set>/skills/<name>/`) or user `~/.gemini/config/skills/<name>/`.
    - Overlap: check existing skills in the target. If an existing skill covers the job, improve it instead.
@@ -59,7 +59,7 @@ You write the skill before watching the agent fail. Warning signs:
      - third person; when-to-use first, using phrasings from the trigger set;
      - a "Not for …" clause for near misses;
      - ≤ 500 chars, double-quoted.
-   - Frontmatter: only valid Antigravity fields (`name`, `description`, and `disable-slash-command` if needed).
+   - Frontmatter: only valid Antigravity fields (`name`, `description`, and `disable-model-invocation` or `disable-slash-command` if needed).
    - Body:
      - one stance sentence;
      - an anti-pattern only if observed in baseline;
@@ -78,7 +78,7 @@ You write the skill before watching the agent fail. Warning signs:
 5. **Re-test (GREEN).**
    - Re-run the scenarios with `scenario-runner` via `invoke_subagent` in mode `with-artifact`, passing the skill folder path.
    - Check trigger prompts using the real loader:
-     Run `agy -p "<prompt>" --output-format json` in a scratch copy or git worktree of the target repository (never in the live target checkout or stablehand). Ensure the scratch copy or worktree is added to the workspace if running in-session. Clean up the scratch copy or worktree afterwards.
+     Run `agy -p "<prompt>" --output-format stream-json` in a scratch copy or git worktree of the target repository (never in the live target checkout or stablehand) and inspect NDJSON `step_update` tool events (`tool_name` / `tool_info`) for skill `SKILL.md` reads. Ensure the scratch copy or worktree is added to the workspace if running in-session. Clean up the scratch copy or worktree afterwards.
    - Apply the decision rule from `references/eval-protocol.md`, change one thing per iteration, and stop after at most 3 iterations.
    - Save results to `<target>/.stablehand/evals/skills/<name>/results/<date>.md`.
 

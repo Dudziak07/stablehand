@@ -24,7 +24,7 @@ None.
 ## Antigravity Run Instructions
 Execute with `agy` or in an Antigravity session with stablehand enabled:
 ```bash
-agy -p "Port this Claude Code agent to OpenCode (we run OpenCode with DeepSeek). Write the result to .opencode/agents/code-reviewer.md. Work non-interactively." --output-format json
+agy -p "Port this Claude Code agent to OpenCode (we run OpenCode with DeepSeek). Write the result to .opencode/agents/code-reviewer.md. Work non-interactively." --output-format stream-json
 ```
 
 ## Expected (all must hold)

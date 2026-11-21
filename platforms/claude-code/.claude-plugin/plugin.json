@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "stablehand",
-  "version": "2026.10.1",
+  "version": "2026.11.0",
   "description": "A stable for building agents: skills and subagents that design, write, test, port and validate a project's own Claude Code skills, subagents and instructions.",
   "author": {
     "name": "Filip Dudziec"

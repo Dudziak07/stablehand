@@ -17,7 +17,7 @@ A folder `shop-api/`, separate from the working directory in real use. It is a s
 ## Antigravity Run Instructions
 Execute with `agy` or in an Antigravity session with stablehand enabled:
 ```bash
-agy -p "I need a skill named \`adding-endpoints\` for the repository in \`./shop-api\` that adds a new REST endpoint the way that repo does it. Work non-interactively: don't ask me questions, skip baseline runs, and write the files directly." --output-format json
+agy -p "I need a skill named \`adding-endpoints\` for the repository in \`./shop-api\` that adds a new REST endpoint the way that repo does it. Work non-interactively: don't ask me questions, skip baseline runs, and write the files directly." --output-format stream-json
 ```
 
 ## Expected (all must hold)

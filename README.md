@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml/badge.svg)](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![version](https://img.shields.io/badge/version-2026.10.1-informational)
+![version](https://img.shields.io/badge/version-2026.11.0-informational)
 
 **A stable for building agents.** stablehand is not a pack of ready-made coding agents. It is the tack room you visit to build the *right* skills, subagents and instructions for **your** repository, on the platform you use: Claude Code, Google Antigravity or OpenCode.
 

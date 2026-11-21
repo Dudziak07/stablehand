@@ -27,15 +27,15 @@ Reference material (read source and target cards before mapping):
 
 3. **Map field-by-field** using platform card tables:
    - **Frontmatter.** Retain supported fields; translate equivalents; document dropped fields as **lossy**. Examples:
-     - Claude `disable-model-invocation: true` → OpenCode `metadata.opencode/autoinvoke: "false"`; Antigravity: state "run only when requested" in the description.
+     - Claude `disable-model-invocation: true` → Antigravity `disable-model-invocation: true` (also state "run only when requested" in the description for older surfaces) → OpenCode `metadata.opencode/autoinvoke: "false"`.
      - Claude `user-invocable: false` → Antigravity `disable-slash-command: true`.
    - **Tools.** Map capabilities to target names:
      - Read-only: every write, shell and network capability is denied unless the source explicitly allowed it. Claude `Read, Grep, Glob` → Antigravity `[view_file, grep_search, find_by_name, list_dir]` → OpenCode `permission` with `edit: deny`, `bash: deny`, `shell: deny`, `webfetch: deny`, `websearch: deny`, `task: deny` (`bash` and `shell` always together, see the OpenCode card).
      - A restricted shell (a Claude hook or the source's intent such as "only `git diff`") becomes an exact allow-list on OpenCode, e.g. `bash` and `shell` both set to `{"*": deny, "git diff --staged": allow, "git diff --staged -- *": allow}`. Allow only these exact patterns: no `"git diff"` with a trailing `*` or ` *`, because any trailing wildcard admits writing flags such as `git diff --output=<file>`.
-     - Write/execute access maps the same way. Read-only must stay read-only.
+     - Write/execute access maps the same way. Read-only must stay read-only. For Antigravity, use canonical Cortex tool names from `references/antigravity.md` section 5 (`view_file`, `replace_file_content`, `write_to_file`), never model-facing aliases (`read_file`, `edit_file`, `write_file`).
    - **Model tier (order: Claude / Antigravity / OpenCode):**
      - same as caller → `inherit` / `inherit` / omit;
-     - fast → `haiku` / `flash` / `deepseek/deepseek-flash`;
+     - lightest / fast → `haiku` / `flash_lite` or `flash` / `deepseek/deepseek-flash`;
      - strongest → `opus` / `pro` / `deepseek/deepseek-v4-pro`.
    - **Invocation syntax in body:**
      - loading a skill: Claude Skill tool → Antigravity "invoke `/<skill>` or read its `SKILL.md`" → OpenCode "call skill tool with name";

@@ -13,7 +13,7 @@ None.
 ## Antigravity Run Instructions
 Execute with the Antigravity CLI or within an active Antigravity session with the stablehand plugin enabled:
 ```bash
-agy -p "Our repo is a small TypeScript API (Express + Vitest). Set up a developer agent, a tester agent and an orchestrator agent for it so the coding agent works better. Don't ask me questions; propose the setup and explain it. Don't create any files yet." --output-format json
+agy -p "Our repo is a small TypeScript API (Express + Vitest). Set up a developer agent, a tester agent and an orchestrator agent for it so the coding agent works better. Don't ask me questions; propose the setup and explain it. Don't create any files yet." --output-format stream-json
 ```
 Or in an interactive Antigravity session, send the prompt directly.
 

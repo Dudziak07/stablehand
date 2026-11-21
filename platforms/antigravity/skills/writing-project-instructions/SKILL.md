@@ -17,7 +17,7 @@ Reference material (read when a step says so):
 
 0. **Target.**
    - **Target repository.** Take it from the user's prompt; ask if missing. Use the current directory only if it is not the stablehand repo. Never write into stablehand.
-   - **Access & Workspace.** `run_command` in Antigravity requires `Cwd` to be within the active workspace. When running commands in the target, ensure the target folder is added to the workspace (multi-root workspace in Antigravity IDE) or launch `agy` from the target folder.
+   - **Access & Workspace.** `run_command` in Antigravity requires `Cwd` to be within the active workspace. When running commands in the target, ensure the target folder is added to the workspace (multi-root workspace in App/IDE, or `agy --add-dir <target>` / `/add-dir` in CLI) or launch `agy` from the target folder.
    - **Target platform.** Establish which platforms open the repo (Antigravity by default, or Claude Code / OpenCode).
    - **Confirmation.** Confirm in one line: `Target: <path> · Platform: <platform> · Building: <what>`.
 
@@ -39,10 +39,11 @@ Reference material (read when a step says so):
    Verify each command against repository files; execute fast, safe commands to confirm. Always run target commands from inside the target directory (`cd "<target>" && uv run …`, never `--project` from stablehand).
 
 4. **Choose files** (see `references/coexistence.md`):
-   - **Antigravity and shared canonical file:** `AGENTS.md` (at repo root, no frontmatter).
+   - **Antigravity and shared canonical file:** `AGENTS.md` (at repo root, no frontmatter). Antigravity walks up from the workspace folder to the repository root, never down into subfolders; use `@[label](<path>)` to inline files (before the 24 KB limit) and `@<filename>` to reference canonical workspace paths.
    - **Antigravity path-scoped rules:** `.agents/rules/<topic>.md` with frontmatter:
-     - `trigger: glob` and `globs: "src/db/**,migrations/**"` (comma-separated string, not a YAML list)
+     - `trigger: glob` and `globs: "src/db/**,migrations/**"` (comma-separated string, not a YAML list; quote patterns starting with `*`)
      - or `trigger: model_decision` with `description: "..."`
+     - or `trigger: manual` for `@`-mention only (not supported in Antigravity CLI)
      - keep each file under 24 KB.
    - **Claude Code compatibility:** if Claude Code also opens the repository, create `CLAUDE.md` starting with `@AGENTS.md` followed by Claude-specific directives.
    - **OpenCode compatibility:** OpenCode reads `AGENTS.md` natively.

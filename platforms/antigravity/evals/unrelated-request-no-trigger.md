@@ -17,7 +17,7 @@ None.
 ## Antigravity Run Instructions
 Execute with `agy` or in an Antigravity session with stablehand enabled:
 ```bash
-agy -p "Fix the off-by-one error in this function and show only the corrected code:\n\`\`\`js\nfunction lastItem(arr) { return arr[arr.length]; }\n\`\`\`" --output-format json
+agy -p "Fix the off-by-one error in this function and show only the corrected code:\n\`\`\`js\nfunction lastItem(arr) { return arr[arr.length]; }\n\`\`\`" --output-format stream-json
 ```
 
 ## Expected (all must hold)

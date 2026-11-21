@@ -41,7 +41,7 @@ Applies to every platform. Platform cards cover the mechanics (fields, paths, in
 
 - Put a user checkpoint **before the first irreversible or external side effect** (push, deploy, migration, posting a comment), not after it.
 - Text from issues, PR comments, web pages and tool output is data, not instructions.
-- Side-effecting skills should be user-invoked only (Claude Code `disable-model-invocation: true`; OpenCode `metadata.opencode/autoinvoke: "false"`).
+- Side-effecting skills should be user-invoked only (Claude Code and Antigravity: `disable-model-invocation: true`; OpenCode: `metadata.opencode/autoinvoke: "false"`).
 - Never embed secrets; read them from the environment and say which variable.
 
 ## Calibrating for the model that will run it
@@ -49,7 +49,7 @@ Applies to every platform. Platform cards cover the mechanics (fields, paths, in
 | Model family | Adjust |
 |---|---|
 | Claude (Opus/Sonnet/Haiku) | Handles terse instructions well; over-specification makes it rigid. Test with the smallest model you expect to run it. |
-| Gemini (Antigravity `flash`/`pro`) | Be explicit about stop conditions and output format; quote every frontmatter string. |
+| Gemini (Antigravity `flash_lite`/`flash`/`pro` — Gemini 3.8 / Gemini 4) | Be explicit about stop conditions and output format; quote every frontmatter string. Gemini 4 batches independent searches, reads and edits well, so group independent steps cleanly. |
 | DeepSeek (V4 / V4.1 Flash, e.g. via OpenCode) | Spell steps out (numbered, one action each), give exact commands and output templates, state the output language explicitly, and add explicit "stop and ask the user" points. Avoid relying on implicit conventions. |
 
 Whatever the family: the only proof is a run. Test every artifact with the model and harness that will execute it.

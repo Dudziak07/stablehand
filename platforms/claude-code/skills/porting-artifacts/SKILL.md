@@ -28,7 +28,7 @@ Reference material (read the source and target cards in full before mapping):
 
 3. **Map**, field by field, using the cards' tables:
    - **Frontmatter.** Keep supported fields; translate the equivalents; record dropped fields as **lossy**. Examples:
-     - Claude `disable-model-invocation: true` → OpenCode `metadata.opencode/autoinvoke: "false"`; Antigravity has no exact equivalent (state "run only when asked" in the description).
+     - Claude `disable-model-invocation: true` → Antigravity `disable-model-invocation: true` (also state "run only when requested" in the description for older surfaces) → OpenCode `metadata.opencode/autoinvoke: "false"`.
      - Claude `user-invocable: false` → Antigravity `disable-slash-command: true`.
    - **Tools.** Abstract capability → target names:
      - Claude `Read, Grep, Glob` → Antigravity `[view_file, grep_search, find_by_name]` → OpenCode `permission` with `edit: deny`, `bash: deny`, `shell: deny`, `webfetch: deny`, `websearch: deny`, `task: deny` (`bash` and `shell` always together, see the OpenCode card).
@@ -36,7 +36,7 @@ Reference material (read the source and target cards in full before mapping):
      - Write/execute access maps the same way. Read-only must stay read-only.
    - **Model tier:**
      - same as the caller → `inherit` / `inherit` / omit;
-     - fast → `haiku` / `flash` / `deepseek/deepseek-flash`;
+     - fast / lightest → `haiku` / `flash` or `flash_lite` / `deepseek/deepseek-flash`;
      - strongest → `opus` / `pro` / `deepseek/deepseek-v4-pro`.
    - **Invocation syntax in the body:**
      - loading a skill: Claude "Use the Skill tool to load `x`" → Antigravity "invoke `/x`, or read its SKILL.md" → OpenCode "call the skill tool with name `x`";

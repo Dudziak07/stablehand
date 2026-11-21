@@ -24,7 +24,7 @@ You build a team of role agents (developer, tester, architect, orchestrator) bec
 
 1. **Establish the target** (details in `references/targets.md`).
    - **Target repository.** Take the path from the user's prompt; if missing, ask for it. Use the current directory only if it is not the stablehand repo (stablehand has top-level `contracts/` and `platforms/`). **Never write artifacts into stablehand itself.**
-   - **Access & Workspace.** In Antigravity, read and write files using absolute paths. When running commands in the target, ensure the target folder is added to the workspace (multi-root workspace in Antigravity IDE) or launch `agy` from the target folder.
+   - **Access & Workspace.** In Antigravity, read and write files using absolute paths. When running commands in the target, ensure the target folder is added to the workspace (multi-root workspace in App/IDE, or `agy --add-dir <target>` / `/add-dir` in CLI) or launch `agy` from the target folder.
    - **Platform(s).** Antigravity by default, unless the user specifies Claude Code or OpenCode.
    - **Root.** Confirm the repository root: the git root (`git -C <path> rev-parse --show-toplevel`) and its README.
    - **Confirmation.** Confirm in one line: `Target: <path> · Platform: <platform> · Building: <what>`.
@@ -48,7 +48,7 @@ You build a team of role agents (developer, tester, architect, orchestrator) bec
 4. **Decide.** Read `references/decision-guide.md`.
    - For each need, choose instructions, a path-scoped rule, a skill, a subagent, a hook, or nothing.
    - Every subagent must satisfy at least one of the five reasons: context isolation, independence, different permissions, a different model, or parallelism. Drop subagents with no reason.
-   - Prefer built-in agents (`research`, `browser`).
+   - Prefer built-in agents (`research`, `browser`) and Antigravity's built-in multi-agent orchestrators (`/run-workflow`, `/swarm`, `/boost`, `/teamwork`, and Orchestrator model mode) over custom orchestrator agents.
    - Orchestration is a skill run in the main conversation, never a subagent.
 
 5. **Blueprint and approval.** Present a table with these columns:

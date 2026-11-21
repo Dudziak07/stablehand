@@ -14,7 +14,7 @@ Reference material:
 
 0. **Target.** All runs occur in the repository owning the artifact (the target), never in stablehand.
    - Read and write in the target repository using absolute paths or by adding it to the workspace.
-   - **Access & Workspace.** `run_command` in Antigravity requires `Cwd` to be within the active workspace. When running commands in the target repository or in its worktree/scratch copy, ensure the target folder or scratch directory is added to the workspace (multi-root workspace in Antigravity IDE).
+   - **Access & Workspace.** `run_command` in Antigravity requires `Cwd` to be within the active workspace. When running commands in the target repository or in its worktree/scratch copy, ensure the target folder or scratch directory is added to the workspace (multi-root workspace in App/IDE, or `agy --add-dir <path>` / `/add-dir` in CLI).
    - Artifacts for Claude Code or OpenCode cannot be executed locally. Write the eval files and hand off a prompt for that platform.
    - **Confirmation.** Confirm in one line: `Target: <path> · Platform: <platform> · Evaluating: <artifact>`.
 
@@ -23,7 +23,7 @@ Reference material:
    - agents: benchmark scenarios
    Write missing files following `references/eval-protocol.md` before executing.
 
-2. **Plan the runs.** Select scenarios, run counts (1 to explore, 3 for a ship decision), and model tiers (`inherit`, `flash`, `pro`). If planning more than ~10 runs, confirm with the user first.
+2. **Plan the runs.** Select scenarios, run counts (1 to explore, 3 for a ship decision), and model tiers (`inherit`, `flash_lite`, `flash`, `pro`). If planning more than ~10 runs, confirm with the user first.
 
 3. **Behavior runs (in-session).** For each scenario, run both arms using `invoke_subagent` with `scenario-runner`:
    - **baseline arm:** mode `baseline` (the named artifact is ignored);
@@ -32,8 +32,8 @@ Reference material:
    Assign `scenario-runner` a working directory that is a git worktree (`git -C <target> worktree add <scratch> HEAD`) or scratch copy of the target repository. Ensure the scratch directory is accessible within the workspace. Never run in the target checkout directly, and never in stablehand. Clean up the worktree or scratch copy afterwards.
 
 4. **Real-loader runs (triggers and delegation).** Execute a two-arm protocol inside a scratch copy or git worktree of the target repository (never the live target checkout or stablehand):
-   - **baseline arm:** Run `agy -p "<prompt>" --output-format json` in a clean scratch copy or worktree without the linked plugin/skill (or with the plugin excluded). Verify that the skill does NOT trigger.
-   - **with-artifact arm:** Run `agy -p "<prompt>" --output-format json` in the scratch copy or worktree with the plugin or skill linked. Inspect the JSON output to verify skill activation or subagent delegation for positive triggers, and absence of activation for negative triggers.
+   - **baseline arm:** Run `agy -p "<prompt>" --output-format stream-json` (optionally `--model <slug>` and pinning `--mode`, since CLI `1.5.7+` defaults to `auto` where the sandbox is available) in a clean scratch copy or worktree without the linked plugin/skill (or with the plugin excluded). Verify from NDJSON `step_update` events (`tool_name` / `tool_info`) that the skill does NOT trigger.
+   - **with-artifact arm:** Run `agy -p "<prompt>" --output-format stream-json` in the scratch copy or worktree with the plugin or skill linked. Inspect NDJSON `step_update` events for `tool_name` / `tool_info` (skill `SKILL.md` reads) or `subagent_info.subagents[].type_name` (delegation) for positive triggers, and absence of activation for negative triggers.
    Clean up the scratch copy or worktree afterwards. If a batch is interrupted, resume from the first missing run without repeating completed runs.
 
 5. **Grade.** Apply deterministic checks first (files exist, regex matches, commands exit 0), then the evaluation rubric. Run static format validation using the validator: determine the absolute path to `../validating-artifacts/scripts/lint.py` resolved from the directory containing this `SKILL.md` (or invoke `/stablehand:validating-artifacts`). When independent judgment is required, delegate grading to `artifact-reviewer` using `invoke_subagent`.

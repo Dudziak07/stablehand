@@ -26,7 +26,7 @@ The caller must give you:
    | Platform | Docs | Changelog |
    |---|---|---|
    | Claude Code | code.claude.com/docs | github.com/anthropics/claude-code CHANGELOG.md |
-   | Antigravity | antigravity.google/docs | github.com/google-antigravity/antigravity-cli CHANGELOG.md |
+   | Antigravity | antigravity.google/llms.txt (`.md` mirrors at `antigravity.google/docs/*.md`) | antigravity.google/docs/changelog.md; github.com/google-antigravity/antigravity-cli |
    | OpenCode | opencode.ai/docs | github.com/anomalyco/opencode releases |
 
 3. Use community posts only to find official sources, and label them if you cite them.
