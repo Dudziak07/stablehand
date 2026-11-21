@@ -2,6 +2,10 @@ name: Platform card or format update
 description: Report an outdated platform card, schema change, or new harness capability
 labels: ["platform"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        If you are proposing or implementing support for a **new platform**, please review [`docs/adding-a-platform.md`](https://github.com/Dudziak07/stablehand/blob/main/docs/adding-a-platform.md) before opening a pull request.
   - type: dropdown
     id: platform
     attributes:
