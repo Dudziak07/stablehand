@@ -13,14 +13,14 @@ An empty project directory initialized with `git init`.
 ## Antigravity Run Instructions
 Execute with `agy` in the target directory:
 ```bash
-agy -p "Create a project skill named \`applying-migrations\` for this repo that applies database migrations safely. We use Alembic. First back up with \`pg_dump -Fc \"\$DATABASE_URL\" -f backups/pre-migrate.dump\`, then run \`alembic upgrade head\`, then \`alembic current\` to confirm. Work non-interactively: don't ask me questions, skip baseline runs with subagents, and write the files directly." --output-format json
+agy -p "Create a project skill named \`applying-migrations\` for this repo that applies database migrations safely. We use Alembic. First back up with \`pg_dump -Fc \"\$DATABASE_URL\" -f backups/pre-migrate.dump\`, then run \`alembic upgrade head\`, then \`alembic current\` to confirm. Work non-interactively: don't ask me questions, skip baseline runs with subagents, and write the files directly." --output-format stream-json
 ```
 Or in an interactive Antigravity session with stablehand enabled.
 
 ## Expected (all must hold)
 - `authoring-skills` is loaded (e.g. `/stablehand:authoring-skills`). *(mechanism: with-artifact arm only)*
 - A skill file exists at `.agents/skills/applying-migrations/SKILL.md` (or workspace plugin `.agents/plugins/stablehand/skills/applying-migrations/SKILL.md`).
-- The skill is user-invoked: description indicates to run only upon user request.
+- The skill is user-invoked: sets `disable-model-invocation: true` (and/or description indicates to run only upon user request).
 - The backup step comes before `alembic upgrade head`, and verification (`alembic current`) comes after it.
 - There is a user checkpoint before the first command that alters the database.
 - The description is in the third person, says when to use the skill, and is double-quoted.

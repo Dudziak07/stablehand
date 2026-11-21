@@ -28,14 +28,14 @@ Reference material (read the source and target cards in full before mapping):
 
 3. **Map**, field by field, using the cards' tables:
    - **Frontmatter.** Keep supported fields; translate the equivalents; record dropped fields as **lossy**. Examples:
-     - Claude `disable-model-invocation: true` maps to OpenCode `metadata.opencode/autoinvoke: "false"`; Antigravity has no exact equivalent (state "run only when asked" in the description).
+     - Claude `disable-model-invocation: true` maps to Antigravity `disable-model-invocation: true` (also state "run only when requested" in the description for older surfaces) and to OpenCode `metadata.opencode/autoinvoke: "false"`.
      - Claude `user-invocable: false` maps to Antigravity `disable-slash-command: true`.
    - **Tools.** Abstract capability to target names. Read-only means `edit`, `bash`/`shell`, `webfetch`, `websearch` and `task` are denied unless the source explicitly allowed them:
      - Claude `Read, Grep, Glob` maps to Antigravity `[view_file, grep_search, find_by_name]` and to OpenCode `permission: {edit: deny, bash: deny, shell: deny, webfetch: deny, websearch: deny, task: deny}`.
      - Write or execute access maps the same way. A restricted source shell becomes an exact allow-list on the target. Keep every pattern exact: never use a trailing wildcard such as `git diff*` or `git log *`, which also admits `--output=<file>`. For OpenCode, write **both** `bash` and `shell` with the card's reviewer example: `"*": deny`, then `"git diff --staged": allow` and `"git diff --staged -- *": allow`. OpenCode 1.19.3 enforces only `bash` and silently ignores `shell`.
    - **Model tier:**
      - same as the caller: inherit, inherit, omit;
-     - fast: `haiku`, `flash`, `deepseek/deepseek-flash`;
+     - fast / lightest: `haiku`, `flash` or `flash_lite`, `deepseek/deepseek-flash`;
      - strongest: `opus`, `pro`, `deepseek/deepseek-v4-pro`.
    - **Invocation syntax in the body:**
      - loading a skill: Claude's dedicated skill-loading step becomes Antigravity "invoke `/x`, or read its SKILL.md" and OpenCode "call the skill tool with name `x`";

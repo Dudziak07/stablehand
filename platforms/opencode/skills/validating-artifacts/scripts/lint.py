@@ -93,7 +93,10 @@ CLAUDE_MEMORY = {"user", "project", "local"}
 CLAUDE_DESCRIPTION_LISTING_CAP = 1536
 
 # --- Antigravity -----------------------------------------------------------------
-AG_SKILL_KEYS = {"name", "description", "disable-slash-command", "metadata", "license", "compatibility"}
+AG_SKILL_KEYS = {
+    "name", "description", "disable-model-invocation", "disable-slash-command",
+    "metadata", "license", "compatibility",
+}
 AG_AGENT_KEYS = {
     "name", "description", "tools", "model", "commandExecutionPolicy", "mainAgent", "subagent", "skills",
     "plugins", "mcpServers", "hidden", "inheritMcp", "inheritCustomizations", "rules", "agents",
@@ -101,19 +104,30 @@ AG_AGENT_KEYS = {
 }
 AG_TOOLS_DOCUMENTED = {
     "view_file", "replace_file_content", "multi_replace_file_content", "write_to_file",
-    "list_dir", "find_by_name", "grep_search", "run_command", "invoke_subagent",
-    "define_subagent", "search_web", "read_url_content",
+    "list_dir", "find_by_name", "grep_search", "run_command", "manage_task", "schedule",
+    "list_permissions", "ask_permission", "invoke_subagent", "define_subagent",
+    "send_message", "manage_subagents", "search_web", "read_url_content",
+    "ask_question", "generate_image", "call_mcp_tool", "run_workflow",
 }
 AG_TOOLS_OBSERVED = {
     "view_file_outline", "view_code_item", "codebase_search", "command_status",
-    "send_command_input", "read_terminal", "browser_subagent", "generate_image",
-    "task_boundary", "notify_user", "read_resource", "list_resources",
+    "send_command_input", "read_terminal", "browser_subagent", "task_boundary",
+    "notify_user", "read_resource", "list_resources", "search_marketplace",
+    "list_plugin_accounts", "notebook_edit", "notebook_execution", "sed_file",
 }
-AG_MODELS = {"inherit", "flash", "pro"}
+AG_TOOL_ALIASES = {"read_file": "view_file", "edit_file": "replace_file_content", "write_file": "write_to_file"}
+AG_MODELS = {"inherit", "flash_lite", "flash", "pro"}
 AG_EXEC_POLICIES = {"off", "auto", "eager", "sandbox"}
 AG_AGENT_BOOLS = ("mainAgent", "subagent", "hidden", "inheritMcp", "inheritCustomizations", "excludeDefaultComponents")
 AG_TRIGGERS = {"always_on", "model_decision", "glob", "manual"}
 AG_FILE_BYTES = 24_000
+AG_MANIFEST_KEYS = {
+    "$schema", "name", "displayName", "display_name", "description", "version",
+    "disabled", "logo", "suggestedPrompts", "suggested_prompts", "skills",
+    "author", "homepage", "repository", "license", "keywords", "extensions",
+}
+AG_MANIFEST_DEPRECATED_KEYS = {"source", "sourcePath", "source_path"}
+AG_LOGO_EXTS = {".png", ".svg", ".jpg", ".jpeg", ".webp"}
 
 # --- OpenCode --------------------------------------------------------------------
 OC_SKILL_KEYS = {"name", "description", "license", "compatibility", "metadata"}
@@ -314,8 +328,10 @@ def lint_skill(report: Report, skill_dir: Path, platform: str) -> None:
             add("error", "S015", "context only accepts 'fork'")
         if "effort" in fm and not one_of(fm["effort"], EFFORTS):
             add("warning", "S015", f"effort should be one of {sorted(EFFORTS)}")
-    if platform == "antigravity" and "disable-slash-command" in fm and not isinstance(fm["disable-slash-command"], bool):
-        add("warning", "S015", "disable-slash-command should be true or false")
+    if platform == "antigravity":
+        for key in ("disable-slash-command", "disable-model-invocation"):
+            if key in fm and not isinstance(fm[key], bool):
+                add("warning", "S015", f"{key} should be true or false")
 
     body_lines = doc.body.count("\n") + 1
     if not doc.body.strip():
@@ -479,6 +495,8 @@ def lint_antigravity_agent(add: Scoped, path: Path, fm: dict, doc: Doc) -> None:
             for tool in fm["tools"]:
                 if not isinstance(tool, str):
                     add("error", "A031", f"tools entry {tool!r} must be a tool name")
+                elif tool in AG_TOOL_ALIASES:
+                    add("error", "A031", f"unknown tool '{tool}' (model-facing alias; use canonical '{AG_TOOL_ALIASES[tool]}' in agent frontmatter — an unknown name can hang the subagent)")
                 elif tool in AG_TOOLS_OBSERVED:
                     add("info", "A032", f"tool '{tool}' is observed in the product but not documented; verify it")
                 elif tool not in AG_TOOLS_DOCUMENTED:
@@ -616,15 +634,18 @@ def lint_container(report: Report, root: Path, platform: str) -> None:
     if rules.is_dir():
         for f in sorted(rules.glob("*.md")):
             lint_rule(report, f, platform)
-    manifest = root / "plugin.json"
-    if platform == "antigravity" and manifest.is_file():
-        lint_antigravity_manifest(report, manifest)
+    if platform == "antigravity":
+        manifest = root / ".antigravity-plugin" / "plugin.json"
+        if not manifest.is_file():
+            manifest = root / "plugin.json"
+        if manifest.is_file():
+            lint_antigravity_manifest(report, manifest)
 
 
 def lint_antigravity_manifest(report: Report, path: Path) -> None:
     report.files_checked += 1
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
         report.add("error", "M001", path, f"invalid JSON: {exc}")
         return
@@ -634,10 +655,34 @@ def lint_antigravity_manifest(report: Report, path: Path) -> None:
     name = data.get("name")
     if not isinstance(name, str) or not re.fullmatch(r"[a-zA-Z0-9_-]+", name):
         report.add("error", "M001", path, "name is required and must match ^[a-zA-Z0-9-_]+$ (CLI)")
+    elif not NAME_RE.match(name):
+        report.add("warning", "M004", path, f"name '{name}' is not lowercase kebab-case (required by Marketplace and agy plugin validate --strict)")
     if not isinstance(data.get("description"), str):
         report.add("warning", "M002", path, "description is required by the Antigravity CLI")
-    for key in sorted(set(data) - {"name", "description", "version"}):
-        report.add("warning", "M003", path, f"key '{key}' may be rejected (the CLI schema disallows additional properties)")
+    for key in sorted(set(data) - AG_MANIFEST_KEYS, key=str):
+        if key in AG_MANIFEST_DEPRECATED_KEYS:
+            report.add("warning", "M003", path, f"key '{key}' is deprecated and set only by older plugin imports; remove it")
+        else:
+            report.add("warning", "M003", path, f"key '{key}' may be rejected (the CLI schema disallows additional properties)")
+    if "disabled" in data and not isinstance(data["disabled"], bool):
+        report.add("warning", "M004", path, "disabled must be true or false")
+    for key in ("suggestedPrompts", "suggested_prompts"):
+        if key in data:
+            prompts = data[key]
+            if not isinstance(prompts, list) or len(prompts) > 3 or not all(isinstance(p, str) and p.strip() for p in prompts):
+                report.add("warning", "M004", path, f"{key} must be an array of at most 3 non-empty strings")
+    if "logo" in data:
+        logo = data["logo"]
+        if not isinstance(logo, str) or not logo.strip():
+            report.add("warning", "M004", path, "logo must be a non-empty relative asset path or https URL")
+        elif not logo.startswith("https://"):
+            norm = posixpath.normpath(logo)
+            if "\\" in logo or logo.startswith("/") or re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", logo) or norm.startswith("..") or Path(logo).suffix.lower() not in AG_LOGO_EXTS:
+                report.add("warning", "M004", path, "logo must be a relative forward-slash path ending in .png, .svg, .jpg, .jpeg or .webp")
+            else:
+                plugin_base = path.parent.parent if path.parent.name in (".antigravity-plugin", ".gemini-plugin") else path.parent
+                if not (plugin_base / norm).is_file():
+                    report.add("warning", "M004", path, f"logo asset not found: {logo}")
 
 
 def agent_files(agents_dir: Path, platform: str) -> list[Path]:
@@ -693,7 +738,7 @@ def lint_project(report: Report, root: Path, platforms: list[str]) -> None:
         report.add("warning", "P001", root / ".agent", "legacy Antigravity folder; current root is .agents/")
     for wf in (root / ".agent" / "workflows", root / ".agents" / "workflows"):
         if wf.is_dir():
-            report.add("error", "P002", wf, "Antigravity workflows stopped working on 2026-10-19; convert them to skills (/migrate-workflows)")
+            report.add("error", "P002", wf, "legacy Antigravity workflows are deprecated; convert them to skills (/migrate-workflows)")
     for name in ("AGENTS.md", "CLAUDE.md", "GEMINI.md"):
         if (root / name).is_file():
             target = "claude-code" if name == "CLAUDE.md" else ("antigravity" if name == "GEMINI.md" else platforms[0])

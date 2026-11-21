@@ -25,7 +25,7 @@ agy -p "Write an AGENTS.md for this repo. Claude Code and OpenCode both use it. 
 - Lint with \`uv run ruff check .\`.
 - Never edit files in \`migrations/\` by hand; generate them with \`uv run alembic revision --autogenerate\`.
 
-Work non-interactively and write the file directly." --output-format json
+Work non-interactively and write the file directly." --output-format stream-json
 ```
 
 ## Expected (all must hold)

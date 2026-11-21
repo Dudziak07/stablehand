@@ -104,3 +104,28 @@ Real end-to-end verification runs executed against `$env:TEMP\sh-ag-verify\demo-
 | 2 | Add skill for `demo-api` adding a resource module the way the repo does it | `authoring-skills` | Created `.agents/skills/adding-resource-modules/SKILL.md` (dataclass in `src/demo_api/`, integer cents, test coverage). Evaluated against baseline (outcome gain on bloated dataclasses and dirty edits). Linter: 0 errors/warnings. Reviewer: clean. | **PASS** |
 | 3 | Port `code-reviewer.md` to OpenCode | `porting-artifacts` | Created `.opencode/agents/code-reviewer.md` (`mode: subagent`, permission block with `edit: deny`, `shell: deny`, `webfetch: deny`, `websearch: deny`, `task: deny`), `.opencode/PORT-NOTES.md` documenting lossy items (name, tools, model, mainAgent/subagent) and untested prompt. Superseded: `shell` alone is not enforced on OpenCode 1.19.3 (lint A049 now flags it); see the `port-reviewer-to-opencode` re-run above. | **superseded** |
 
+---
+
+## 6. Compatibility & Static Verification 2026-11-21
+
+Platform knowledge, linter rules, `plugin.json` manifest (`2026.11.0` + `assets/logo.svg`), skills, agents, and eval run instructions were refreshed against live Antigravity docs (App `2.34.0`, IDE `2.8.0` / `2.7.0` local, CLI `agy` `1.5.14` / `1.5.5` local) and verified with Gemini 4 Neon:
+
+- `uv run .agents/skills/auditing-stablehand/scripts/self_check.py --strict`:
+  - `sync-check`: PASS (`sync: up to date`)
+  - `pytest`: PASS (`60 passed`)
+  - `cards-freshness`: PASS (`0 error(s), 0 warning(s), 0 info - 3 file(s) checked`)
+  - `lint:claude-code`: PASS (`0 error(s), 0 warning(s), 0 info - 10 file(s) checked`)
+  - `lint:antigravity`: PASS (`0 error(s), 0 warning(s), 0 info - 11 file(s) checked`)
+  - `lint:opencode`: PASS (`0 error(s), 0 warning(s), 0 info - 11 file(s) checked`)
+  - `lint:self` (`.agents/skills/auditing-stablehand` across all 3 platforms): PASS (`0 error(s), 0 warning(s), 0 info` each)
+  - `contract-parity`: PASS (`7 skills, 3 agents across 3 platforms`)
+  - `version-sync`: PASS (`all match 2026.11.0`)
+  - `native:agy` (`agy plugin validate --strict platforms/antigravity`): PASS (`skills 7 · agents 3 · rules 0 · hooks 0 · mcpServers 0 · sidecars 0`, 0 notes/warnings/errors)
+  - `native:claude`: SKIP (`claude` not found on `PATH`)
+- `agy plugin validate --strict .agents/plugins/stablehand`: PASS
+- `uv run tools/lint.py --project .`: PASS (`0 error(s), 0 warning(s), 0 info - 24 file(s) checked`)
+- `agy -p "Reply with OK only." --model gemini-4-neon-low --output-format stream-json --disable-slash-commands`: PASS (`status: "SUCCESS"`, verified `init.tools` canonical tool list on `agy 1.5.5`)
+
+*(Note: full 2-arm 36-run behavioral eval suites were not re-run in this refresh; historical 2026-10-23 Gemini 3.8 Flash eval measurements above remain unchanged.)*
+
+

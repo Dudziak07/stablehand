@@ -29,7 +29,7 @@ uv run "<skill-dir>/scripts/lint.py" --platform antigravity "<plugin-folder>"
 # Validate an entire repository (scans all platforms and checks collisions):
 uv run "<skill-dir>/scripts/lint.py" --project "<target-repo>"
 ```
-To validate artifacts for other platforms, use `--platform claude-code` or `--platform opencode`. Pass `--json` for structured output and `--strict` to fail on warnings.
+To validate artifacts for other platforms, use `--platform claude-code` or `--platform opencode`. Pass `--json` for structured output and `--strict` to fail on warnings. For Antigravity plugins, also run `agy plugin validate --strict "<plugin-folder>"` when `agy` is installed.
 
 ## Process
 1. **Select mode:** choose single path, plugin folder, or `--project <target-repo>`. Use `--project` whenever multiple platforms share the repository.
@@ -42,7 +42,7 @@ To validate artifacts for other platforms, use `--platform claude-code` or `--pl
    | S020 | Linked reference or script missing | Create file or correct relative path |
    | A030 / A035 | Missing required agent field or invalid type | Supply required string or boolean |
    | A031 | Unknown Antigravity tool name | Use exact tool name from `references/antigravity.md` section 5 |
-   | A033 | Invalid model tier | Use `inherit`, `flash`, or `pro` |
+   | A033 | Invalid model tier | Use `inherit`, `flash_lite`, `flash`, or `pro` |
    | R001 | Invalid rule trigger | Use `always_on`, `model_decision`, `glob`, or `manual` |
    | P002 | Deprecated workflow folder | Migrate workflow to skill |
    | P003 | Duplicate skill name in OpenCode | Rename or set `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` |

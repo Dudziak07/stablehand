@@ -1,13 +1,13 @@
 # Sources and credits
 
-stablehand's text is original. The ideas below come from public work, credited here with links. Platform facts were checked against the official sources on 2026-10-21.
+stablehand's text is original. The ideas below come from public work, credited here with links. Platform facts were checked against the official sources on 2026-10-21; Antigravity was re-verified on 2026-11-21.
 
 ## Platform documentation (facts)
 - Claude Code: https://code.claude.com/docs/en/skills, /sub-agents, /memory, /plugins/manifest-reference, /plugins/marketplace-reference, /plugin-evals; changelog: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
 - Anthropic, Skill authoring best practices: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
 - Agent Skills open standard: https://agentskills.io/specification
 - AGENTS.md: https://agents.md
-- Antigravity: https://antigravity.google/docs (skills, rules, subagents, plugins, hooks, cli/gcli-migration, migration/workflows-to-skills); CLI changelog: https://github.com/google-antigravity/antigravity-cli
+- Antigravity: https://antigravity.google/docs (customization-discovery, skills, rules, subagents, plugins, build-plugins, hooks, mcp, models, permissions, sandbox, dynamic-workflows, slash-commands, cli/headless, cli/reference, cli/commands/agents, migration/workflows-to-skills, changelog); schema: https://antigravity.google/schemas/v1/plugin.json; CLI changelog: https://github.com/google-antigravity/antigravity-cli
 - OpenCode: https://opencode.ai/docs (skills, agents, permissions, rules, commands, providers, cli)
 - DeepSeek API: https://api-docs.deepseek.com (models, Anthropic API compatibility, Claude Code integration); model IDs via https://models.dev
 

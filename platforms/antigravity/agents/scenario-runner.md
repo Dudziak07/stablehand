@@ -10,7 +10,7 @@ tools:
   - find_by_name
   - grep_search
   - run_command
-  - command_status
+  - manage_task
   - search_web
   - read_url_content
 model: inherit

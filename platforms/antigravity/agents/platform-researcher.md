@@ -26,7 +26,7 @@ The caller must provide:
 2. Search primary official documentation and changelogs first:
    | Platform | Docs | Changelog |
    |---|---|---|
-   | Antigravity | antigravity.google/docs | github.com/google-antigravity/antigravity-cli CHANGELOG.md |
+   | Antigravity | antigravity.google/llms.txt (and `.md` page mirrors under `antigravity.google/docs/*.md`) | antigravity.google/docs/changelog.md and github.com/google-antigravity/antigravity-cli CHANGELOG.md |
    | Claude Code | code.claude.com/docs | github.com/anthropics/claude-code CHANGELOG.md |
    | OpenCode | opencode.ai/docs | github.com/anomalyco/opencode releases |
 3. Consult secondary community posts only to locate primary sources, labeling them if cited.

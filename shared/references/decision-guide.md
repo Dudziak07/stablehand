@@ -11,7 +11,7 @@ Read this before proposing any artifact. Default to the smallest primitive that 
 | A procedure or body of knowledge needed for some tasks (how we release, how we write tests here) | **Skill** | Loaded on demand. Composable. User-invocable as `/name` on every supported platform. |
 | Work that needs its own context window, independence, different permissions, a different model, or parallel execution | **Subagent / custom agent** | See the five reasons below. Isolation has a price: no conversation history, only the final message comes back. |
 | Something that must happen every time, deterministically (format after edit, block a dangerous command) | **Hook** | Instructions can be forgotten; hooks cannot. |
-| A shortcut the user types | **Skill** (user-invoked) | Custom commands are legacy: Claude Code merged them into skills, Antigravity retired workflows (2026-10-19), OpenCode exposes skills as `/name`. |
+| A shortcut the user types | **Skill** (user-invoked) | Custom commands are legacy: Claude Code merged them into skills, Antigravity deprecated legacy Markdown workflows in favor of skills (Dynamic Workflows `/run-workflow` are Python orchestration scripts), OpenCode exposes skills as `/name`. |
 | Access to an external system | **MCP server** | Out of scope for stablehand authoring, but list it in the blueprint when needed. |
 | Nothing — the baseline already behaves well | **Nothing** | An artifact that changes nothing is pure context cost. |
 

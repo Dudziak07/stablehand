@@ -386,3 +386,70 @@ def test_opencode_bash_without_shell_warns(tmp_path):
 def test_opencode_bash_and_shell_with_same_rules_are_clean(tmp_path):
     rules = '    "*": deny\n    "git diff --staged": allow\n'
     assert oc_agent(tmp_path, f"  bash:\n{rules}  shell:\n{rules}") == set()
+
+
+def test_antigravity_agent_flash_lite_and_new_documented_tools(tmp_path):
+    f = write(tmp_path / "agents" / "sweeper.md",
+              '---\nname: sweeper\ndescription: "Sweeps."\n'
+              'tools: [view_file, manage_task, schedule, send_message, manage_subagents, '
+              'ask_question, generate_image, call_mcp_tool, run_workflow]\n'
+              'model: flash_lite\n---\nSweep.\n')
+    report = run_path(f, "antigravity")
+    assert not ({"A031", "A032", "A033"} & codes(report))
+
+
+def test_antigravity_agent_model_facing_alias_is_error_with_hint(tmp_path):
+    f = write(tmp_path / "agents" / "worker.md",
+              '---\nname: worker\ndescription: "Edits."\ntools: [read_file, edit_file, write_file]\n---\nWork.\n')
+    report = run_path(f, "antigravity")
+    msgs = [x.message for x in report.findings if x.code == "A031" and x.level == "error"]
+    assert len(msgs) == 3
+    assert any("view_file" in m for m in msgs)
+    assert any("replace_file_content" in m for m in msgs)
+    assert any("write_to_file" in m for m in msgs)
+
+
+def test_antigravity_skill_disable_model_invocation(tmp_path):
+    d = skill(tmp_path, "disable-model-invocation: true\n")
+    assert not codes(run_path(d, "antigravity"), "warning")
+    bad = skill(tmp_path / "bad", 'disable-model-invocation: "yes"\n')
+    assert "S015" in codes(run_path(bad, "antigravity"), "warning")
+
+
+def test_antigravity_manifest_v1_schema_keys_and_checks(tmp_path):
+    root = tmp_path / "good-plugin"
+    write(root / "assets" / "logo.svg", "<svg/>")
+    write(root / "skills" / "hello" / "SKILL.md", GOOD_SKILL.replace("writing-tests", "hello").replace("references/conventions.md", "x.md"))
+    write(root / "skills" / "hello" / "x.md", "x")
+    manifest = write(root / "plugin.json",
+                     '{"$schema":"https://antigravity.google/schemas/v1/plugin.json","name":"good-plugin",'
+                     '"displayName":"Good Plugin","description":"Does good things.","version":"1.0.0",'
+                     '"disabled":false,"logo":"assets/logo.svg","suggestedPrompts":["One","Two","Three"],'
+                     '"author":{"name":"Team","url":"https://example.com"},"homepage":"https://example.com",'
+                     '"repository":"https://github.com/example/good","license":"MIT","keywords":["good"]}')
+    report = lint.Report()
+    lint.lint_antigravity_manifest(report, manifest)
+    assert report.findings == []
+
+    multi = tmp_path / "multi"
+    write(multi / "skills" / "hello" / "SKILL.md", GOOD_SKILL.replace("writing-tests", "hello").replace("references/conventions.md", "x.md"))
+    write(multi / "skills" / "hello" / "x.md", "x")
+    write(multi / "plugin.json", '{"bogus": 1}')
+    write(multi / ".antigravity-plugin" / "plugin.json", '{"name": "Multi_Plugin", "description": "d", "source": "old", "logo": "assets/missing.svg", "suggestedPrompts": ["1", "2", "3", "4"]}')
+    mreport = run_path(multi, "antigravity")
+    assert "M003" in codes(mreport, "warning")
+    assert "M004" in codes(mreport, "warning")
+    assert any("deprecated" in f.message for f in mreport.findings if f.code == "M003")
+
+
+def test_shipped_all_platforms_and_maintainer_skill_are_clean():
+    repo_root = Path(__file__).resolve().parents[2]
+    for platform in lint.PLATFORMS:
+        report = run_path(repo_root / "platforms" / platform, platform)
+        assert not codes(report, "error"), (platform, report.findings)
+        assert not codes(report, "warning"), (platform, report.findings)
+    maintainer = repo_root / ".agents" / "skills" / "auditing-stablehand"
+    for platform in lint.PLATFORMS:
+        report = run_path(maintainer, platform)
+        assert not codes(report, "error"), (platform, report.findings)
+        assert not codes(report, "warning"), (platform, report.findings)

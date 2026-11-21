@@ -17,7 +17,7 @@ The usual flow: a developer opens **the stablehand repository** in their tool an
 | Host | Read/write the target | Run things in the target |
 |---|---|---|
 | Claude Code | Ask the user to run `/add-dir <path>`, or to start with `claude --add-dir <path>`. Then use absolute paths. | `cd "<target>" && claude -p "…" --output-format stream-json --verbose` |
-| Antigravity | File tools accept absolute paths, but `run_command` refuses a working directory outside the workspace. Add the target folder to the workspace (multi-root) before running anything in it. | `agy -p "…" --output-format json`, started from a scratch copy of the target |
+| Antigravity | File tools accept absolute paths, but `run_command` refuses a working directory outside the workspace. Add the target folder to the workspace (multi-root in App/IDE, or `agy --add-dir <path>` / `/add-dir` in CLI) before running anything in it. | `agy -p "…" --output-format stream-json`, started from a scratch copy of the target |
 | OpenCode | The `external_directory` permission (default `ask`): approve when prompted. | `opencode run "…" --format json --dir "<target>"` |
 
 ## Same platform as the host vs another platform

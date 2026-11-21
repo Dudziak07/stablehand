@@ -2,6 +2,23 @@
 
 stablehand uses calendar versioning, `YYYY.M.N` (see [contracts/README.md](contracts/README.md#versioning)).
 
+## 2026.11.0
+
+Antigravity platform refresh (verified 2026-11-21 against App 2.34.0, IDE 2.8.0 / 2.7.0 local, CLI `agy` 1.5.14 / 1.5.5 local, and Gemini 4 Neon), linter upgrades, and maintainer self-check tooling.
+
+- **Antigravity platform card & implementation (`shared/references/`, `platforms/antigravity/`):**
+  - documented `disable-model-invocation: true` for user-invoked skills and `flash_lite` subagent tier (alongside `inherit`, `flash`, `pro`), updating `porting-artifacts` across all three platforms;
+  - updated canonical Cortex tool list (`manage_task`, `schedule`, `send_message`, `manage_subagents`, `ask_question`, `generate_image`, `call_mcp_tool`, `run_workflow`, `list_permissions`, `ask_permission`), replaced legacy `command_status` with `manage_task` in `scenario-runner` and `authoring-agents`, and added explicit warnings against copying model-facing aliases (`read_file`, `edit_file`, `write_file`) into agent `tools:`;
+  - upgraded `platforms/antigravity/plugin.json` to the official `v1` schema (`https://antigravity.google/schemas/v1/plugin.json`) with bundled `assets/logo.svg`, `displayName`, `suggestedPrompts`, `author`, `homepage`, `repository`, `license`, and `keywords`;
+  - switched headless real-loader trigger/delegation commands across `antigravity.md`, `eval-protocol.md`, `targets.md`, skills, and `platforms/antigravity/evals/` to `--output-format stream-json` (NDJSON `step_update` events);
+  - refreshed surfaces (`IDE` 2.8.0, IDE extensions, `agy acp`, Python SDK), built-in multi-agent orchestrators (`/run-workflow`, `/swarm`, `/boost`, `/teamwork`), CLI `--add-dir` / `/add-dir`, `SessionStart` hooks, `.gemini/config.json` `personal_customization_dir`, `@[label](path)` vs `@filename` includes, and CLI `auto` mode/sandbox notes;
+  - added `antigravity.google/llms.txt` and `.md` page mirror pointers to `platform-researcher` across all three platforms.
+- **Linter & tests (`tools/lint.py`, `tools/tests/test_lint.py`):**
+  - added Antigravity support for `flash_lite`, `disable-model-invocation`, expanded documented tools, explicit `A031` error hints for model-facing aliases (`read_file`, `edit_file`, `write_file`), `.antigravity-plugin/plugin.json` precedence, and full `v1` `plugin.json` manifest validation (`M003`/`M004`);
+  - updated `P002` deprecation wording for legacy workflows and added unit tests covering the new checks and shipped platform cleanliness.
+- **Maintainer self-check (`.agents/skills/auditing-stablehand/`):**
+  - added a repo-local, cross-platform self-check skill and `scripts/self_check.py` runner verifying sync, tool tests, card freshness, artifact linters, contract parity, version consistency, and native plugin validators.
+
 ## 2026.10.1
 
 Fixes from the pre-release reviews on Antigravity and OpenCode.

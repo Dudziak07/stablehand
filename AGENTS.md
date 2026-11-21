@@ -20,6 +20,7 @@ If the stablehand skills are not available in your tool, wire this checkout firs
 ## Contributing to stablehand itself
 
 ### Commands
+- Full self-check (sync, tests, cards, all linters, parity, native validators): `uv run .agents/skills/auditing-stablehand/scripts/self_check.py` (or load the `auditing-stablehand` skill at `.agents/skills/auditing-stablehand/SKILL.md`).
 - Refresh generated copies: `uv run tools/sync.py`. CI checks this with `--check`.
 - Lint a platform implementation: `uv run tools/lint.py --platform <claude-code|antigravity|opencode> platforms/<p>`
 - Linter tests: `uv run --with pytest --with pyyaml pytest tools/tests -q`

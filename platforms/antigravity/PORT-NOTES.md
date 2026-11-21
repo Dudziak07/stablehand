@@ -1,9 +1,10 @@
 # Port Notes: Google Antigravity
 
 - **Date:** 2026-10-23
-- **Source contracts:** 2026.10.0
+- **Last reviewed:** 2026-11-21 (Gemini 4 Neon; App 2.34.0 docs, IDE 2.8.0 docs / 2.7.0 local, CLI `agy` 1.5.14 changelog / 1.5.5 local)
+- **Source contracts:** 2026.10.0 (updated to 2026.10.1; manifest 2026.11.0)
 - **Author:** Antigravity agent (Gemini 3.8 Flash)
-- **Target environment:** Antigravity IDE 2.5.5 (VS Code 1.107.0) / App 2.0.10 (ProductVersion of %LOCALAPPDATA%\Programs\Antigravity\Antigravity.exe) / CLI `agy 1.4.5`
+- **Target environment:** Antigravity IDE 2.5.5 (VS Code 1.107.0) / App 2.0.10 (ProductVersion of %LOCALAPPDATA%\Programs\Antigravity\Antigravity.exe) / CLI `agy 1.4.5` (reviewed 2026-11-21 against App 2.34.0, IDE 2.8.0 / 2.7.0 local, CLI `agy 1.5.14` / `1.5.5` local)
 
 ---
 
@@ -81,3 +82,16 @@ The observations noted regarding `shared/references/antigravity.md` were verifie
 3. **Plugin Registration & Discovery (Section 6 & Testing):**
    - *Status:* Verified and resolved.
    - *Evidence / Sources:* `agy plugin install <path>` installs and enables the plugin globally into `~/.gemini/config/plugins/<name>`. For workspace isolation without modifying global state, linking `<target>/.agents/plugins/<name>` (via `uv run tools/install.py antigravity --scope workspace` or directory junction) enables discovery. Updated in `shared/references/antigravity.md` section 6.
+
+---
+
+## 4. Review & Refresh (2026-11-21)
+
+Re-verified against live `https://antigravity.google/docs/*.md`, `https://antigravity.google/schemas/v1/plugin.json`, local `agy 1.5.5` (`--help`, `models`, `plugin validate`, `-p ... --output-format stream-json`), and local Antigravity IDE `2.7.0`:
+
+1. **`disable-model-invocation` in skills:** Now documented for Antigravity plugins (`docs/build-plugins`), resolving the previous lossy gap in `authoring-skills` and `porting-artifacts`. Side-effecting skills now set `disable-model-invocation: true` while keeping "run only when explicitly requested" in `description` as defense-in-depth on older surfaces.
+2. **Model tier `flash_lite`:** Now documented across `docs/build-plugins` and `docs/dynamic-workflows` alongside `inherit`, `flash`, and `pro`. Added to `shared/references/antigravity.md`, `tools/lint.py` (`AG_MODELS`), `authoring-agents`, `evaluating-artifacts`, `validating-artifacts`, and `porting-artifacts`.
+3. **Canonical vs. model-facing tool names:** Gemini 4 / App 2.x prompts can expose model-facing aliases (`read_file`, `edit_file`, `write_file`), while custom agent `tools:` frontmatter, `hooks.json` matchers, and `agy --output-format stream-json` (`init.tools`) require canonical Cortex names (`view_file`, `replace_file_content`, `multi_replace_file_content`, `write_to_file`, `manage_task`). Replaced legacy `command_status` with `manage_task` in `scenario-runner.md` and `authoring-agents`, documented the expanded tool table in `shared/references/antigravity.md`, and added alias-hint error checking (`A031`) in `tools/lint.py`.
+4. **`plugin.json` v1 schema & `assets/logo.svg`:** Upgraded `platforms/antigravity/plugin.json` to `https://antigravity.google/schemas/v1/plugin.json` (adding `$schema`, `displayName`, `logo`, `suggestedPrompts`, `author`, `homepage`, `repository`, `license`, `keywords`), created `assets/logo.svg`, and updated `tools/lint.py` to validate the full v1 schema and `.antigravity-plugin/plugin.json`.
+5. **Headless trigger/delegation output format:** `agy -p ... --output-format json` only outputs a summary envelope without tool steps; switched real-loader trigger and delegation checks in `shared/references/antigravity.md`, `eval-protocol.md`, `targets.md`, skills, and `evals/*.md` to `--output-format stream-json` (NDJSON `step_update` events).
+6. **Surfaces, CLI scopes, and rules:** Removed the outdated claim that Antigravity IDE stopped updating in 2026-08 (v2.8.0 is current; IDE extensions and `agy acp` added), clarified CLI-only skill folders (`~/.gemini/antigravity-cli/skills/`, `~/.gemini/skills/`), documented `.gemini/config.json` `personal_customization_dir`, `@[label](path)` vs `@filename` includes, and noted that CLI does not support `trigger: manual` `@`-mentions.
