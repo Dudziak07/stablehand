@@ -2,6 +2,20 @@
 
 stablehand uses calendar versioning, `YYYY.M.N` (see [contracts/README.md](contracts/README.md#versioning)).
 
+## 2026.11.1
+
+Added `upgrading-artifacts` and `.stablehand/manifest.json` lifecycle tracking, plus OpenCode 2.3.2 V2 migration and Gemini 4 authoring updates.
+
+- **New skill `upgrading-artifacts` (`contracts/`, `platforms/*`, `evals/scenarios/upgrade-stale-skill.md`):**
+  - audits existing skills, subagents, rules, and instruction files in a target repository against current platform cards and `writing-for-agents.md`;
+  - treats missing `.stablehand/manifest.json` or unlisted artifacts as `unknown (legacy)` and audits them without failing;
+  - proposes an approval-gated upgrade table (`keep`, `patch`, `rewrite`, `retire`), supporting contract-first rewrites calibrated for newer models with A/B evals;
+  - records/updates `.stablehand/manifest.json` across `upgrading-artifacts`, `authoring-skills`, `authoring-agents`, and `writing-project-instructions`.
+- **OpenCode 2.3.2 V2 migration (`shared/references/opencode.md`, `platforms/opencode/`, `tools/lint.py`):**
+  - migrated OpenCode implementation, example config, and linter rules to V2 `permissions` arrays (`shell`, `subagent`, `edit`), `#variant` model syntax, and DeepSeek V4.1 Flash / V4 Pro IDs.
+- **Antigravity 1.5.15 & Gemini 4 writing guide (`shared/references/antigravity.md`, `shared/references/writing-for-agents.md`):**
+  - updated App 2.35 / CLI `agy` 1.5.15 details and added Gemini 4 / `agentskills.io` authoring guidance.
+
 ## 2026.11.0
 
 Antigravity platform refresh (verified 2026-11-21 against App 2.34.0, IDE 2.8.0 / 2.7.0 local, CLI `agy` 1.5.14 / 1.5.5 local, and Gemini 4 Neon), linter upgrades, and maintainer self-check tooling.

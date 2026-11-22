@@ -1,7 +1,7 @@
 ---
 id: authoring-agents
 kind: skill
-version: 2026.10.1
+version: 2026.11.1
 references: [targets.md, decision-guide.md, writing-for-agents.md, eval-protocol.md, coexistence.md, "@all-platforms"]
 ---
 # authoring-agents
@@ -52,7 +52,7 @@ Create or improve **one** subagent or custom agent for a target repository and t
    - Run 2 natural prompts through the real loader to check automatic delegation.
    - Iterate at most 3 times.
 6. **Review** with the artifact-reviewer agent, giving it the **target** platform's card, and fix blocking findings. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
-7. **Hand over.** Give:
+7. **Hand over.** Update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`), then give:
    - the path;
    - how to invoke the agent;
    - the benchmark results;

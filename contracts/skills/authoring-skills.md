@@ -1,7 +1,7 @@
 ---
 id: authoring-skills
 kind: skill
-version: 2026.10.1
+version: 2026.11.1
 references: [targets.md, writing-for-agents.md, eval-protocol.md, decision-guide.md, coexistence.md, "@all-platforms"]
 ---
 # authoring-skills
@@ -57,7 +57,7 @@ Create or improve **one** skill for a target repository and target platform (def
    - Re-run the same scenarios with the skill, then the trigger set, using the platform's real loader.
    - Iterate at most 3 times. Change one thing per iteration.
 6. **Review.** Send the skill folder, the brief and the platform card to the artifact-reviewer agent. Fix blocking findings and report any disagreements. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
-7. **Hand over.** Give:
+7. **Hand over.** Update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`), then give:
    - the final path;
    - baseline vs with-skill results;
    - how to invoke the skill;

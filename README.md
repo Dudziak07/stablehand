@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml/badge.svg)](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![version](https://img.shields.io/badge/version-2026.11.0-informational)](https://github.com/Dudziak07/stablehand/releases)
+[![version](https://img.shields.io/badge/version-2026.11.1-informational)](https://github.com/Dudziak07/stablehand/releases)
 
 **A stable for building agents.** stablehand is not a pack of ready-made coding agents. It is the tack room you visit to build the *right* skills, subagents and instructions for **your** repository, on the platform you use: Claude Code, Google Antigravity or OpenCode.
 
@@ -84,7 +84,7 @@ Evals and results are saved in your repository under `.stablehand/`. You can com
 | [Google Antigravity](platforms/antigravity/) (App, IDE, `agy` CLI) | ✅ implemented | outcome gain in 4 of 4 conclusive scenarios, 3 runs per arm ([results](platforms/antigravity/evals/RESULTS.md)) |
 | [OpenCode](platforms/opencode/) (with DeepSeek or any provider) | ✅ implemented | outcome gain in 4 of 5 behavior scenarios, 3 runs per arm ([results](platforms/opencode/evals/RESULTS.md)) |
 
-On every platform the negative control passes: no stablehand skill fires on an unrelated request. Each platform implements the same [contracts](contracts/) (2026.10.1) and was ported and tested by that platform's own agent. More platforms can be added: see [docs/adding-a-platform.md](docs/adding-a-platform.md).
+On every platform the negative control passes: no stablehand skill fires on an unrelated request. Each platform implements the same [contracts](contracts/) (2026.11.1) and was ported and tested by that platform's own agent. More platforms can be added: see [docs/adding-a-platform.md](docs/adding-a-platform.md).
 
 ## What's inside
 
@@ -97,6 +97,7 @@ On every platform the negative control passes: no stablehand skill fires on an u
 | `authoring-agents` | Creates one subagent, only when it is justified, with least-privilege permissions and benchmarks |
 | `writing-project-instructions` | Writes or trims `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` and rules to non-inferable facts and verified commands |
 | `porting-artifacts` | Moves a skill, agent or instruction file to another platform, keeping behavior and permissions |
+| `upgrading-artifacts` | Audits and upgrades existing skills, agents, rules and instructions (treating missing manifests as `unknown (legacy)`), supporting `keep / patch / rewrite / retire` |
 | `evaluating-artifacts` | Builds and runs trigger tests, behavior scenarios and agent benchmarks against a baseline |
 | `validating-artifacts` | Static checks with the bundled linter, including cross-platform name collisions |
 

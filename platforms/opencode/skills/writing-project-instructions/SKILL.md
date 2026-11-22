@@ -57,7 +57,7 @@ Reference material:
    4. Wrong or vague answers mean the fact is missing or buried; fix the target file, refresh the scratch, and ask again.
    5. Remove the scratch when done (`git -C "<target>" worktree remove "<scratch>"`, or delete the copy).
 
-8. **Report:** the file(s) written, line counts, and what you removed and why.
+8. **Report:** update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`), then list the file(s) written, line counts, and what you removed and why.
 
 ## Done when
 - [ ] Every line is a non-inferable fact, a verified command, a boundary, or a pointer

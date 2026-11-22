@@ -88,7 +88,7 @@ You create a "developer", "tester" or "architect" agent because the user named a
 
    Fix blocking findings. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 
-7. **Hand over.** Use this template:
+7. **Hand over.** Update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`), then use this template:
 ```
 Path: <agent file>
 Invoke: use the subagent tool with the agent <name>, or @<name>

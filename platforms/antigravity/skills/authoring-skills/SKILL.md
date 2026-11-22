@@ -88,7 +88,7 @@ You write the skill before watching the agent fail. Warning signs:
    - the results file.
    Fix blocking findings. Tell the user about any you disagree with. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 
-7. **Hand over.** Show the final `SKILL.md`, baseline vs with-skill table, invocation instructions (`/<name>` or `/<plugin>:<name>`), and known gaps.
+7. **Hand over.** Update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`), then show the final `SKILL.md`, baseline vs with-skill table, invocation instructions (`/<name>` or `/<plugin>:<name>`), and known gaps.
 
 ## Done when
 - [ ] The skill is in the target repo (or user scope), in the target platform's folder, and nothing was written into stablehand
