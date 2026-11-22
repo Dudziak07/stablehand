@@ -16,6 +16,8 @@ You open stablehand, name your repository and what you need, and stablehand:
 
 Everything it builds goes into **your** repository, never into stablehand.
 
+![stablehand terminal demo](docs/assets/demo.gif)
+
 ## Contents
 
 - [Quick start](#quick-start)
