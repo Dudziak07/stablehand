@@ -19,7 +19,7 @@ Reference material:
 0. **Target.**
    - Target repo: take it from the request. If it is missing, ask. Use the current directory only if it is not the stablehand repo. Never write into stablehand.
    - Access: if the target is outside the workspace, approve the `external_directory` prompt.
-   - Commands: for `opencode run`, pass `--dir "<target-or-scratch>"`. For every other command that runs the target's code, use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
+   - Commands: for `opencode run`, run it from "<target-or-scratch>" (it has no `--dir` flag). For every other command that runs the target's code, use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
    - Confirm in one line: `Target: <path> · Platform: <platform> · Building: <what>`.
 
 1. **Inventory the target.** Read the existing `AGENTS.md`, `CLAUDE.md`, `CLAUDE.local.md`, `.claude/rules/`, `.agents/rules/`, the README, manifests and scripts, and CI. Ask which agent platforms open the repo, if that is not known.
@@ -47,13 +47,13 @@ Reference material:
 
 5. **Write.** Use short imperative lines under a few headings (Commands, Conventions, Boundaries, Gotchas). Target at most 150 lines in total; long context files cost more than they help. No frontmatter in AGENTS.md.
 
-6. **Validate.** Call the skill tool with name `validating-artifacts`, and tell it to check the file with `--platform opencode`. For a shared setup, add `--project <target>`.
+6. **Validate.** Call the skill tool with id `validating-artifacts`, and tell it to check the file with `--platform opencode`. For a shared setup, add `--project <target>`.
 
 7. **Test in a fresh session.** Probe a scratch copy of the target, never the target checkout itself.
    1. Create the scratch: if `git -C "<target>" status --porcelain` is empty, run `git -C "<target>" worktree add "<scratch>" HEAD`; otherwise copy the target to a scratch directory. Copy the rewritten instructions into the scratch if the target has uncommitted changes.
-   2. Install the probe: create `<scratch>/.opencode/agents/` and copy `trigger-probe.md` into it. Take it from the `agents/` folder beside the installed `skills/` folder (for a workspace install: `<stablehand>/.opencode/agents/trigger-probe.md`; in the checkout: `platforms/opencode/agents/trigger-probe.md`). Without this copy OpenCode cannot find the agent from `--dir "<scratch>"`.
+   2. Install the probe: create `<scratch>/.opencode/agents/` and copy `trigger-probe.md` into it. Take it from the `agents/` folder beside the installed `skills/` folder (for a workspace install: `<stablehand>/.opencode/agents/trigger-probe.md`; in the checkout: `platforms/opencode/agents/trigger-probe.md`). Without this copy OpenCode cannot find the agent when `opencode run` starts in "<scratch>".
    3. Ask 3 questions the file must answer, for example:
-      `opencode run "What command runs a single test file here? Answer with the command only." --format json --dir "<scratch>" --agent trigger-probe --model deepseek/deepseek-flash`
+      `opencode run "What command runs a single test file here? Answer with the command only." --format json --agent trigger-probe --model deepseek/deepseek-flash`
    4. Wrong or vague answers mean the fact is missing or buried; fix the target file, refresh the scratch, and ask again.
    5. Remove the scratch when done (`git -C "<target>" worktree remove "<scratch>"`, or delete the copy).
 

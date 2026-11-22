@@ -35,7 +35,7 @@ If none applies, write a skill and let the main agent use it.
 - **Knowledge inside agent prompts.** The same conventions pasted into several agents drift apart. Put knowledge in skills; agents load them.
 - **The mega-skill.** One skill that covers planning, coding, testing and release. Split by trigger: if two parts would be invoked by different requests, they are different skills.
 - **Procedures in always-loaded rules.** A 40-line release procedure in AGENTS.md costs context on every task. Move it to a skill and leave a one-line pointer if needed.
-- **Duplicating built-ins.** Every platform ships a read-only exploration agent (Claude Code `Explore`, OpenCode `explore`/`scout`, Antigravity `research`) and a general worker. Do not rebuild them.
+- **Duplicating built-ins.** Every platform ships a read-only exploration agent (Claude Code `Explore`, OpenCode `explore`, Antigravity `research`) and a general worker. Do not rebuild them.
 
 ## Typical outcome for an application repository
 

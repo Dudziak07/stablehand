@@ -18,7 +18,7 @@ Reference material (read the source and target cards in full before mapping):
 
 ## Process
 
-1. **Identify** the source artifact(s), the source platform, the target platform, and the target folder (a project or a stablehand `platforms/<target>/` folder). If a card may be stale for the fields involved, use the task tool with the agent `platform-researcher` before mapping.
+1. **Identify** the source artifact(s), the source platform, the target platform, and the target folder (a project or a stablehand `platforms/<target>/` folder). If a card may be stale for the fields involved, use the subagent tool with the agent `platform-researcher` before mapping.
    - Confirm in one line: `Target: <path> · Platform: <target platform> · Building: <what>`.
    - Access: if the target is outside the workspace, approve the `external_directory` prompt.
 
@@ -30,16 +30,16 @@ Reference material (read the source and target cards in full before mapping):
    - **Frontmatter.** Keep supported fields; translate the equivalents; record dropped fields as **lossy**. Examples:
      - Claude `disable-model-invocation: true` maps to Antigravity `disable-model-invocation: true` (also state "run only when requested" in the description for older surfaces) and to OpenCode `metadata.opencode/autoinvoke: "false"`.
      - Claude `user-invocable: false` maps to Antigravity `disable-slash-command: true`.
-   - **Tools.** Abstract capability to target names. Read-only means `edit`, `bash`/`shell`, `webfetch`, `websearch` and `task` are denied unless the source explicitly allowed them:
-     - Claude `Read, Grep, Glob` maps to Antigravity `[view_file, grep_search, find_by_name]` and to OpenCode `permission: {edit: deny, bash: deny, shell: deny, webfetch: deny, websearch: deny, task: deny}`.
-     - Write or execute access maps the same way. A restricted source shell becomes an exact allow-list on the target. Keep every pattern exact: never use a trailing wildcard such as `git diff*` or `git log *`, which also admits `--output=<file>`. For OpenCode, write **both** `bash` and `shell` with the card's reviewer example: `"*": deny`, then `"git diff --staged": allow` and `"git diff --staged -- *": allow`. OpenCode 1.19.3 enforces only `bash` and silently ignores `shell`.
+   - **Tools.** Abstract capability to target names. Read-only means `edit`, `shell`, `webfetch`, `websearch` and `subagent` are denied unless the source explicitly allowed them:
+     - Claude `Read, Grep, Glob` maps to Antigravity `[view_file, grep_search, find_by_name]` and to OpenCode `permissions` denying `edit`, `shell`, `webfetch`, `websearch` and `subagent`.
+     - Write or execute access maps the same way. A restricted source shell becomes an exact allow-list on the target. Keep every pattern exact: never use a trailing wildcard such as `git diff*` or `git log *`, which also admits `--output=<file>`. For OpenCode, use the V2 `shell` action with the card's reviewer example: deny `"*"`, then allow `"git diff --staged"` and `"git diff --staged -- *"`.
    - **Model tier:**
      - same as the caller: inherit, inherit, omit;
      - fast / lightest: `haiku`, `flash` or `flash_lite`, `deepseek/deepseek-flash`;
      - strongest: `opus`, `pro`, `deepseek/deepseek-v4-pro`.
    - **Invocation syntax in the body:**
-     - loading a skill: Claude's dedicated skill-loading step becomes Antigravity "invoke `/x`, or read its SKILL.md" and OpenCode "call the skill tool with name `x`";
-     - delegation: Claude's delegation tool becomes `invoke_subagent` or `@x` in Antigravity, and the task tool or `@x` in OpenCode.
+     - loading a skill: Claude's dedicated skill-loading step becomes Antigravity "invoke `/x`, or read its SKILL.md" and OpenCode "call the skill tool with id `x`";
+     - delegation: Claude's delegation tool becomes `invoke_subagent` or `@x` in Antigravity, and the subagent tool or `@x` in OpenCode.
    - **Paths.** Replace the source platform's skill-dir and plugin-root variables, and its argument placeholders, with paths relative to the skill folder, stated explicitly ("the script `scripts/<name>.py` in this skill's folder").
    - **Placement.** Choose the target location from `references/coexistence.md`, so the port is not also loaded by another platform.
 
@@ -47,7 +47,7 @@ Reference material (read the source and target cards in full before mapping):
    - DeepSeek (OpenCode): numbered single-action steps, exact commands, output templates, an explicit output language.
    - Antigravity: double-quote every frontmatter string, and give explicit stop conditions.
 
-5. **Validate** with the target platform's rules: call the skill tool with name `validating-artifacts`, and tell it the paths and `--platform <target>`. For Antigravity agents, an unknown tool name is an error: it can hang the agent.
+5. **Validate** with the target platform's rules: call the skill tool with id `validating-artifacts`, and tell it the paths and `--platform <target>`. For Antigravity agents, an unknown tool name is an error: it can hang the agent.
 
 6. **Write `PORT-NOTES.md`** next to the result (for a stablehand port: `platforms/<target>/PORT-NOTES.md`). Record:
    - source path and version;

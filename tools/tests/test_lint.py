@@ -94,7 +94,7 @@ def test_orphan_reference_is_warning(good_skill):
 def test_opencode_flags_claude_only_keys_and_metadata(tmp_path):
     d = tmp_path / "deploying"
     write(d / "SKILL.md", '---\nname: deploying\ndescription: "Deploys. Use when asked to deploy."\n'
-          'disable-model-invocation: true\nmetadata:\n  opencode/autoinvoke: false\n---\nbody\n')
+          'when_to_use: Deploy after review\nmetadata:\n  opencode/autoinvoke: false\n---\nbody\n')
     report = run_path(d, "opencode")
     assert "S012" in codes(report, "warning")
     assert "S014" in codes(report, "error")
@@ -191,7 +191,7 @@ def test_project_opencode_collision(tmp_path):
         write(d / "x.md", "x")
     report = lint.Report()
     lint.lint_project(report, tmp_path, ["claude-code", "opencode"])
-    assert "P003" in codes(report, "error")
+    assert "P003" in codes(report, "warning")
 
 
 def test_project_flags_dead_workflows(tmp_path):
@@ -280,11 +280,11 @@ def test_unhashable_antigravity_values_are_findings(tmp_path):
 
 def test_unhashable_opencode_values_are_findings(tmp_path):
     f = write(tmp_path / "agents" / "rev.md",
-              '---\ndescription: "Reviews."\nmode: [subagent]\npermission:\n  edit: [deny]\n'
-              '  shell:\n    git: {diff: allow}\n---\nReview.\n')
+              '---\ndescription: "Reviews."\nmode: [subagent]\npermissions:\n'
+              '  - action: shell\n    resource: "*"\n    effect: [deny]\n---\nReview.\n')
     report = run_path(f, "opencode")
-    assert {"A042", "A047"} <= codes(report, "error")
-    assert sum(f.code == "A047" for f in report.findings) == 2
+    assert "A042" in codes(report, "error")
+    assert "A047" in codes(report, "error")
 
 
 def test_utf8_bom_is_ignored(tmp_path):
@@ -303,12 +303,12 @@ def test_empty_description_is_error(tmp_path, value):
     assert "S006" in codes(run_path(d, "claude-code"), "error")
 
 
-def test_missing_name_is_warning_for_claude_and_error_for_opencode(tmp_path):
+def test_missing_name_is_a_warning_on_every_platform(tmp_path):
     d = tmp_path / "x-skill"
     write(d / "SKILL.md", '---\ndescription: "X. Use when x."\n---\nbody\n')
-    assert "S003" in codes(run_path(d, "claude-code"), "warning")
-    assert "S003" not in codes(run_path(d, "claude-code"), "error")
-    assert "S003" in codes(run_path(d, "opencode"), "error")
+    for platform in lint.PLATFORMS:
+        assert "S003" in codes(run_path(d, platform), "warning"), platform
+        assert "S003" not in codes(run_path(d, platform), "error"), platform
 
 
 def test_fenced_code_is_not_checked_for_links(tmp_path):
@@ -370,22 +370,31 @@ def test_opencode_agent_with_claude_only_keys_warns(tmp_path):
     assert any("Claude Code tool names" in x.message for x in report.findings if x.code == "A044")
 
 
-def oc_agent(tmp_path, permission: str) -> set:
-    agent = write(tmp_path / ".opencode/agents/ro.md", f'---\ndescription: "Reviews."\nmode: subagent\npermission:\n{permission}---\nReview.\n')
-    return {(f.level, f.code) for f in run_path(agent, "opencode").findings if f.code == "A049"}
+def oc_agent(tmp_path, permissions: str) -> set:
+    agent = write(tmp_path / ".opencode/agents/ro.md", f'---\ndescription: "Reviews."\nmode: subagent\npermissions:\n{permissions}---\nReview.\n')
+    return {(f.level, f.code) for f in run_path(agent, "opencode").findings if f.code in ("A046", "A047", "A049")}
 
 
-def test_opencode_shell_without_bash_is_an_error(tmp_path):
-    assert oc_agent(tmp_path, '  shell:\n    "*": deny\n') == {("error", "A049")}
+def test_opencode_v1_action_bash_is_an_error(tmp_path):
+    assert oc_agent(tmp_path, '  - action: bash\n    resource: "*"\n    effect: deny\n') == {("error", "A049")}
 
 
-def test_opencode_bash_without_shell_warns(tmp_path):
-    assert oc_agent(tmp_path, '  bash: deny\n') == {("warning", "A049")}
+def test_opencode_v1_action_task_is_an_error(tmp_path):
+    assert oc_agent(tmp_path, '  - action: task\n    resource: "*"\n    effect: deny\n') == {("error", "A049")}
 
 
-def test_opencode_bash_and_shell_with_same_rules_are_clean(tmp_path):
-    rules = '    "*": deny\n    "git diff --staged": allow\n'
-    assert oc_agent(tmp_path, f"  bash:\n{rules}  shell:\n{rules}") == set()
+def test_opencode_v1_permission_map_warns(tmp_path):
+    agent = write(tmp_path / ".opencode/agents/ro.md",
+                  '---\ndescription: "Reviews."\nmode: subagent\npermission:\n  edit: deny\n---\nReview.\n')
+    assert ("warning", "A049") in {(f.level, f.code) for f in run_path(agent, "opencode").findings if f.code == "A049"}
+
+
+def test_opencode_v2_permissions_shell_and_subagent_are_clean(tmp_path):
+    rules = ('  - action: edit\n    resource: "*"\n    effect: deny\n'
+             '  - action: shell\n    resource: "*"\n    effect: deny\n'
+             '  - action: shell\n    resource: "git diff --staged"\n    effect: allow\n'
+             '  - action: subagent\n    resource: "*"\n    effect: deny\n')
+    assert oc_agent(tmp_path, rules) == set()
 
 
 def test_antigravity_agent_flash_lite_and_new_documented_tools(tmp_path):

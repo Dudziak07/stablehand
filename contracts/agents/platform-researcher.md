@@ -51,7 +51,7 @@ Re-verify one question about a platform's customization formats against the offi
 - **Tools:** web search, web fetch and read-only file access.
   - Claude: `WebSearch, WebFetch, Read, Grep, Glob`.
   - Antigravity: `search_web, read_url_content, view_file, grep_search`.
-  - OpenCode: `permission: {edit: deny, bash: deny, shell: deny, webfetch: allow, websearch: allow}`.
+  - OpenCode: deny `edit`, `shell` and `subagent`; allow `webfetch` and `websearch` via `permissions`.
 - **Model:** a fast/cheap tier is enough.
 
 ## Evals

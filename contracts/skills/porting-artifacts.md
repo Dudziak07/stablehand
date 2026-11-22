@@ -38,8 +38,8 @@ Move a skill, agent or instruction file from one platform to another. The behavi
    - **Tools.** Map abstract capability → target tool names or permission keys. Read-only means every write, shell and network capability is denied unless the source explicitly allowed it; a restricted source shell becomes an exact allow-list on the target.
    - **Model tier.** `inherit`, fast or strongest.
    - **Invocation syntax** in the body:
-     - loading a skill (Claude Skill tool → Antigravity `/name` or read the SKILL.md → OpenCode `skill({name})`);
-     - delegation (Agent tool → `invoke_subagent` → Task / `@name`).
+     - loading a skill (Claude Skill tool → Antigravity `/name` or read the SKILL.md → OpenCode `skill({id})`);
+     - delegation (Agent tool → `invoke_subagent` → subagent / `@name`).
    - **Paths and substitutions.** Replace `${CLAUDE_SKILL_DIR}` and similar variables with paths relative to the skill folder, stated explicitly.
    - **Placement.** Use `coexistence.md` to avoid cross-loading.
 4. **Calibrate** for the target's model family (`writing-for-agents.md`): more explicit steps and output templates for DeepSeek, quoted strings for Antigravity.

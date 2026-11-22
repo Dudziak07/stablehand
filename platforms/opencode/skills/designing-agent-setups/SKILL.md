@@ -26,15 +26,15 @@ You build a team of role agents (developer, tester, architect, orchestrator) bec
    - Target repo: take the path from the request. If none was given, ask for it. Use the current directory only if it is not the stablehand repo (stablehand has top-level `contracts/` and `platforms/`). **Never write artifacts into stablehand.**
    - Confirm the root: run `git -C "<target>" rev-parse --show-toplevel` and read the target's `README.md`.
    - Access: if the target is outside the workspace, OpenCode asks you to approve `external_directory` access. Approve when prompted.
-   - Commands: for `opencode run`, pass `--dir "<target-or-scratch>"`. For every other command that runs the target's code, use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
+   - Commands: for `opencode run`, run it from "<target-or-scratch>" (it has no `--dir` flag). For every other command that runs the target's code, use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
    - Platform(s): OpenCode unless the user names Claude Code or Antigravity.
    - Confirm in one line: `Target: <path> · Platform: <platform> · Building: <what>`. Then continue.
 
 2. **Inventory the target (read-only).**
    - Stack and commands: package manifests, scripts, Makefile or justfile, CI workflows.
    - Existing customization: `AGENTS.md`, `CLAUDE.md`, `.opencode/{skills,agents}`, `.claude/{skills,agents,rules}`, `.agents/` if present.
-   - Validator in project mode: call the skill tool with name `validating-artifacts`, and tell it to run `--project <target>`.
-   - For a large codebase, delegate the sweep to the built-in `explore` agent with the task tool.
+   - Validator in project mode: call the skill tool with id `validating-artifacts`, and tell it to run `--project <target>`.
+   - For a large codebase, delegate the sweep to the built-in `explore` agent with the subagent tool.
 
 3. **Interview.** Ask one question at a time, and give your recommended answer with each. Stop once you know:
    - the 3 to 5 workflows the user repeats with the agent (add an endpoint, fix a bug, release);
@@ -46,7 +46,7 @@ You build a team of role agents (developer, tester, architect, orchestrator) bec
 4. **Decide** from `references/decision-guide.md`.
    - For each need, choose instructions, skill, subagent, hook, or nothing.
    - Every subagent must name its reason (context isolation, independence, different permissions, different model, parallelism). Drop subagents with no reason.
-   - Prefer the built-in agents (`build`, `plan`, `general`, `explore`, `scout`).
+   - Prefer the built-in agents (`build`, `plan`, `general`, `explore`).
    - Orchestration is a skill run by the main agent, never a subagent.
 
 5. **Blueprint and approval.** Show a table with these columns: artifact, type, path in the target, platform, when it is used, justification, eval idea.
@@ -54,16 +54,16 @@ You build a team of role agents (developer, tester, architect, orchestrator) bec
    - Place files per `references/coexistence.md` when other platforms share the repo.
    - **Create no files until the user approves.** Save the blueprint to `<target>/.stablehand/blueprint.md` only if the user wants it versioned.
 
-6. **Build, one row at a time.** Call the skill tool with the matching skill name. Pass it the blueprint row, the target repo path and the target platform as its brief. Finish each row before starting the next.
+6. **Build, one row at a time.** Call the skill tool with the matching skill id. Pass it the blueprint row, the target repo path and the target platform as its brief. Finish each row before starting the next.
    - instructions or rules: `writing-project-instructions`
    - skill: `authoring-skills`
    - subagent: `authoring-agents`
-   - hook: write a plugin in `<target>/.opencode/plugins/<name>.js` (or `.ts`) that implements the event handler, then trigger its event once to test it. OpenCode has no `hooks` key in `opencode.json`; hooks are plugin functions for events such as `tool.execute.before` and `file.edited` (see `references/opencode.md`, section 9).
+   - hook: write a plugin in `<target>/.opencode/plugins/<name>/index.ts` using the `@opencode/plugin` SDK (`Plugin.define({ id, async setup(ctx) { … } })`), then trigger its event once to test it. OpenCode has no `hooks` key in `opencode.json`; hooks are plugin setup functions that register event handlers (see `references/opencode.md`, section 9).
 
-7. **Validate the whole project.** Call the skill tool with name `validating-artifacts` again, in `--project <target>` mode, and fix every error.
+7. **Validate the whole project.** Call the skill tool with id `validating-artifacts` again, in `--project <target>` mode, and fix every error.
 
 8. **Report.** List:
-   - each created path and how to invoke it: `/skill-name`, an example prompt, or "use the task tool with the agent `<name>`";
+   - each created path and how to invoke it: `/skill-name`, an example prompt, or "use the subagent tool with the agent `<name>`";
    - what you deliberately did not create, and why;
    - deferred rows and follow-ups.
 

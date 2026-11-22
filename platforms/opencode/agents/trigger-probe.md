@@ -1,18 +1,25 @@
 ---
 description: "Read-only probe for skill-trigger and agent-delegation tests. Runs one prompt with edit and shell denied, so a should-trigger or should-delegate prompt cannot change the files; use it only against a scratch copy of the target."
 mode: primary
-permission:
-  edit: deny
-  bash: deny
-  shell: deny
-  task: allow
-  skill: allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: "*"
+    effect: allow
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 A read-only primary agent for real-loader tests: it can load skills and delegate to subagents, but it cannot edit files or run commands. Use it so a trigger or delegation prompt cannot change the checkout.
 
 ## Inputs
-The caller runs one prompt with `opencode run ... --agent trigger-probe --dir <scratch>`.
+The caller runs one prompt from the scratch directory with `opencode run ... --agent trigger-probe`.
 
 ## Procedure
 1. Treat the prompt as an ordinary user request.
@@ -22,4 +29,4 @@ The caller runs one prompt with `opencode run ... --agent trigger-probe --dir <s
 ## Constraints
 - Never edit, create or delete files.
 - Never run shell commands.
-- You may load skills and delegate through the task tool.
+- You may load skills and delegate through the subagent tool.

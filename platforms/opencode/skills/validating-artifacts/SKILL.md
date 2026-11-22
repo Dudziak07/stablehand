@@ -44,9 +44,9 @@ Add `--platform claude-code` or `--platform antigravity` to check artifacts for 
    | S005 | name does not match the folder | rename one of them |
    | S020 | a linked file is missing | create it or fix the path |
    | S014 | `metadata.opencode/*` is not a string "true" or "false" | quote the value |
-   | A040 / A042 / A046 | OpenCode agent field is missing or invalid | add `description`, use `mode: subagent`, and check the `permission` keys |
+   | A040 / A042 / A046 / A049 | OpenCode agent field is missing or invalid | add `description`, use `mode: subagent`, and write `permissions` rules with the V2 actions (`shell`, `subagent`, `edit`) |
    | A043 | OpenCode model lacks a provider prefix | use `provider/model-id`, for example `deepseek/deepseek-flash` |
-   | P003 | OpenCode sees two skills with one name | rename one, or set `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` (see `references/coexistence.md`) |
+   | P003 | the same skill ID is reachable through two folders | rename one, or set `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1` (see `references/coexistence.md`) |
    | I004 | CLAUDE.md hides AGENTS.md | start CLAUDE.md with `@AGENTS.md` |
 
 4. For each warning, either fix it or state in one line why it is acceptable. To suppress a justified finding in one file, add `<!-- stablehand-lint: ignore CODE -->` anywhere in that file.

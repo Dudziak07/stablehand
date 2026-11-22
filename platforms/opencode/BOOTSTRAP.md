@@ -27,7 +27,7 @@ must do these things first:
   - establish the target repo path and the target platform (shared/references/targets.md);
   - get access to it (the external_directory permission);
   - never write artifacts into stablehand.
-Run commands for the target with --dir "<target>".
+Run commands for the target from inside it: cd "<target>" && opencode run …
 
 Step 2. For every contract in contracts/skills/, create
 platforms/opencode/skills/<id>/SKILL.md with these rules:
@@ -36,23 +36,23 @@ platforms/opencode/skills/<id>/SKILL.md with these rules:
   - description: double-quoted, third person, starts with what it does and when to use
     it, ends with "Not for …". At most 500 characters.
   - metadata: set opencode/slash: "true" for every skill (strings, quoted).
-  - To load another stablehand skill, write: call the skill tool with name "<id>".
-  - To delegate to a stablehand agent, write: use the task tool with the agent "<id>".
+  - To load another stablehand skill, write: call the skill tool with id "<id>".
+  - To delegate to a stablehand agent, write: use the subagent tool with the agent "<id>".
   - Reference files: link them as references/<file>.md. List exactly the files named in
     the contract's "references" field. They are copied in at Step 4.
   - The validator lives at skills/validating-artifacts/scripts/lint.py. Other skills
     must name that path explicitly or tell the agent to load validating-artifacts.
-  - Real-loader test commands: opencode run "<prompt>" --format json --dir <project>
+  - Real-loader test commands: opencode run "<prompt>" --format json (from the project)
   - Do not use Claude tool names (Read, Grep, Agent, Skill tool, TodoWrite) or
     ${CLAUDE_...} variables anywhere.
   - Use numbered steps with one action each, exact commands, and exact output templates.
 
 Step 3. For every contract in contracts/agents/, create platforms/opencode/agents/<id>.md:
-  - Frontmatter: description, mode: subagent, and permission. No name key and no tools
+  - Frontmatter: description, mode: subagent, and permissions. No name key and no tools
     key.
-  - artifact-reviewer: permission edit: deny, shell: deny, webfetch: deny.
-  - platform-researcher: permission edit: deny, shell: deny, webfetch: allow,
-    websearch: allow. Set model: deepseek/deepseek-flash.
+  - artifact-reviewer: permissions deny edit, shell, webfetch.
+  - platform-researcher: permissions deny edit and shell, allow webfetch and
+    websearch. Set model: deepseek/deepseek-flash.
   - scenario-runner: default permissions. Omit model.
   - The body: copy the contract's inputs, procedure, output template and constraints.
 

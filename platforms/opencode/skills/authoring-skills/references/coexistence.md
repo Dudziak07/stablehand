@@ -3,7 +3,7 @@
 
 The platforms read each other's folders. A skill tailored for one platform can leak into another, and OpenCode rejects duplicate skill names. Read this before placing artifacts in a repository that more than one harness opens.
 
-Last verified: 2026-10-21 (Antigravity paths re-verified 2026-11-21; sources in each platform card).
+Last verified: 2026-10-21 (Antigravity paths re-verified 2026-11-21; OpenCode re-verified 2026-11-22 on v2.3.2; sources in each platform card).
 
 ## Who reads what — project scope
 
@@ -39,7 +39,7 @@ Last verified: 2026-10-21 (Antigravity paths re-verified 2026-11-21; sources in 
 
 ## Collision rules
 
-1. **OpenCode requires unique skill names** across `.opencode/skills`, `.claude/skills`, `.agents/skills` and their user-level counterparts. Two tailored variants with the same name in two of those folders collide.
+1. **OpenCode allows duplicate skill IDs** across `.opencode/skills`, `.claude/skills`, `.agents/skills` and their user-level counterparts, and the later-registered source wins (override): built-in < `.claude/skills` < `.agents/skills` < `~/.config/opencode/skills` < project `.opencode/skills` < explicit `skills` entries. Two tailored variants with the same ID still fight over that ID, so keep them apart or hide one.
 2. **`.agents/skills` is shared by Antigravity and OpenCode.** Anything placed there must work on both, or be hidden from one of them.
 3. **Claude Code ignores AGENTS.md when CLAUDE.md exists** in the same directory (default mode). If both files are needed, start CLAUDE.md with `@AGENTS.md`.
 

@@ -26,18 +26,18 @@ You create a "developer", "tester" or "architect" agent because the user named a
 0. **Target** (details in `references/targets.md`).
    - Target repo: take it from the request. If it is missing, ask. Use the current directory only if it is not the stablehand repo. **Never write the agent into stablehand.**
    - Access: if the target is outside the workspace, approve the `external_directory` prompt.
-   - Commands: for `opencode run`, pass `--dir "<target-or-scratch>"`. For every other command that runs the target's code, use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
+   - Commands: for `opencode run`, run it from "<target-or-scratch>" (it has no `--dir` flag). For every other command that runs the target's code, use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
    - Confirm in one line: `Target: <path> · Platform: <platform> · Building: <what>`.
    - Target platform: OpenCode by default. For **Claude Code or Antigravity**:
-     - write the file from that platform's card: the folder, the fields, the model values, and the permission model (OpenCode `permission` replaces a tools list);
+     - write the file from that platform's card: the folder, the fields, the model values, and the permission model (OpenCode `permissions` replaces a tools list);
      - validate with `--platform <target>`;
      - skip the runs in step 5, but still write the benchmarks;
      - end with a ready-to-paste prompt that runs them on the target platform.
 
 1. **Justify.**
    - Name the reason(s): context isolation, independence, different permissions, different model, parallelism.
-   - Check the built-in agents first (`build`, `plan`, `general`, `explore`, `scout`).
-   - If no reason applies, say so plainly, then call the skill tool with name `authoring-skills` and build a skill instead.
+   - Check the built-in agents first (`build`, `plan`, `general`, `explore`).
+   - If no reason applies, say so plainly, then call the skill tool with id `authoring-skills` and build a skill instead.
    - If the user insists on a persona agent, explain the cost: context loss at hand-off, and duplicated knowledge. Then offer the thin variant: an agent whose prompt is only role + procedure + output format, which preloads the knowledge skills.
    - Orchestrators are never subagents. Propose an orchestration skill, or a `mode: primary` agent.
 
@@ -47,18 +47,18 @@ You create a "developer", "tester" or "architect" agent because the user named a
    - Inputs: what the caller must pass in the delegation prompt. The agent starts with no conversation history.
    - Output format: an exact template. Only the final message returns, so make it compact and structured.
    - Permissions, least privilege:
-     - start from read-only: `permission: {edit: deny, bash: deny, shell: deny, webfetch: deny, websearch: deny, task: deny}`, unless the source explicitly allowed one of them;
+     - start from read-only: deny `edit`, `shell`, `webfetch`, `websearch` and `subagent` via `permissions`, unless the source explicitly allowed one of them;
      - add `edit: allow`, or an exact shell allow-list, only when the job writes or runs something;
-     - write **both** `bash` and `shell` with identical rules: OpenCode 1.19.3 enforces only `bash` and silently ignores `shell`;
+     - use the V2 `shell` action (the `bash` name is deprecated);
      - keep every shell pattern exact. A trailing wildcard such as `git diff*` or `git log *` also admits `--output=<file>`, which writes a file;
      - reviewers and researchers stay read-only.
    - Model: omit it to inherit the caller. Set `deepseek/deepseek-flash` for cheap sweeps and `deepseek/deepseek-v4-pro` for hard judgment. Always include the provider prefix.
-   - Skills to preload: knowledge lives in skills, not in the prompt. List them in the body as "call the skill tool with name `<id>`".
+   - Skills to preload: knowledge lives in skills, not in the prompt. List them in the body as "call the skill tool with id `<id>`".
    - Isolation and permissions: OpenCode agents run in the main workspace. Give a scratch working directory to agents that edit in parallel, and never grant broader permissions than the job needs.
    - Benchmarks: 3 to 5 tasks with expected results, saved in `<target>/.stablehand/evals/agents/<name>/scenarios/`. Never put them under `.opencode/agents/`.
 
 3. **Draft** `<target>/.opencode/agents/<name>.md` (project) or `~/.config/opencode/agents/<name>.md` (user).
-   - Frontmatter: no `name` key (the file name is the agent name), a double-quoted `description`, `mode: subagent`, and only the permission and model fields the contract needs. Do not use the deprecated `tools` key.
+   - Frontmatter: no `name` key (the file name is the agent ID), a double-quoted `description`, `mode: subagent`, and only the `permissions` and `model` fields the contract needs. Do not use the deprecated `tools` key.
    - Body, under about 150 lines:
      - role and goal (2 to 3 lines);
      - inputs expected;
@@ -66,23 +66,23 @@ You create a "developer", "tester" or "architect" agent because the user named a
      - output template;
      - constraints (what it must not do, when to stop and return).
 
-4. **Validate.** Call the skill tool with name `validating-artifacts`, and tell it to check the agent file with `--platform opencode`. Fix every error.
+4. **Validate.** Call the skill tool with id `validating-artifacts`, and tell it to check the agent file with `--platform opencode`. Fix every error.
 
 5. **Test.**
    - Create an isolated working directory: if `git -C "<target>" status --porcelain` is empty, run `git -C "<target>" worktree add "<scratch>" HEAD`; otherwise copy the target to a scratch directory.
    - Install the drafted agent into the scratch: create `<scratch>/.opencode/agents/` and copy the agent file to `<scratch>/.opencode/agents/<name>.md`.
-   - Install the probe into the scratch: copy `trigger-probe.md` into `<scratch>/.opencode/agents/`. Take it from the `agents/` folder beside the installed `skills/` folder (for a workspace install: `<stablehand>/.opencode/agents/trigger-probe.md`; in the checkout: `platforms/opencode/agents/trigger-probe.md`). Without this copy OpenCode cannot find the agent from `--dir "<scratch>"`.
+   - Install the probe into the scratch: copy `trigger-probe.md` into `<scratch>/.opencode/agents/`. Take it from the `agents/` folder beside the installed `skills/` folder (for a workspace install: `<stablehand>/.opencode/agents/trigger-probe.md`; in the checkout: `platforms/opencode/agents/trigger-probe.md`). Without this copy OpenCode cannot find the agent when `opencode run` starts in "<scratch>".
    - Verify both copies: `Get-ChildItem -Recurse "<scratch>/.opencode"` (or `find "<scratch>/.opencode" -type f`) lists the new agent and `agents/trigger-probe.md`.
    - Benchmarks: run each one against the scratch copy, delegating explicitly and using the bundled read-only probe:
-     `opencode run "Use the <name> agent to: <task>" --format json --dir "<scratch>" --agent trigger-probe --model deepseek/deepseek-flash`
+     `opencode run "Use the <name> agent to: <task>" --format json --agent trigger-probe --model deepseek/deepseek-flash`
      Compare against the expected results.
    - Auto-delegation: run 2 natural prompts that do not name the agent, also against the scratch copy with the probe:
-     `opencode run "<natural prompt>" --format json --dir "<scratch>" --agent trigger-probe --model deepseek/deepseek-flash`
+     `opencode run "<natural prompt>" --format json --agent trigger-probe --model deepseek/deepseek-flash`
      A pass is a `task` call that selects the agent. Delegation is not deterministic: if 1 of 2 prompts delegates, strengthen the description (natural phrasings, "use proactively") and re-run.
    - Iterate at most 3 times and save `results/<date>.md`.
    - Remove the worktree or scratch copy when done.
 
-6. **Independent review.** Use the task tool with the agent `artifact-reviewer`. Pass:
+6. **Independent review.** Use the subagent tool with the agent `artifact-reviewer`. Pass:
    - the agent file and the contract;
    - the absolute paths of the **target** platform's card (`references/opencode.md`, `references/claude-code.md` or `references/antigravity.md` in this skill's folder) and of `references/writing-for-agents.md`.
 
@@ -91,7 +91,7 @@ You create a "developer", "tester" or "architect" agent because the user named a
 7. **Hand over.** Use this template:
 ```
 Path: <agent file>
-Invoke: use the task tool with the agent <name>, or @<name>
+Invoke: use the subagent tool with the agent <name>, or @<name>
 Justification: <one or more of the five reasons>
 Benchmark results: <table>
 Restart needed: <yes or no>
@@ -100,9 +100,9 @@ Restart needed: <yes or no>
 ## Common shapes
 | Shape | Permissions | Model | Returns |
 |---|---|---|---|
-| Reviewer | `edit: deny`; `bash` and `shell` both denied except an identical exact allow-list such as `"*": deny`, `"git diff --staged": allow`, `"git diff --staged -- *": allow`; `webfetch`, `websearch`, `task` denied | inherit or a different tier | numbered findings by severity, each with file:line and a fix |
+| Reviewer | deny `edit` and `shell` (an exact shell allow-list such as `"git diff --staged"` and `"git diff --staged -- *"` may be allowed); deny `webfetch`, `websearch` and `subagent` | inherit or a different tier | numbered findings by severity, each with file:line and a fix |
 | Implementer | inherit, plus `edit: allow` and the test commands it needs | inherit | summary, changed files, test command and result |
-| Researcher | `edit: deny`, `bash: deny`, `shell: deny`, `webfetch: allow`, `websearch: allow` | `deepseek/deepseek-flash` | sourced findings with URLs |
+| Researcher | deny `edit` and `shell`; allow `webfetch` and `websearch` | `deepseek/deepseek-flash` | sourced findings with URLs |
 
 ## Done when
 - [ ] The agent is in the target repo (or user scope), in the target platform's folder, and nothing was written into stablehand

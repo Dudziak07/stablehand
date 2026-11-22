@@ -31,16 +31,16 @@ Reference material (read the source and target cards in full before mapping):
      - Claude `disable-model-invocation: true` → Antigravity `disable-model-invocation: true` (also state "run only when requested" in the description for older surfaces) → OpenCode `metadata.opencode/autoinvoke: "false"`.
      - Claude `user-invocable: false` → Antigravity `disable-slash-command: true`.
    - **Tools.** Abstract capability → target names:
-     - Claude `Read, Grep, Glob` → Antigravity `[view_file, grep_search, find_by_name]` → OpenCode `permission` with `edit: deny`, `bash: deny`, `shell: deny`, `webfetch: deny`, `websearch: deny`, `task: deny` (`bash` and `shell` always together, see the OpenCode card).
-     - A restricted shell (a Claude hook, or the source's intent such as "only `git diff`") becomes an exact allow-list on OpenCode, e.g. `bash` and `shell` both set to `{"*": deny, "git diff --staged": allow}`. Avoid trailing wildcards that admit writing flags (`git diff --output=<file>`).
+     - Claude `Read, Grep, Glob` → Antigravity `[view_file, grep_search, find_by_name]` → OpenCode V2 `permissions` array denying `edit`, `shell`, `webfetch`, `websearch` and `subagent` (see the OpenCode card).
+     - A restricted shell (a Claude hook, or the source's intent such as "only `git diff`") becomes an exact allow-list on OpenCode using the V2 `shell` action: deny `"*"`, then allow `"git diff --staged"` and `"git diff --staged -- *"`. Avoid trailing wildcards that admit writing flags (`git diff --output=<file>`).
      - Write/execute access maps the same way. Read-only must stay read-only.
    - **Model tier:**
      - same as the caller → `inherit` / `inherit` / omit;
      - fast / lightest → `haiku` / `flash` or `flash_lite` / `deepseek/deepseek-flash`;
      - strongest → `opus` / `pro` / `deepseek/deepseek-v4-pro`.
    - **Invocation syntax in the body:**
-     - loading a skill: Claude "Use the Skill tool to load `x`" → Antigravity "invoke `/x`, or read its SKILL.md" → OpenCode "call the skill tool with name `x`";
-     - delegation: Agent tool → `invoke_subagent` / `@x` → the Task tool / `@x`.
+     - loading a skill: Claude "Use the Skill tool to load `x`" → Antigravity "invoke `/x`, or read its SKILL.md" → OpenCode "call the skill tool with id `x`";
+     - delegation: Agent tool → `invoke_subagent` / `@x` → the `subagent` tool / `@x`.
    - **Paths.** Replace `${CLAUDE_SKILL_DIR}`, `${CLAUDE_PLUGIN_ROOT}` and `$ARGUMENTS` with paths relative to the skill folder, stated explicitly ("the script `scripts/<name>.py` in this skill's folder").
    - **Placement.** Choose the target location from `coexistence.md`, so the port is not also loaded by another platform.
 

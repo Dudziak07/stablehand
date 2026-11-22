@@ -26,7 +26,7 @@ You write the skill before watching the agent fail. Warning signs:
 0. **Target** (details in `references/targets.md`).
    - Target repo: take it from the request. If it is missing, ask. Use the current directory only if it is not the stablehand repo (stablehand has top-level `contracts/` and `platforms/`). **Never write the skill into stablehand.**
    - Access: if the target is outside the workspace, approve the `external_directory` prompt.
-   - Commands: for `opencode run`, pass `--dir "<target-or-scratch>"`. For every other command that runs the target's code (tests, build, scripts), use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
+   - Commands: for `opencode run`, run it from "<target-or-scratch>" (it has no `--dir` flag). For every other command that runs the target's code (tests, build, scripts), use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
    - Confirm in one line: `Target: <path> · Platform: <platform> · Building: <what>`.
    - Target platform: OpenCode by default. For **Claude Code or Antigravity**:
      - draft from that platform's card;
@@ -50,7 +50,7 @@ You write the skill before watching the agent fail. Warning signs:
 2. **Baseline (RED).**
    1. Write the evals in `<target>/.stablehand/evals/skills/<name>/`: 3 realistic scenarios plus `triggers.yaml` (5 to 8 should, 5 to 8 near-miss should-not), in the format from `references/eval-protocol.md`.
    2. Create an isolated working directory for the target: if `git -C "<target>" status --porcelain` is empty, run `git -C "<target>" worktree add "<scratch>" HEAD`; otherwise copy the target to a scratch directory.
-   3. Run 1 to 3 scenarios **without** the skill: use the task tool with the agent `scenario-runner`, mode `baseline`, working directory `<scratch>`. Never the target checkout itself.
+   3. Run 1 to 3 scenarios **without** the skill: use the subagent tool with the agent `scenario-runner`, mode `baseline`, working directory `<scratch>`. Never the target checkout itself.
    4. Record the failures verbatim, including the agent's own excuses.
    5. Keep `<scratch>` for step 5; do not delete it yet.
    6. If the baseline already passes, remove the scratch (`git -C "<target>" worktree remove "<scratch>"`, or delete the copy), tell the user the skill is not needed (or narrow it), and stop. If the user still wants it, keep it only on their explicit say-so: record "kept on user override, no measured gain" in the results file and say the same in the hand-over. Suggest folding the guidance into the project instructions instead.
@@ -69,25 +69,25 @@ You write the skill before watching the agent fail. Warning signs:
      - exact commands for fragile steps, goals and criteria for judgment calls;
      - **a user checkpoint before the first irreversible or external side effect**;
      - a `Done when` list for workflows.
-   - To load another skill from this one, write: call the skill tool with name `<name>`. Merely naming a skill does not load it.
+   - To load another skill from this one, write: call the skill tool with id `<name>`. Merely naming a skill does not load it.
    - Bulky material goes in `references/<topic>.md`, with a "read when ..." pointer. Scripts go in `scripts/` (Python through `uv run`, or Node; no bash-only scripts).
 
-4. **Validate.** Call the skill tool with name `validating-artifacts`, and tell it to check the skill folder with `--platform opencode`. Fix every error and re-run until it is clean.
+4. **Validate.** Call the skill tool with id `validating-artifacts`, and tell it to check the skill folder with `--platform opencode`. Fix every error and re-run until it is clean.
 
 5. **Re-test (GREEN).**
    - Install the drafted skill into the scratch: create `<scratch>/.opencode/skills/<name>/` and copy `SKILL.md` plus its `references/` and `scripts/` folders (if any) there.
-   - Install the probe into the scratch: create `<scratch>/.opencode/agents/` and copy `trigger-probe.md` into it. Take it from the `agents/` folder beside the installed `skills/` folder (for a workspace install: `<stablehand>/.opencode/agents/trigger-probe.md`; in the checkout: `platforms/opencode/agents/trigger-probe.md`). Without this copy OpenCode cannot find the agent from `--dir "<scratch>"`.
+   - Install the probe into the scratch: create `<scratch>/.opencode/agents/` and copy `trigger-probe.md` into it. Take it from the `agents/` folder beside the installed `skills/` folder (for a workspace install: `<stablehand>/.opencode/agents/trigger-probe.md`; in the checkout: `platforms/opencode/agents/trigger-probe.md`). Without this copy OpenCode cannot find the agent when `opencode run` starts in "<scratch>".
    - Verify both copies: `Get-ChildItem -Recurse "<scratch>/.opencode"` (or `find "<scratch>/.opencode" -type f`) lists the skill's `SKILL.md` and `agents/trigger-probe.md`.
-   - Re-run the same scenarios with the task tool and the agent `scenario-runner`, in mode `with-artifact`, passing the skill folder path and the same `<scratch>` working directory.
+   - Re-run the same scenarios with the subagent tool and the agent `scenario-runner`, in mode `with-artifact`, passing the skill folder path and the same `<scratch>` working directory.
    - Check triggers with the real loader **against a scratch copy of the target, never the target checkout**. Use the bundled read-only probe so a should-trigger prompt cannot write:
-     `opencode run "<trigger prompt>" --format json --dir "<scratch>" --agent trigger-probe --model deepseek/deepseek-flash`
-     In the JSON events, look for a `skill` call whose name is the skill. Run one prompt per trigger line.
+     `opencode run "<trigger prompt>" --format json --agent trigger-probe --model deepseek/deepseek-flash`
+     In the JSON events, look for a `skill` call whose id is the skill. Run one prompt per trigger line.
    - If the target's code also has to run for a trigger, use `cd "<scratch>" && <command>`; never `--project "<target>"`.
    - Apply the decision rule from `references/eval-protocol.md`, change one thing per iteration, and stop after 3 iterations.
    - Save `results/<date>.md` in the eval folder.
    - Remove the scratch copy or worktree when done.
 
-6. **Independent review.** Use the task tool with the agent `artifact-reviewer`. Pass:
+6. **Independent review.** Use the subagent tool with the agent `artifact-reviewer`. Pass:
    - the skill folder path and the brief;
    - the absolute paths of the **target** platform's card (`references/opencode.md`, `references/claude-code.md` or `references/antigravity.md` in this skill's folder) and of `references/writing-for-agents.md`;
    - the results file.
