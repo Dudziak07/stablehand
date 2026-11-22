@@ -121,7 +121,7 @@ On every platform the negative control passes: no stablehand skill fires on an u
 - **Nothing is written before you approve the plan.** Artifacts go only into the target repository, never into stablehand.
 - **Tests run in scratch copies** or git worktrees of your repository, never in your checkout. stablehand never commits in your repository.
 - **Reviewers and researchers are read-only.** When a reviewer needs a command such as `git diff --staged`, it gets exactly that command through the platform's enforcement: a hook on Claude Code, an exact allow-list on OpenCode. Wildcards that would admit writing flags such as `--output=<file>` are rejected.
-- **Platform quirks are tested, not assumed.** For example, OpenCode 1.19 enforces shell restrictions only under the `bash` permission key, although its docs name the key `shell`. stablehand writes both, and the linter flags a `shell`-only rule as an error.
+- **Platform quirks are tested, not assumed.** For example, OpenCode 1.19 enforced shell restrictions only under the `bash` permission key even though its docs named `shell`; re-tested on OpenCode 2.3.2, `shell` is now the enforced V2 action in `permissions` arrays, and the linter flags deprecated V1 `bash`/`task` action names as errors.
 - **Baselines must be confined.** An unconfined agent will search your disk for examples, so a comparison that could reach the artifact is reported as inconclusive rather than counted.
 
 ## Installation options
