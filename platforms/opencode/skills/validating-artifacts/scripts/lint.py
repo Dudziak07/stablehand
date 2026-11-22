@@ -130,18 +130,30 @@ AG_MANIFEST_DEPRECATED_KEYS = {"source", "sourcePath", "source_path"}
 AG_LOGO_EXTS = {".png", ".svg", ".jpg", ".jpeg", ".webp"}
 
 # --- OpenCode --------------------------------------------------------------------
-OC_SKILL_KEYS = {"name", "description", "license", "compatibility", "metadata"}
+OC_SKILL_KEYS = {"name", "description", "license", "compatibility", "metadata", "disable-model-invocation", "slash"}
 OC_AGENT_KEYS = {
-    "description", "mode", "model", "temperature", "top_p", "steps", "permission", "hidden", "disable",
-    "prompt", "color", "tools", "maxSteps", "name",
+    "description", "mode", "model", "system", "permissions", "steps", "hidden", "color", "disabled", "request",
+    # deprecated V1 fields, still auto-translated by V2 but warned about below:
+    "name", "temperature", "top_p", "permission", "tools", "maxSteps", "disable", "prompt", "variant",
 }
 OC_MODES = {"primary", "subagent", "all"}
-OC_PERMISSION_KEYS = {
-    "read", "edit", "glob", "grep", "list", "shell", "bash", "task", "skill", "lsp", "question", "webfetch",
-    "websearch", "codesearch", "external_directory", "doom_loop", "todowrite", "todoread",
+OC_ACTIONS = {
+    "read", "edit", "glob", "grep", "shell", "subagent", "skill", "question", "webfetch",
+    "websearch", "experimental_image_generate", "external_directory", "execute",
+    "opencode_list_mcp_resources", "opencode_read_mcp_resource",
+}
+OC_ACTION_V1 = {"bash": "shell", "task": "subagent", "write": "edit", "patch": "edit"}
+OC_AGENT_V1_FIELDS = {
+    "name": "the file name (it is the agent ID)",
+    "temperature": "a model variant (temperature has no effect on an agent in V2)",
+    "top_p": "a model variant",
+    "tools": "permissions",
+    "maxSteps": "steps",
+    "disable": "disabled",
+    "prompt": "system (or the Markdown body)",
+    "variant": "a #variant on model",
 }
 OC_PERMISSION_VALUES = {"allow", "ask", "deny"}
-OC_THEME_COLORS = {"primary", "secondary", "accent", "success", "warning", "error", "info"}
 OC_CLAUDE_ONLY_KEYS = {"permissionMode", "maxTurns", "disallowedTools", "skills", "hooks"}
 
 SKILL_KEYS = {"claude-code": CLAUDE_SKILL_KEYS, "antigravity": AG_SKILL_KEYS, "opencode": OC_SKILL_KEYS}
@@ -272,10 +284,7 @@ def lint_skill(report: Report, skill_dir: Path, platform: str) -> None:
 
     name = fm.get("name")
     if name is None:
-        if platform != "opencode":
-            add("warning", "S003", f"no name: {platform} defaults to the folder name, OpenCode requires it")
-        else:
-            add("error", "S003", "name is required")
+        add("warning", "S003", "no name: the skill ID defaults to the folder name (OpenCode derives it from the path)")
     elif not isinstance(name, str):
         add("error", "S004", "name must be a string")
     else:
@@ -521,54 +530,55 @@ def lint_opencode_agent(add: Scoped, path: Path, fm: dict, doc: Doc) -> None:
     if "name" in fm:
         add("warning", "A041", "OpenCode takes the agent name from the file name; remove 'name'")
     if not NAME_RE.match(path.stem):
-        add("warning", "A041", f"file name '{path.stem}' should be kebab-case (it is the agent name)")
+        add("warning", "A041", f"file name '{path.stem}' should be kebab-case (it is the agent ID)")
     mode = fm.get("mode")
     if mode is None:
-        add("info", "A042", "no mode: defaults to 'all' (primary and subagent)")
+        add("info", "A042", "no mode: defaults to 'primary' for a new custom agent")
     elif not one_of(mode, OC_MODES):
         add("error", "A042", f"mode must be one of {sorted(OC_MODES)}")
-    if "model" in fm and "/" not in str(fm["model"]):
-        add("error", "A043", f"model '{fm['model']}' must be provider/model-id (e.g. deepseek/deepseek-flash)")
-    if "tools" in fm:
-        add("warning", "A044", "tools is deprecated in OpenCode; express access with permission")
-        tools = fm["tools"]
-        claude_tools = sorted({t for t in (tools if isinstance(tools, dict) else as_list(tools)) if one_of(t, CLAUDE_TOOLS)})
-        if claude_tools:
-            add("warning", "A044", f"tools uses Claude Code tool names {claude_tools}; OpenCode does not know them")
-    if "maxSteps" in fm:
-        add("warning", "A044", "maxSteps is deprecated; use steps")
+    model = fm.get("model")
+    if model is not None and "/" not in str(model).split("#", 1)[0]:
+        add("error", "A043", f"model '{model}' must be provider/model-id (e.g. deepseek/deepseek-flash), optionally with #variant")
+    for key in ("name", "temperature", "top_p", "tools", "maxSteps", "disable", "prompt", "variant"):
+        if key in fm:
+            add("warning", "A044", f"'{key}' is a deprecated V1 field; use {OC_AGENT_V1_FIELDS[key]}")
+            if key == "tools":
+                tools = fm["tools"]
+                claude_tools = sorted({t for t in (tools if isinstance(tools, dict) else as_list(tools)) if one_of(t, CLAUDE_TOOLS)})
+                if claude_tools:
+                    add("warning", "A044", f"tools uses Claude Code tool names {claude_tools}; OpenCode does not know them")
     if "steps" in fm and not (isinstance(fm["steps"], int) and fm["steps"] > 0):
         add("error", "A045", "steps must be a positive integer")
-    if "temperature" in fm and not (isinstance(fm["temperature"], (int, float)) and 0 <= fm["temperature"] <= 2):
-        add("warning", "A045", "temperature should be a number between 0 and 2")
     if "hidden" in fm and mode != "subagent":
         add("warning", "A045", "hidden only applies to mode: subagent")
-    if "color" in fm:
-        color = str(fm["color"])
-        if color not in OC_THEME_COLORS and not re.fullmatch(r"#[0-9a-fA-F]{6}", color):
-            add("warning", "A045", "color must be a hex value or a theme color (primary, secondary, accent, success, warning, error, info)")
-    perm = fm.get("permission")
+    if "disabled" in fm and not isinstance(fm["disabled"], bool):
+        add("warning", "A045", "disabled must be true or false")
+    if "color" in fm and not re.fullmatch(r"#[0-9a-fA-F]{6}", str(fm["color"])):
+        add("warning", "A045", "color must be a six-digit hex value like \"#ff6b6b\"")
+    perm = fm.get("permissions")
     if perm is not None:
-        if not isinstance(perm, dict):
-            add("error", "A046", "permission must be a mapping")
+        if not isinstance(perm, list):
+            add("error", "A046", "permissions must be an array of {action, resource, effect} rules")
         else:
-            for key, value in perm.items():
-                if key not in OC_PERMISSION_KEYS:
-                    add("warning", "A046", f"permission key '{key}' is not a known OpenCode permission")
-                values = value.values() if isinstance(value, dict) else [value]
-                if not all(one_of(v, OC_PERMISSION_VALUES) for v in values):
-                    add("error", "A047", f"permission.{key} values must be allow, ask or deny")
-            if "shell" in perm and "bash" not in perm:
-                add("error", "A049", "OpenCode 1.19 enforces only 'bash'; a 'shell' rule alone is ignored. Add 'bash' with the same rules")
-            elif "bash" in perm and "shell" not in perm:
-                add("warning", "A049", "current OpenCode docs name the key 'shell'; add 'shell' with the same rules as 'bash'")
-            elif "bash" in perm and perm.get("bash") != perm.get("shell"):
-                add("warning", "A049", "'bash' and 'shell' should carry identical rules")
+            for rule in perm:
+                if not isinstance(rule, dict):
+                    add("error", "A046", f"permissions entry {rule!r} must be an object with action, resource and effect")
+                    continue
+                action = rule.get("action")
+                effect = rule.get("effect")
+                if not one_of(effect, OC_PERMISSION_VALUES):
+                    add("error", "A047", f"permissions effect {effect!r} must be allow, ask or deny")
+                if isinstance(action, str) and action in OC_ACTION_V1:
+                    add("error", "A049", f"permission action '{action}' is a V1 name; use '{OC_ACTION_V1[action]}'")
+                elif isinstance(action, str) and action != "*" and action not in OC_ACTIONS and "_" not in action:
+                    add("warning", "A046", f"permission action '{action}' is not a known OpenCode action (plugins may define more)")
+    if "permission" in fm:
+        add("warning", "A049", "the V1 'permission' map is deprecated; use 'permissions' (an array of {action, resource, effect})")
     for key in sorted(set(fm) - OC_AGENT_KEYS, key=str):
         if key in OC_CLAUDE_ONLY_KEYS:
-            add("warning", "A048", f"key '{key}' is Claude Code only; OpenCode ignores it and passes it to the model provider")
+            add("warning", "A048", f"key '{key}' is Claude Code only; OpenCode ignores it")
         else:
-            add("info", "A048", f"key '{key}' is passed to the model provider as an option")
+            add("info", "A048", f"key '{key}' is not a documented OpenCode agent field")
 
 
 # --- rules and instructions --------------------------------------------------------
@@ -779,7 +789,7 @@ def check_opencode_collisions(report: Report, root: Path) -> None:
                     report.add("warning", "P003", d, f"OpenCode reaches skill '{d.name}' through two paths (also {first}); it may load it twice")
                     continue
                 hint = " (set OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1 if the .claude copy is a Claude-only variant)" if ".claude" in (d.parts + first.parts) else ""
-                report.add("error", "P003", d, f"OpenCode sees skill '{d.name}' twice (also {first}); names must be unique{hint}")
+                report.add("warning", "P003", d, f"OpenCode sees skill '{d.name}' twice (also {first}); the later-registered source overrides it{hint}")
             else:
                 seen[d.name] = d
 

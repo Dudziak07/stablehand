@@ -17,7 +17,7 @@ Reference material:
 0. **Target.** All runs happen in the repository that owns the artifact (the target), not in stablehand.
    - Confirm in one line: `Target: <path> · Platform: <platform> · Building: <what>`.
    - If the target is outside the workspace, approve the `external_directory` prompt.
-   - Commands: for `opencode run`, pass `--dir "<target-or-scratch>"`. For every other command that runs the target's code, use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
+   - Commands: for `opencode run`, run it from "<target-or-scratch>" (it has no `--dir` flag). For every other command that runs the target's code, use `cd "<target>" && <command>`; do not pass `--project "<target>"` to `uv run` from the stablehand folder.
    - Artifacts for Claude Code or Antigravity cannot be run from here. Write the eval files, then give a ready-to-paste prompt that runs them on that platform.
 
 1. **Locate or create the eval set** in `<target>/.stablehand/evals/skills/<name>/` or `<target>/.stablehand/evals/agents/<name>/`:
@@ -28,7 +28,7 @@ Reference material:
 
 2. **Plan the runs.** Decide which scenarios, how many runs (1 to explore, 3 to decide), and which models. Use `--model deepseek/deepseek-flash` for a cheap pass and `--model deepseek/deepseek-v4-pro` for a stronger one. If the plan exceeds about 10 runs, show the count and get a go-ahead.
 
-3. **Behavior runs (isolated, through the runner agent).** For each scenario, run both arms with the task tool and the agent `scenario-runner`:
+3. **Behavior runs (isolated, through the runner agent).** For each scenario, run both arms with the subagent tool and the agent `scenario-runner`:
    - baseline arm: mode `baseline`;
    - with-artifact arm: mode `with-artifact`, plus the artifact path.
 
@@ -36,14 +36,14 @@ Reference material:
 
 4. **Real-loader runs (triggers and delegation).** Run each prompt against the scratch copy of the target, never the target checkout, with the bundled read-only probe.
    - Install the artifact under test into the scratch: copy a skill to `<scratch>/.opencode/skills/<name>/` or an agent file to `<scratch>/.opencode/agents/<name>.md`.
-   - Install the probe: copy `trigger-probe.md` into `<scratch>/.opencode/agents/`. Take it from the `agents/` folder beside the installed `skills/` folder (for a workspace install: `<stablehand>/.opencode/agents/trigger-probe.md`; in the checkout: `platforms/opencode/agents/trigger-probe.md`). Without this copy OpenCode cannot find the agent from `--dir "<scratch>"`.
+   - Install the probe: copy `trigger-probe.md` into `<scratch>/.opencode/agents/`. Take it from the `agents/` folder beside the installed `skills/` folder (for a workspace install: `<stablehand>/.opencode/agents/trigger-probe.md`; in the checkout: `platforms/opencode/agents/trigger-probe.md`). Without this copy OpenCode cannot find the agent when `opencode run` starts in "<scratch>".
    - Run each prompt:
-     `opencode run "<prompt>" --format json --dir "<scratch>" --agent trigger-probe --model deepseek/deepseek-flash`
-   - For a skill, a pass is a `skill` call whose name is the skill.
-   - For an agent, a pass is a `task` call that selects the agent.
+     `opencode run "<prompt>" --format json --agent trigger-probe --model deepseek/deepseek-flash`
+   - For a skill, a pass is a `skill` call whose id is the skill.
+   - For an agent, a pass is a `subagent` call that selects the agent.
    - If a batch is interrupted (for example by a usage limit), continue from the first missing run and do not redo completed ones.
 
-5. **Grade.** Apply the deterministic checks first (files, regexes, commands), then the judge rubric. When independence matters, use the task tool with the agent `artifact-reviewer` as the judge, passing the transcripts and the rubric.
+5. **Grade.** Apply the deterministic checks first (files, regexes, commands), then the judge rubric. When independence matters, use the subagent tool with the agent `artifact-reviewer` as the judge, passing the transcripts and the rubric.
 
 6. **Record** `results/<YYYY-MM-DD>.md`:
    - the table: scenario or trigger, baseline, with artifact, notes;

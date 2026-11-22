@@ -79,7 +79,7 @@ Create or improve **one** subagent or custom agent for a target repository and t
 
 ## Platform adaptation
 - **Access to a target repository outside the workspace** (`targets.md`).
-- **Agent file location and fields.** Claude `.claude/agents/*.md`; Antigravity `.agents/agents/*.md` with `tools` from the Antigravity tool list; OpenCode `.opencode/agents/<name>.md` with `mode` and `permission`.
+- **Agent file location and fields.** Claude `.claude/agents/*.md`; Antigravity `.agents/agents/*.md` with `tools` from the Antigravity tool list; OpenCode `.opencode/agents/<name>.md` with `mode` and `permissions`.
 - **Mapping tools and model tiers.** Abstract → platform, as in the card.
 - **Explicit delegation syntax:** `@"name (agent)"`, `@name`, `invoke_subagent`.
 - **The real-loader check command** for the platform.

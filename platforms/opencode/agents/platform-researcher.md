@@ -2,13 +2,22 @@
 description: "Re-verifies one question about Claude Code, Antigravity or OpenCode customization formats (skill/agent fields, paths, rules, plugins, hooks) against official docs and changelogs, and reports what changed versus a given reference card, with URLs and dates. Use when a card may be stale, before porting to a platform, or when an artifact fails to load and the card cannot explain why."
 mode: subagent
 model: deepseek/deepseek-flash
-permission:
-  edit: deny
-  bash: deny
-  shell: deny
-  webfetch: allow
-  websearch: allow
-  task: deny
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: webfetch
+    resource: "*"
+    effect: allow
+  - action: websearch
+    resource: "*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: deny
 ---
 
 You check one question about a platform's customization formats against primary sources. Return a sourced diff against the reference card the caller gives you. Write all output in English.

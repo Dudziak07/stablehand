@@ -67,7 +67,7 @@ At most 12 findings, ranked by severity, with duplicates merged.
 - **Read-only tools:**
   - Claude: `Read, Grep, Glob`.
   - Antigravity: `view_file, grep_search, find_by_name, list_dir`.
-  - OpenCode: `permission: {edit: deny, bash: deny, shell: deny}`.
+  - OpenCode: deny `edit`, `shell`, `webfetch`, `websearch` and `subagent` via `permissions`.
 - **Model:** inherit by default. Optionally pin a different family or tier for a second opinion.
 
 ## Evals
