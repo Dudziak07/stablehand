@@ -4,7 +4,7 @@ Applies to every platform. Platform cards cover the mechanics (fields, paths, in
 
 ## Descriptions route; bodies instruct
 
-- The description decides whether the artifact is ever used. Write it in the third person; put **when to use** first, with the phrasings a user would actually type; add a short **not for …** clause for near misses.
+- The description decides whether the artifact is ever used. Write it in the third person; put **when to use** first, with the phrasings a user would actually type—including proactive indirect intents where the user omits exact technical keywords; add a short **not for …** clause for near misses.
 - Never summarize the workflow in the description. Agents that see a summary tend to follow it and skip the body.
 - Target ≤ 500 characters, hard limit 1,024. Always wrap the value in double quotes (an unquoted colon breaks some loaders).
 - Name: lowercase letters, digits and single hyphens, ≤ 64 characters, equal to the folder name. Prefer gerund or verb-object names (`writing-tests`, `reviewing-changes`).
@@ -12,10 +12,11 @@ Applies to every platform. Platform cards cover the mechanics (fields, paths, in
 ## Body shape
 
 1. **One opening sentence** stating the stance or outcome.
-2. **Anti-pattern** (optional): only a drift you actually observed in a baseline run, with 1–3 recognizable signs.
-3. **Numbered steps.** Each step that can fail ends with how to verify it (command to run, file to check, output to expect).
-4. **Done when** checklist for workflow skills. Reference and posture skills don't need one.
-5. **Templates last**, or in `assets/` when long.
+2. **Ground in real work:** distill procedures from solved tasks, PR review comments, or runbooks rather than inventing abstract advice.
+3. **Anti-pattern** (optional): only a drift you actually observed in a baseline run, with 1–3 recognizable signs.
+4. **Numbered steps.** Each step that can fail ends with how to verify it (command to run, file to check, output to expect).
+5. **Done when** checklist for workflow skills. Reference and posture skills don't need one.
+6. **Templates last**, or in `assets/` when long.
 
 ## Degrees of freedom
 
@@ -49,7 +50,7 @@ Applies to every platform. Platform cards cover the mechanics (fields, paths, in
 | Model family | Adjust |
 |---|---|
 | Claude (Opus/Sonnet/Haiku) | Handles terse instructions well; over-specification makes it rigid. Test with the smallest model you expect to run it. |
-| Gemini (Antigravity `flash_lite`/`flash`/`pro` — Gemini 3.8 / Gemini 4) | Be explicit about stop conditions and output format; quote every frontmatter string. Gemini 4 batches independent searches, reads and edits well, so group independent steps cleanly. |
+| Gemini (Antigravity `flash_lite`/`flash`/`pro` — Gemini 3.8 / Gemini 4 Neon & Hydrogen) | Be explicit about stop conditions and output format; quote every frontmatter string. Rely on native thinking levels plus explicit intermediate verification checkpoints instead of "think step-by-step". Keep Markdown flat and imperative to prevent instruction drift, group independent searches/reads/edits cleanly, and in Orchestrator mode (Neon planner + Hydrogen executor) separate planning decisions from mechanical execution steps with concrete verification commands. |
 | DeepSeek (V4 / V4.1 Flash, e.g. via OpenCode) | Spell steps out (numbered, one action each), give exact commands and output templates, state the output language explicitly, and add explicit "stop and ask the user" points. Avoid relying on implicit conventions. |
 
 Whatever the family: the only proof is a run. Test every artifact with the model and harness that will execute it.
