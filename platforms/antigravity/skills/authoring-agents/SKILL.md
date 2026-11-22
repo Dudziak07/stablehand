@@ -83,7 +83,7 @@ You create a "developer", "tester" or "architect" agent because the user named a
    - absolute paths to the **target** platform's card (`references/antigravity.md`, `references/claude-code.md`, or `references/opencode.md`) and `references/writing-for-agents.md` inside this skill's folder.
    Fix blocking findings. Tell the user about any you disagree with. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 
-7. **Hand over:** file path, stated justification, how to invoke the agent (`invoke_subagent` or `@<name>`), benchmark results, and reload instructions. For another target platform, deliver the hand-off prompt and mark the hand-over "untested on <platform>".
+7. **Hand over:** update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`), then report file path, stated justification, how to invoke the agent (`invoke_subagent` or `@<name>`), benchmark results, and reload instructions. For another target platform, deliver the hand-off prompt and mark the hand-over "untested on <platform>".
 
 ## Done when
 - [ ] The agent is in the target repository, in the target platform's folder, and nothing was written into stablehand

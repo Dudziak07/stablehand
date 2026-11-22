@@ -59,7 +59,7 @@ Reference material (read when a step says so):
    `agy -p "What command runs a single test here? Answer with the command only."`
    Vague or incorrect answers mean the fact is missing or buried; refine and re-test.
 
-8. **Report:** files created or updated, line counts, and what was removed with justifications.
+8. **Report:** update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`), then list files created or updated, line counts, and what was removed with justifications.
 
 ## Done when
 - [ ] Every line is a non-inferable fact, verified command, boundary, or pointer

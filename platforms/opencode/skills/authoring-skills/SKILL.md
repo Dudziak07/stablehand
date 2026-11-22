@@ -94,7 +94,7 @@ You write the skill before watching the agent fail. Warning signs:
 
    Fix blocking findings. Tell the user about any you disagree with. After fixing, run the reviewer once more on the fixed artifact and record its final verdict in the results file.
 
-7. **Hand over.** Use this template:
+7. **Hand over.** Update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`), then use this template:
 ```
 Path: <skill folder>
 Invoke: /<name> or "<example prompt>"

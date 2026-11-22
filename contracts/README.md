@@ -50,6 +50,7 @@ stablehand uses one calendar version, `YYYY.M.N`, for the whole repository: cont
 | [authoring-agents](skills/authoring-agents.md) | skill | Justify, specify, write and test one subagent |
 | [writing-project-instructions](skills/writing-project-instructions.md) | skill | Minimal always-loaded instructions and rules |
 | [porting-artifacts](skills/porting-artifacts.md) | skill | Move a skill/agent/instruction file to another platform without changing behavior |
+| [upgrading-artifacts](skills/upgrading-artifacts.md) | skill | Audit and upgrade existing artifacts for newer stablehand, platform, or model versions |
 | [evaluating-artifacts](skills/evaluating-artifacts.md) | skill | Build and run trigger tests and behavior scenarios against a baseline |
 | [validating-artifacts](skills/validating-artifacts.md) | skill | Static checks with the bundled linter, including cross-platform collisions |
 | [artifact-reviewer](agents/artifact-reviewer.md) | agent | Independent read-only review of one artifact |

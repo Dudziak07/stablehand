@@ -4,9 +4,9 @@ Each folder implements every contract in [`contracts/`](../contracts/) for one p
 
 | Platform | Status | Contracts | Install |
 |---|---|---|---|
-| [claude-code](claude-code/) | ✅ reference implementation | 2026.10.1 | `uv run tools/install.py claude-code --scope workspace`, or the Claude plugin marketplace |
-| [antigravity](antigravity/) | [✅ implemented (evals: 3 runs)](antigravity/evals/RESULTS.md) | 2026.10.1 | `uv run tools/install.py antigravity --scope workspace` |
-| [opencode](opencode/) | [✅ implemented (evals: 3 runs)](opencode/evals/RESULTS.md) | 2026.10.1 | `uv run tools/install.py opencode --scope workspace` |
+| [claude-code](claude-code/) | ✅ reference implementation | 2026.11.1 | `uv run tools/install.py claude-code --scope workspace`, or the Claude plugin marketplace |
+| [antigravity](antigravity/) | [✅ implemented (evals: 3 runs)](antigravity/evals/RESULTS.md) | 2026.11.1 | `uv run tools/install.py antigravity --scope workspace` |
+| [opencode](opencode/) | [✅ implemented (evals: 3 runs)](opencode/evals/RESULTS.md) | 2026.11.1 | `uv run tools/install.py opencode --scope workspace` |
 
 **Main flow:** open the stablehand repo in your tool and ask for a skill or agent for repository X. `--scope workspace` links the implementation into this checkout's own platform folders (gitignored), so the skills load as soon as the folder is opened.
 

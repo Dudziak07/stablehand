@@ -1,7 +1,7 @@
 ---
 id: writing-project-instructions
 kind: skill
-version: 2026.10.0
+version: 2026.11.1
 references: [targets.md, coexistence.md, writing-for-agents.md, "@all-platforms"]
 ---
 # writing-project-instructions
@@ -43,7 +43,7 @@ Write, trim or audit a project's always-loaded instructions (AGENTS.md, CLAUDE.m
    - a platform file only for platform-only facts, with the bridge (Claude: CLAUDE.md starting with `@AGENTS.md`);
    - path-scoped rules for path-specific facts.
 5. **Write.** Use short imperative lines grouped under a few headings. Target ≤ 150 lines in total; the always-on budget is shared with every task.
-6. **Test.** In a fresh session, ask 3 questions the file should answer. Examples: "what command runs one test?", "may I edit generated files?". Check the answers.
+6. **Test.** In a fresh session, ask 3 questions the file should answer. Examples: "what command runs one test?", "may I edit generated files?". Check the answers. Update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`).
 
 ## Outputs
 - The instruction and rule files.

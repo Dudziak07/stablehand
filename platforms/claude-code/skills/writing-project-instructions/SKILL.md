@@ -52,7 +52,7 @@ Reference material:
    `cd "<target>" && claude -p "What command runs a single test file here? Answer with the command only."`
    Wrong or vague answers mean the fact is missing or buried; fix and re-ask.
 
-8. **Report:** the file(s) written, line counts, and what you removed and why.
+8. **Report:** update `<target>/.stablehand/manifest.json` (`stablehand_version`, `kind`, `platform`, `card_verified`, `target_model`, `updated_at`), then list the file(s) written, line counts, and what you removed and why.
 
 ## Done when
 - [ ] Every line is a non-inferable fact, a verified command, a boundary, or a pointer
