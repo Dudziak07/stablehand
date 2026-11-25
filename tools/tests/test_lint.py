@@ -1,6 +1,7 @@
 """Tests for tools/lint.py. Run: uv run --with pytest --with pyyaml pytest tools/tests -q"""
 
 import importlib.util
+import json
 import os
 import sys
 from pathlib import Path
@@ -462,3 +463,102 @@ def test_shipped_all_platforms_and_maintainer_skill_are_clean():
         report = run_path(maintainer, platform)
         assert not codes(report, "error"), (platform, report.findings)
         assert not codes(report, "warning"), (platform, report.findings)
+
+
+def _run_cli(monkeypatch, capsys, argv):
+    monkeypatch.setattr(sys, "argv", ["lint.py", *argv])
+    code = lint.main()
+    captured = capsys.readouterr()
+    return code, captured.out
+
+
+def test_cli_json_clean_skill(good_skill, monkeypatch, capsys):
+    code, out = _run_cli(monkeypatch, capsys, ["--json", "--platform", "claude-code", str(good_skill)])
+    assert code == 0
+    data = json.loads(out)
+    assert data == {
+        "files_checked": 1,
+        "errors": 0,
+        "warnings": 0,
+        "infos": 0,
+        "findings": [],
+    }
+
+
+def test_cli_json_invalid_skill(tmp_path, monkeypatch, capsys):
+    bad = tmp_path / "skills" / "bad-skill"
+    write(bad / "SKILL.md", "---\nname: Wrong_Name\ndescription: \"Short.\"\n---\nBody.\n")
+    code, out = _run_cli(monkeypatch, capsys, ["--json", "--platform", "claude-code", str(bad)])
+    assert code == 1
+    data = json.loads(out)
+    assert data["files_checked"] == 1
+    assert data["errors"] > 0
+    assert data["errors"] == sum(1 for f in data["findings"] if f["level"] == "error")
+    assert data["warnings"] == sum(1 for f in data["findings"] if f["level"] == "warning")
+    assert data["infos"] == sum(1 for f in data["findings"] if f["level"] == "info")
+    for finding in data["findings"]:
+        assert set(finding) == {"level", "code", "path", "message"}
+
+
+def test_cli_json_warnings_and_strict(tmp_path, monkeypatch, capsys):
+    warn_skill = tmp_path / "skills" / "warn-skill"
+    write(warn_skill / "SKILL.md", "---\ndescription: \"Does something.\"\n---\nBody.\n")
+    code, out = _run_cli(monkeypatch, capsys, ["--json", "--platform", "claude-code", str(warn_skill)])
+    assert code == 0
+    data = json.loads(out)
+    assert data["errors"] == 0
+    assert data["warnings"] > 0
+
+    strict_code, strict_out = _run_cli(
+        monkeypatch, capsys, ["--json", "--strict", "--platform", "claude-code", str(warn_skill)]
+    )
+    assert strict_code == 1
+    strict_data = json.loads(strict_out)
+    assert strict_data == data
+
+
+def test_cli_json_project_and_cards(tmp_path, monkeypatch, capsys):
+    proj = tmp_path / "proj"
+    write(proj / ".claude" / "skills" / "ok-skill" / "SKILL.md",
+          GOOD_SKILL.replace("writing-tests", "ok-skill").replace("references/conventions.md", "x.md"))
+    write(proj / ".claude" / "skills" / "ok-skill" / "x.md", "x")
+    write(proj / ".claude" / "skills" / "bad-skill" / "SKILL.md",
+          "---\nname: Bad\ndescription: \"Does stuff.\"\n---\nBody.\n")
+
+    code, out = _run_cli(monkeypatch, capsys, ["--json", "--project", str(proj)])
+    assert code == 1
+    proj_data = json.loads(out)
+    assert proj_data["files_checked"] == 2
+    assert proj_data["errors"] >= 1
+    assert any(f["code"] == "S004" for f in proj_data["findings"])
+
+    cards = tmp_path / "cards"
+    write(cards / "broken-card.md", "# Platform card: Test\nNo metadata here.\n")
+    c_code, c_out = _run_cli(monkeypatch, capsys, ["--json", "--cards", str(cards)])
+    assert c_code == 0
+    cards_data = json.loads(c_out)
+    assert cards_data["files_checked"] == 1
+    assert cards_data["warnings"] == 1
+    assert any(f["code"] == "C001" for f in cards_data["findings"])
+
+
+def test_cli_json_deterministic_sorting(tmp_path, monkeypatch, capsys):
+    d1 = tmp_path / "skills" / "z-skill"
+    write(d1 / "SKILL.md", "---\nname: z-skill\ndescription: \"Does stuff.\"\n---\nBody.\n")
+    d2 = tmp_path / "skills" / "a-skill"
+    write(d2 / "SKILL.md", "---\nname: Wrong\ndescription: \"Does stuff.\"\n---\nBody.\n")
+
+    code, out = _run_cli(monkeypatch, capsys, ["--json", "--platform", "claude-code", str(d1), str(d2)])
+    assert code == 1
+    data = json.loads(out)
+    keys = [(f["path"], lint.LEVELS.index(f["level"]), f["code"]) for f in data["findings"]]
+    assert keys == sorted(keys)
+    assert len(keys) >= 2
+
+
+def test_cli_default_human_readable_output(good_skill, monkeypatch, capsys):
+    code, out = _run_cli(monkeypatch, capsys, ["--platform", "claude-code", str(good_skill)])
+    assert code == 0
+    assert "0 error(s), 0 warning(s), 0 info - 1 file(s) checked" in out
+    with pytest.raises(json.JSONDecodeError):
+        json.loads(out)

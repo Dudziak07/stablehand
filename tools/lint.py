@@ -846,12 +846,13 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("give PATHs with --platform, --project DIR or --cards DIR")
 
     errors, warnings, infos = (report.count(lvl) for lvl in LEVELS)
+    sorted_findings = sorted(report.findings, key=lambda f: (f.path, LEVELS.index(f.level), f.code))
     if args.json:
         print(json.dumps({"files_checked": report.files_checked, "errors": errors, "warnings": warnings,
-                          "infos": infos, "findings": [asdict(f) for f in report.findings]}, indent=2))
+                          "infos": infos, "findings": [asdict(f) for f in sorted_findings]}, indent=2))
     else:
         current = None
-        for f in sorted(report.findings, key=lambda f: (f.path, LEVELS.index(f.level), f.code)):
+        for f in sorted_findings:
             if f.path != current:
                 current = f.path
                 print(f"\n{f.path}")
