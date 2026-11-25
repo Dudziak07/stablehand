@@ -1,9 +1,9 @@
 # Sources and credits
 
-stablehand's text is original. The ideas below come from public work, credited here with links. Platform facts were checked against the official sources on 2026-10-21; Antigravity was re-verified on 2026-11-21 and OpenCode on 2026-11-22 (v2.3.2).
+stablehand's text is original. The ideas below come from public work, credited here with links. Platform facts were checked against the official sources on 2026-10-21; Claude Code was re-verified on 2026-11-25 (v2.1.332), Antigravity on 2026-11-21 and OpenCode on 2026-11-22 (v2.3.2).
 
 ## Platform documentation (facts)
-- Claude Code: https://code.claude.com/docs/en/skills, /sub-agents, /memory, /plugins/manifest-reference, /plugins/marketplace-reference, /plugin-evals; changelog: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
+- Claude Code: https://code.claude.com/docs/en/skills, /sub-agents, /memory, /hooks, /mcp, /settings-reference, /model-config, /agent-teams, /plugins/manifest-reference, /plugins/marketplace-reference, /plugin-evals; changelog: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
 - Anthropic, Skill authoring best practices: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
 - Agent Skills open standard: https://agentskills.io/specification
 - AGENTS.md: https://agents.md
