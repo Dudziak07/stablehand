@@ -169,7 +169,7 @@ Primary sources:
 | fast / cheap | `flash` |
 | strongest | `pro` |
 
-Current CLI model slugs (`agy models`, checked 2026-11-21) include `gemini-4-neon-{low,medium,high,xhigh}` (default on eligible paid plans), `gemini-4-argon-{low,medium,high}`, `gemini-4-hydrogen-{low,medium,high,xhigh}`, `gemini-4-carbon-{low,medium,high}` (Ultra/Enterprise), `gemini-pro-orchestrator-neon`, `gemini-3.8-flash-{low,medium,high}` (all plans), plus `claude-opus-5-5-*` and `claude-sonnet-5-5-*`.
+Current CLI model slugs (`agy models`, checked 2026-11-24) include `gemini-4-neon-{low,medium,high,xhigh}` (default on eligible paid plans), `gemini-4-carbon-{low,medium,high}`, `gemini-4-argon-{low,medium,high}`, `gemini-4-hydrogen-{low,medium,high,xhigh}`, `gemini-pro-orchestrator` (Carbon), `gemini-pro-orchestrator-argon`, `gemini-pro-orchestrator-neon`, `gemini-3.8-flash-{low,medium,high}` (all plans), plus `claude-opus-5-5-*`, `claude-sonnet-5-5-*`, and `gpt-oss-120b-medium`.
 
 ## 6. Plugins, hooks, MCP
 - **Plugin layout** (in a customization root, `.agents/plugins/` or `~/.gemini/config/plugins/`):

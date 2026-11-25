@@ -50,7 +50,7 @@ Applies to every platform. Platform cards cover the mechanics (fields, paths, in
 | Model family | Adjust |
 |---|---|
 | Claude (Opus/Sonnet/Haiku) | Handles terse instructions well; over-specification makes it rigid. Test with the smallest model you expect to run it. |
-| Gemini (Antigravity `flash_lite`/`flash`/`pro` — Gemini 3.8 / Gemini 4 Neon & Hydrogen) | Be explicit about stop conditions and output format; quote every frontmatter string. Rely on native thinking levels plus explicit intermediate verification checkpoints instead of "think step-by-step". Keep Markdown flat and imperative to prevent instruction drift, group independent searches/reads/edits cleanly, and in Orchestrator mode (Neon planner + Hydrogen executor) separate planning decisions from mechanical execution steps with concrete verification commands. |
+| Gemini (Antigravity `flash_lite`/`flash`/`pro` — Gemini 3.8 / Gemini 4) | Be explicit about stop conditions and output format; quote every frontmatter string. Rely on native thinking levels plus explicit intermediate verification checkpoints instead of "think step-by-step". Keep Markdown flat and imperative to prevent instruction drift, group independent searches/reads/edits cleanly, and in Orchestrator mode (frontier planner + fast executor) separate planning decisions from mechanical execution steps with concrete verification commands. |
 | DeepSeek (V4 / V4.1 Flash, e.g. via OpenCode) | Spell steps out (numbered, one action each), give exact commands and output templates, state the output language explicitly, and add explicit "stop and ask the user" points. Avoid relying on implicit conventions. |
 
 Whatever the family: the only proof is a run. Test every artifact with the model and harness that will execute it.
