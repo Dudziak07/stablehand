@@ -38,7 +38,7 @@ def repo(tmp_path, monkeypatch):
             write(root / "platforms" / platform / "skills" / skill / "SKILL.md")
     write(root / "platforms" / "opencode" / "agents" / "rev.md")
     write(root / "platforms" / "antigravity" / "plugin.json", "{}")
-    home = tmp_path / "home"
+    home = (tmp_path / "home").resolve()
     home.mkdir()
     monkeypatch.setattr(install, "ROOT", root)
     monkeypatch.setattr(install, "PLATFORMS_DIR", root / "platforms")
@@ -86,6 +86,41 @@ def test_antigravity_install_reinstall_uninstall(repo, project, copy):
     assert install.main(args) == 0
     assert install.main(args + ["--uninstall"]) == 0
     assert not (project / ".agents").exists()
+    assert (repo / "platforms" / "antigravity" / "plugin.json").is_file()
+
+
+@pytest.mark.parametrize("copy", [False, True])
+def test_opencode_user_install_reinstall_uninstall(repo, copy):
+    args = ["opencode", "--scope", "user"] + (["--copy"] if copy else [])
+    home = Path.home()
+    target = home / ".config" / "opencode"
+    assert install.main(args) == 0
+    assert (target / "skills" / "alpha" / "SKILL.md").is_file()
+    assert (target / "agents" / "rev.md").is_file()
+    assert install.is_link(target / "skills" / "alpha") is not copy
+
+    assert install.main(args) == 0  # reinstall needs no --force
+
+    assert install.main(args + ["--uninstall"]) == 0
+    assert not (home / ".config").exists()
+    assert home.is_dir()
+    assert (repo / "platforms" / "opencode" / "skills" / "alpha" / "SKILL.md").is_file()
+
+
+@pytest.mark.parametrize("copy", [False, True])
+def test_antigravity_user_install_reinstall_uninstall(repo, copy):
+    args = ["antigravity", "--scope", "user"] + (["--copy"] if copy else [])
+    home = Path.home()
+    target = home / ".gemini" / "config" / "plugins"
+    assert install.main(args) == 0
+    assert (target / "stablehand" / "plugin.json").is_file()
+    assert install.is_link(target / "stablehand") is not copy
+
+    assert install.main(args) == 0  # reinstall needs no --force
+
+    assert install.main(args + ["--uninstall"]) == 0
+    assert not (home / ".gemini").exists()
+    assert home.is_dir()
     assert (repo / "platforms" / "antigravity" / "plugin.json").is_file()
 
 
