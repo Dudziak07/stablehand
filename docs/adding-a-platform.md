@@ -26,6 +26,6 @@ Nothing in stablehand assumes a fixed number of platforms: a new harness is a fo
    - lint until clean;
    - translate and run the shared evals;
    - write `PORT-NOTES.md`.
-7. **Install support.** In `tools/install.py`, add an `install_<platform>` function and the platform's entries in the `wire_workspace` tables (links, target root, hint) and in the `all` list. Then add the platform to `PLATFORMS` in `.agents/skills/auditing-stablehand/scripts/self_check.py` (which CI runs on Linux and Windows) and to the platform lists in `AGENTS.md`.
+7. **Install support.** In `tools/install.py`, add an `install_<platform>` function and the platform's entries in the `wire_workspace` tables (links, target root, hint) and in the `all` list. Then add the platform to `PLATFORMS` in `.agents/skills/auditing-stablehand/scripts/self_check.py` (which CI runs on Linux, macOS and Windows) and to the platform lists in `AGENTS.md`.
 8. **List the platform.** Add a row to `platforms/README.md` and to the root README table.
 9. **Cross-review.** Have another platform's `artifact-reviewer` check the port against `contracts/`.

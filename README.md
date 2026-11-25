@@ -39,7 +39,7 @@ Everything it builds goes into **your** repository, never into stablehand.
   - [Claude Code](https://code.claude.com) (CLI, desktop app or IDE extension);
   - [Google Antigravity](https://antigravity.google) (App, IDE or the `agy` CLI);
   - [OpenCode](https://opencode.ai) with any model provider. A DeepSeek setup is included in `platforms/opencode/opencode.example.json`.
-- Linux and Windows are tested in CI; macOS should work the same way but is not tested yet. On Windows, installs use directory junctions, which need no admin rights.
+- Linux, macOS and Windows are tested in CI. On Windows, installs use directory junctions, which need no admin rights.
 
 **1. Clone stablehand next to your project and wire it into your tool, once:**
 
@@ -184,7 +184,7 @@ Details: [docs/architecture.md](docs/architecture.md).
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). In short:
 1. Change behavior in `contracts/` first, then in every platform implementation.
 2. Edit knowledge in `shared/references/`, never in its generated copies.
-3. Run `uv run .agents/skills/auditing-stablehand/scripts/self_check.py --strict` before committing. CI runs the same checks on Linux and Windows.
+3. Run `uv run .agents/skills/auditing-stablehand/scripts/self_check.py --strict` before committing. CI runs the same checks on Linux, macOS and Windows.
 
 Community participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md). Please report vulnerabilities privately using [SECURITY.md](SECURITY.md).
 
