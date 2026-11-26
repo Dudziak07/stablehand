@@ -87,7 +87,7 @@ Evals and results are saved in your repository under `.stablehand/`. You can com
 | [Claude Code](platforms/claude-code/) | ✅ reference implementation | eval suite in [`platforms/claude-code/evals`](platforms/claude-code/evals/) for `claude plugin eval` |
 | [Google Antigravity](platforms/antigravity/) (App, IDE, `agy` CLI) | ✅ implemented | outcome gain in 4 of 4 conclusive scenarios, 3 runs per arm ([results](platforms/antigravity/evals/RESULTS.md)) |
 | [OpenCode](platforms/opencode/) (with DeepSeek or any provider) | ✅ implemented | outcome gain in 4 of 5 behavior scenarios, 3 runs per arm ([results](platforms/opencode/evals/RESULTS.md)) |
-| [OpenAI Codex CLI](platforms/codex/) (`codex`, VS Code extension) | ✅ implemented | smoke-tested on `codex-cli 0.172.0` ([port notes](platforms/codex/PORT-NOTES.md); full evals pending) |
+| [OpenAI Codex CLI](platforms/codex/) (`codex`, VS Code extension) | ✅ implemented | `codex-cli 0.172.0` (`gpt-6-luna`): 2/2 negative control, outcome gain on `persona-agents-pushback` (0/2 → 2/2), target isolation verified on `external-target-repo` ([results](platforms/codex/evals/RESULTS.md)) |
 
 On every platform the negative control passes: no stablehand skill fires on an unrelated request. Each platform implements the same [contracts](contracts/) (2026.11.1) and was ported and tested by that platform's own agent. More platforms can be added: see [docs/adding-a-platform.md](docs/adding-a-platform.md).
 
