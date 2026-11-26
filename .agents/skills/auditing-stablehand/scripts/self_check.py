@@ -22,7 +22,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-PLATFORMS = ("claude-code", "antigravity", "opencode")
+PLATFORMS = ("claude-code", "antigravity", "opencode", "codex")
 
 
 @dataclass
@@ -68,8 +68,9 @@ def check_parity(root: Path) -> CheckResult:
             if not (pdir / "skills" / s / "SKILL.md").is_file():
                 missing.append(f"platforms/{platform}/skills/{s}/SKILL.md")
         for a in agents:
-            if not (pdir / "agents" / f"{a}.md").is_file():
-                missing.append(f"platforms/{platform}/agents/{a}.md")
+            ext = "toml" if platform == "codex" else "md"
+            if not (pdir / "agents" / f"{a}.{ext}").is_file():
+                missing.append(f"platforms/{platform}/agents/{a}.{ext}")
     if missing:
         return CheckResult("contract-parity", "FAIL", f"{len(missing)} missing", "\n".join(missing))
     return CheckResult("contract-parity", "PASS", f"{len(skills)} skills, {len(agents)} agents across {checked} platforms")

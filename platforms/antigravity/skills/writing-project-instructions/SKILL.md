@@ -12,6 +12,7 @@ Reference material (read when a step says so):
 - `references/antigravity.md`: Antigravity instruction files, rule triggers, 24 KB limits, and the 20k always-on budget.
 - `references/claude-code.md`: Claude Code conventions when sharing instructions with Claude Code.
 - `references/opencode.md`: OpenCode conventions when sharing instructions with OpenCode.
+- `references/codex.md`: OpenAI Codex CLI conventions when sharing instructions with Codex.
 
 ## Process
 

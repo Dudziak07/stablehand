@@ -8,6 +8,7 @@
   uv run tools/install.py claude-code                    # user/project: prints the plugin commands
   uv run tools/install.py antigravity [--scope user|project --project DIR]
   uv run tools/install.py opencode    [--scope user|project --project DIR]
+  uv run tools/install.py codex       [--scope user|project --project DIR]
 Platform "all" wires every implementation that exists (workspace scope only).
 Options:
   --copy        copy files instead of linking (links follow `git pull` automatically)
@@ -202,26 +203,43 @@ def wire_workspace(platform: str, args: argparse.Namespace) -> int:
         "antigravity": [(PLATFORMS_DIR / "antigravity", ROOT / ".agents" / "plugins" / "stablehand")],
         "opencode": [(PLATFORMS_DIR / "opencode" / "skills", ROOT / ".opencode" / "skills"),
                      (PLATFORMS_DIR / "opencode" / "agents", ROOT / ".opencode" / "agents")],
+    }
+    target_root = {
+        "claude-code": ROOT / ".claude",
+        "antigravity": ROOT / ".agents",
+        "opencode": ROOT / ".opencode",
+        "codex": ROOT / ".codex",
     }[platform]
-    target_root = {"claude-code": ROOT / ".claude", "antigravity": ROOT / ".agents", "opencode": ROOT / ".opencode"}[platform]
     if args.uninstall:
         return uninstall(target_root, args)
     if not (PLATFORMS_DIR / platform / "skills").is_dir():
         print(f"skip {platform}: no implementation yet (see platforms/{platform}/BOOTSTRAP.md)")
         return 0
     installer = Installer(target_root, args.dry_run, args.force, args.copy)
-    for src, dst in links:
-        if src.is_dir():
-            installer.place_dir(src, dst)
+    if platform == "codex":
+        src = PLATFORMS_DIR / "codex"
+        for skill in sorted(p for p in (src / "skills").iterdir() if p.is_dir()):
+            installer.place_dir(skill, ROOT / ".agents" / "skills" / skill.name)
+        agents = src / "agents"
+        if agents.is_dir():
+            for agent in sorted(agents.glob("*.toml")):
+                installer.place_file(agent, target_root / "agents" / agent.name)
+    else:
+        for src, dst in links[platform]:
+            if src.is_dir():
+                installer.place_dir(src, dst)
     status = installer.finish(platform)
     hint = {
         "claude-code": "Open this folder in Claude Code and accept the trust prompt; the skills appear as /stablehand:<skill>\n(already open? run /reload-plugins).",
         "antigravity": "Open this folder in Antigravity; the skills appear as /stablehand:<skill>. Check with: agy plugin validate .agents/plugins/stablehand (/skills does not list plugin skills).",
         "opencode": "Open this folder in OpenCode; check with: opencode agent list",
+        "codex": "Open this folder in Codex (`codex` or `codex.cmd` on Windows); invoke skills with $<skill>.",
     }[platform]
     print(hint)
     if platform == "opencode":
         opencode_link_hint(args)
+    if platform == "codex" and ((ROOT / ".agents" / "plugins" / "stablehand").exists() or (ROOT / ".opencode" / "skills").exists()):
+        print("note: .agents/skills/ is shared with Antigravity and OpenCode (see shared/references/coexistence.md)")
     return status
 
 
@@ -273,9 +291,28 @@ def install_opencode(args: argparse.Namespace) -> int:
     return status
 
 
+def install_codex(args: argparse.Namespace) -> int:
+    src = require_port("codex", "skills")
+    base_root = args.project if args.scope == "project" else Path.home()
+    skills_root = base_root / ".agents" / "skills"
+    target_root = base_root / ".codex"
+    if args.uninstall:
+        return uninstall(target_root, args)
+    installer = Installer(target_root, args.dry_run, args.force, args.copy)
+    for skill in sorted(p for p in (src / "skills").iterdir() if p.is_dir()):
+        installer.place_dir(skill, skills_root / skill.name)
+    agents = src / "agents"
+    if agents.is_dir():
+        for agent in sorted(agents.glob("*.toml")):
+            installer.place_file(agent, target_root / "agents" / agent.name)
+    status = installer.finish("codex")
+    print("\nStart Codex (`codex` or `codex.cmd` on Windows), then invoke skills with $<skill>.")
+    return status
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Install stablehand into a platform.")
-    parser.add_argument("platform", choices=["claude-code", "antigravity", "opencode", "all"])
+    parser.add_argument("platform", choices=["claude-code", "antigravity", "opencode", "codex", "all"])
     parser.add_argument("--scope", choices=["workspace", "user", "project"], default="user")
     parser.add_argument("--project", type=Path, default=Path.cwd())
     parser.add_argument("--copy", action="store_true")
@@ -285,11 +322,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     args.project = args.project.resolve()
     if args.scope == "workspace":
-        platforms = ["claude-code", "antigravity", "opencode"] if args.platform == "all" else [args.platform]
+        platforms = ["claude-code", "antigravity", "opencode", "codex"] if args.platform == "all" else [args.platform]
         return max(wire_workspace(p, args) for p in platforms)
     if args.platform == "all":
         parser.error("platform 'all' is only valid with --scope workspace")
-    handler = {"claude-code": install_claude, "antigravity": install_antigravity, "opencode": install_opencode}
+    handler = {"claude-code": install_claude, "antigravity": install_antigravity, "opencode": install_opencode, "codex": install_codex}
     return handler[args.platform](args)
 
 

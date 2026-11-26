@@ -4,7 +4,7 @@
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![version](https://img.shields.io/badge/version-2026.11.1-informational)](https://github.com/Dudziak07/stablehand/releases)
 
-**A stable for building agents.** stablehand is not a pack of ready-made coding agents. It is the tack room you visit to build the *right* skills, subagents and instructions for **your** repository, on the platform you use: Claude Code, Google Antigravity or OpenCode.
+**A stable for building agents.** stablehand is not a pack of ready-made coding agents. It is the tack room you visit to build the *right* skills, subagents and instructions for **your** repository, on the platform you use: Claude Code, Google Antigravity, OpenCode or OpenAI Codex CLI.
 
 You open stablehand, name your repository and what you need, and stablehand:
 
@@ -38,7 +38,8 @@ Everything it builds goes into **your** repository, never into stablehand.
 - At least one platform:
   - [Claude Code](https://code.claude.com) (CLI, desktop app or IDE extension);
   - [Google Antigravity](https://antigravity.google) (App, IDE or the `agy` CLI);
-  - [OpenCode](https://opencode.ai) with any model provider. A DeepSeek setup is included in `platforms/opencode/opencode.example.json`.
+  - [OpenCode](https://opencode.ai) with any model provider. A DeepSeek setup is included in `platforms/opencode/opencode.example.json`;
+  - [OpenAI Codex CLI](https://developers.openai.com/codex) (CLI or VS Code extension; works on ChatGPT Free or with BYOK providers).
 - Linux, macOS and Windows are tested in CI. On Windows, installs use directory junctions, which need no admin rights.
 
 **1. Clone stablehand next to your project and wire it into your tool, once:**
@@ -85,6 +86,7 @@ Evals and results are saved in your repository under `.stablehand/`. You can com
 | [Claude Code](platforms/claude-code/) | ✅ reference implementation | eval suite in [`platforms/claude-code/evals`](platforms/claude-code/evals/) for `claude plugin eval` |
 | [Google Antigravity](platforms/antigravity/) (App, IDE, `agy` CLI) | ✅ implemented | outcome gain in 4 of 4 conclusive scenarios, 3 runs per arm ([results](platforms/antigravity/evals/RESULTS.md)) |
 | [OpenCode](platforms/opencode/) (with DeepSeek or any provider) | ✅ implemented | outcome gain in 4 of 5 behavior scenarios, 3 runs per arm ([results](platforms/opencode/evals/RESULTS.md)) |
+| [OpenAI Codex CLI](platforms/codex/) (`codex`, VS Code extension) | ✅ implemented | smoke-tested on `codex-cli 0.172.0` ([port notes](platforms/codex/PORT-NOTES.md); full evals pending) |
 
 On every platform the negative control passes: no stablehand skill fires on an unrelated request. Each platform implements the same [contracts](contracts/) (2026.11.1) and was ported and tested by that platform's own agent. More platforms can be added: see [docs/adding-a-platform.md](docs/adding-a-platform.md).
 

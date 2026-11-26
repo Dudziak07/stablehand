@@ -12,7 +12,7 @@ Reference material (read when a step says so):
 - `references/decision-guide.md`: which primitive fits each need, the five reasons for a subagent, anti-patterns.
 - `references/coexistence.md`: placement when Claude Code or Antigravity also open the repo.
 - `references/writing-for-agents.md`: writing guide and DeepSeek calibration.
-- `references/opencode.md`: OpenCode fields, paths and limits. When the target platform is Claude Code or Antigravity, read `references/claude-code.md` or `references/antigravity.md` instead.
+- `references/opencode.md`: OpenCode fields, paths and limits. When the target platform is Claude Code, Antigravity or Codex, read `references/claude-code.md`, `references/antigravity.md` or `references/codex.md` instead.
 
 ## Anti-pattern: the org chart
 You build a team of role agents (developer, tester, architect, orchestrator) because it mirrors a human team. Warning signs:

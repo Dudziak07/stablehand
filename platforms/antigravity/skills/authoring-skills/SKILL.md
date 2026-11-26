@@ -14,6 +14,7 @@ Reference material (read when a step says so):
 - `references/antigravity.md`: Antigravity skill structure, frontmatter fields, slash commands, and limits.
 - `references/claude-code.md`: Claude Code conventions when authoring for Claude Code.
 - `references/opencode.md`: OpenCode conventions when authoring for OpenCode.
+- `references/codex.md`: OpenAI Codex CLI conventions when authoring for Codex.
 
 ## Anti-pattern: the untested skill
 You write the skill before watching the agent fail. Warning signs:

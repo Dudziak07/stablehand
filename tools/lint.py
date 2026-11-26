@@ -34,6 +34,7 @@ import os
 import posixpath
 import re
 import sys
+import tomllib
 from dataclasses import asdict, dataclass, field
 from datetime import date
 from pathlib import Path
@@ -44,7 +45,7 @@ try:
 except ImportError:  # pragma: no cover
     sys.exit("stablehand lint needs PyYAML. Run it with `uv run lint.py ...` (installs it automatically).")
 
-PLATFORMS = ("claude-code", "antigravity", "opencode")
+PLATFORMS = ("claude-code", "antigravity", "opencode", "codex")
 LEVELS = ("error", "warning", "info")
 
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
@@ -155,7 +156,22 @@ OC_AGENT_V1_FIELDS = {
 OC_PERMISSION_VALUES = {"allow", "ask", "deny"}
 OC_CLAUDE_ONLY_KEYS = {"permissionMode", "maxTurns", "disallowedTools", "skills", "hooks"}
 
-SKILL_KEYS = {"claude-code": CLAUDE_SKILL_KEYS, "antigravity": AG_SKILL_KEYS, "opencode": OC_SKILL_KEYS}
+# --- Codex -----------------------------------------------------------------------
+CODEX_SKILL_KEYS = {"name", "description", "license", "compatibility", "metadata"}
+CODEX_AGENT_KEYS = {
+    "name", "description", "developer_instructions", "model",
+    "model_reasoning_effort", "sandbox_mode", "nickname_candidates",
+}
+CODEX_SANDBOX_MODES = {"read-only", "workspace-write", "danger-full-access"}
+CODEX_EFFORTS = {"low", "medium", "high", "xhigh"}
+CODEX_AGENT_NAME_RE = re.compile(r"^[a-z0-9]+([-_][a-z0-9]+)*$")
+
+SKILL_KEYS = {
+    "claude-code": CLAUDE_SKILL_KEYS,
+    "antigravity": AG_SKILL_KEYS,
+    "opencode": OC_SKILL_KEYS,
+    "codex": CODEX_SKILL_KEYS,
+}
 
 
 @dataclass
@@ -403,6 +419,9 @@ def check_plugin_paths(add: Scoped, skill_dir: Path, text: str) -> None:
 
 # --- agents ----------------------------------------------------------------------
 def lint_agent(report: Report, path: Path, platform: str) -> None:
+    if platform == "codex":
+        lint_codex_agent(report, path)
+        return
     report.files_checked += 1
     doc = read_doc(path)
     add = Scoped(report, path, doc.ignored)
@@ -419,6 +438,50 @@ def lint_agent(report: Report, path: Path, platform: str) -> None:
         add("warning", "A003", "agent prompt is over 300 lines; move knowledge into skills and preload them")
     {"claude-code": lint_claude_agent, "antigravity": lint_antigravity_agent, "opencode": lint_opencode_agent}[platform](add, path, fm, doc)
     check_foreign_text(add, doc.body, platform)
+
+
+def lint_codex_agent(report: Report, path: Path) -> None:
+    report.files_checked += 1
+    raw = path.read_text(encoding="utf-8-sig", errors="replace")
+    text = raw.replace("\r\n", "\n")
+    ignored = {c.strip() for m in IGNORE_RE.finditer(text) for c in m.group(1).split(",") if c.strip()}
+    add = Scoped(report, path, ignored)
+    try:
+        data = tomllib.loads(text)
+    except tomllib.TOMLDecodeError as exc:
+        add("error", "A050", f"invalid TOML: {exc}")
+        return
+    name = data.get("name")
+    if not isinstance(name, str) or not name.strip():
+        add("error", "A051", "name is required")
+    elif not CODEX_AGENT_NAME_RE.match(name):
+        add("warning", "A051", f"name '{name}' should be lowercase letters/digits with hyphens or underscores")
+    desc = data.get("description")
+    if not isinstance(desc, str) or not desc.strip():
+        add("error", "A052", "description is required (it is the delegation trigger)")
+    instr = data.get("developer_instructions")
+    if not isinstance(instr, str) or not instr.strip():
+        add("error", "A053", "developer_instructions is required")
+    else:
+        if instr.count("\n") + 1 > 300:
+            add("warning", "A003", "developer_instructions is over 300 lines; move knowledge into skills")
+        check_foreign_text(add, instr, "codex")
+    if "sandbox_mode" in data:
+        mode = data["sandbox_mode"]
+        if not one_of(mode, CODEX_SANDBOX_MODES):
+            add("error", "A054", f"sandbox_mode must be one of {sorted(CODEX_SANDBOX_MODES)}")
+        elif mode == "danger-full-access":
+            add("warning", "A054", "sandbox_mode 'danger-full-access' removes sandbox protection")
+    if "model_reasoning_effort" in data and not one_of(data["model_reasoning_effort"], CODEX_EFFORTS):
+        add("error", "A055", f"model_reasoning_effort must be one of {sorted(CODEX_EFFORTS)}")
+    if "model" in data and (not isinstance(data["model"], str) or not data["model"].strip()):
+        add("error", "A056", "model must be a non-empty string")
+    if "nickname_candidates" in data:
+        nicks = data["nickname_candidates"]
+        if not isinstance(nicks, list) or not all(isinstance(n, str) and n.strip() for n in nicks):
+            add("error", "A056", "nickname_candidates must be a list of non-empty strings")
+    for key in sorted(set(data) - CODEX_AGENT_KEYS, key=str):
+        add("warning", "A056", f"key '{key}' is not a documented Codex custom agent field")
 
 
 def as_list(value) -> list[str]:
@@ -616,7 +679,7 @@ def lint_instructions(report: Report, path: Path, platform: str) -> None:
     size = len(doc.text.encode("utf-8"))
     if size > AG_FILE_BYTES:
         add("warning", "I002", f"{path.name} is {size} bytes (Antigravity rule files are limited to 24 KB)")
-    if path.name in ("AGENTS.md", "GEMINI.md") and doc.text.startswith("---\n"):
+    if path.name in ("AGENTS.md", "AGENTS.override.md", "GEMINI.md") and doc.text.startswith("---\n"):
         add("warning", "I003", f"{path.name} takes no frontmatter")
     if path.name == "CLAUDE.md":
         agents_md = path.parent / "AGENTS.md"
@@ -627,7 +690,7 @@ def lint_instructions(report: Report, path: Path, platform: str) -> None:
 
 
 # --- dispatch --------------------------------------------------------------------
-INSTRUCTION_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", "CLAUDE.local.md"}
+INSTRUCTION_FILES = {"AGENTS.md", "AGENTS.override.md", "CLAUDE.md", "GEMINI.md", "CLAUDE.local.md"}
 
 
 def lint_container(report: Report, root: Path, platform: str) -> None:
@@ -699,6 +762,8 @@ def agent_files(agents_dir: Path, platform: str) -> list[Path]:
         return [f for f in walk_files(agents_dir) if f.suffix == ".md"]
     if platform == "antigravity":
         return sorted(list(agents_dir.glob("*.md")) + list(agents_dir.glob("*/agent.md")))
+    if platform == "codex":
+        return sorted(agents_dir.glob("*.toml"))
     return sorted(agents_dir.glob("*.md"))
 
 
@@ -720,7 +785,9 @@ def lint_path(report: Report, path: Path, platform: str) -> None:
         lint_instructions(report, path, platform)
     elif path.suffix == ".md" and "rules" in path.parent.parts[-1:]:
         lint_rule(report, path, platform)
-    elif path.suffix == ".md" and ("agents" in path.parent.parts or path.name == "agent.md"):
+    elif (path.suffix == ".md" and ("agents" in path.parent.parts or path.name == "agent.md")) or (
+        path.suffix == ".toml" and "agents" in path.parent.parts
+    ):
         lint_agent(report, path, platform)
     else:
         report.add("error", "X003", path, "cannot tell what this file is (expected SKILL.md, an agent under agents/, a rule under rules/, or an instruction file)")
@@ -735,6 +802,8 @@ def detect_platforms(root: Path) -> list[str]:
         found.append("antigravity")
     if (root / ".opencode").is_dir() or (root / "opencode.json").is_file():
         found.append("opencode")
+    if (root / ".codex").is_dir() or (root / "AGENTS.override.md").is_file():
+        found.append("codex")
     return found or list(PLATFORMS)
 
 
@@ -748,9 +817,13 @@ def lint_project(report: Report, root: Path, platforms: list[str]) -> None:
     for wf in (root / ".agent" / "workflows", root / ".agents" / "workflows"):
         if wf.is_dir():
             report.add("error", "P002", wf, "legacy Antigravity workflows are deprecated; convert them to skills (/migrate-workflows)")
-    for name in ("AGENTS.md", "CLAUDE.md", "GEMINI.md"):
+    for name in ("AGENTS.md", "AGENTS.override.md", "CLAUDE.md", "GEMINI.md"):
         if (root / name).is_file():
-            target = "claude-code" if name == "CLAUDE.md" else ("antigravity" if name == "GEMINI.md" else platforms[0])
+            target = (
+                "claude-code" if name == "CLAUDE.md"
+                else ("antigravity" if name == "GEMINI.md"
+                else ("codex" if name == "AGENTS.override.md" else platforms[0]))
+            )
             lint_instructions(report, root / name, target)
 
     if "claude-code" in platforms:
@@ -776,6 +849,13 @@ def lint_project(report: Report, root: Path, platforms: list[str]) -> None:
             for f in agent_files(root / ".opencode" / "agents", "opencode"):
                 lint_agent(report, f, "opencode")
         check_opencode_collisions(report, root)
+    if "codex" in platforms:
+        if "antigravity" not in platforms:
+            for d in skill_dirs(root / ".agents" / "skills"):
+                lint_skill(report, d, "codex")
+        if (root / ".codex" / "agents").is_dir():
+            for f in agent_files(root / ".codex" / "agents", "codex"):
+                lint_agent(report, f, "codex")
 
 
 def check_opencode_collisions(report: Report, root: Path) -> None:
