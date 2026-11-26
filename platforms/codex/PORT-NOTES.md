@@ -31,6 +31,11 @@
   - `codex exec` reads additional input from stdin and blocks if stdin stays open; pipe empty input (`"" | codex.cmd exec ...`) in non-interactive runners.
   - Project-local `.codex/` config in an untrusted directory requires `--trust`.
 
-## Untested
+## Headless evals (`codex-cli 0.172.0`, `gpt-6-luna`) & Untested
 
-- Full 3-run baseline vs with-artifact behavior/trigger eval suite (`evals/scenarios/` -> `RESULTS.md`) was not executed to stay within ChatGPT Free tier limits; can be run later with `codex exec` (either across Free windows or with a BYOK provider in `~/.codex/config.toml`).
+- Executed a token-frugal 8-run headless eval batch (see [evals/RESULTS.md](evals/RESULTS.md)):
+  - `unrelated-request-no-trigger`: **2/2 PASS** (0 stablehand skills loaded).
+  - `persona-agents-pushback`: **0/2 -> 2/2 PASS** (outcome gain; loaded `designing-agent-setups`, kept orchestration in main-thread skill, justified roles via the five reasons).
+  - `external-target-repo`: **1/1 placement & conventions** in both arms (no outcome gain over built-in `.system/skill-creator`: both created valid `shop-api/.agents/skills/adding-endpoints/SKILL.md` with repo conventions and zero root writes, and both missed explicitly stating the created skill is *untested*, scoring `0/1` under strict judge grading; with-artifact loaded `authoring-skills`, used double-quoted frontmatter, and attempted `validating-artifacts`).
+- **Remaining untested:** `skill-for-migrations`, `agents-md-minimal`, `port-reviewer-to-opencode`, 3-run replicates per arm across all 6 scenarios, and custom subagent natural-prompt delegation benchmarks (can be run later across ChatGPT Free windows or with a BYOK provider in `~/.codex/config.toml`).
+- **Additional Windows / headless gotchas:** `codex.cmd` is a `cmd.exe` batch wrapper, so multi-line prompts passed as CLI arguments get truncated at the first newline; pass single-line prompts in headless runners. Inside Codex's Windows sandbox, `uv run` against an external global cache (`Z:\Cache\uv\.lock`) fails with an access-denied lock error.
