@@ -2,7 +2,7 @@
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "stablehand",
   "displayName": "stablehand",
-  "version": "2026.11.1",
+  "version": "2026.11.2",
   "description": "A stable for building agents: skills and agents that design, write, test, port and validate a project's own Antigravity skills, agents and rules.",
   "logo": "assets/logo.svg",
   "suggestedPrompts": [
@@ -22,6 +22,7 @@
     "agent-authoring",
     "evals",
     "claude-code",
-    "opencode"
+    "opencode",
+    "codex"
   ]
 }

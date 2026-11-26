@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml/badge.svg)](https://github.com/Dudziak07/stablehand/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![version](https://img.shields.io/badge/version-2026.11.1-informational)](https://github.com/Dudziak07/stablehand/releases)
+[![version](https://img.shields.io/badge/version-2026.11.2-informational)](https://github.com/Dudziak07/stablehand/releases)
 
 **A stable for building agents.** stablehand is not a pack of ready-made coding agents. It is the tack room you visit to build the *right* skills, subagents and instructions for **your** repository, on the platform you use: Claude Code, Google Antigravity, OpenCode or OpenAI Codex CLI.
 
@@ -159,7 +159,7 @@ The linter is also bundled with the `validating-artifacts` skill, so the agents 
 
 ## FAQ
 
-**Do I need all three platforms?** No. Install the one you use. The others are only needed if you want to build or test artifacts for them.
+**Do I need all four platforms?** No. Install the one you use. The others are only needed if you want to build or test artifacts for them.
 
 **Skill or agent: which do I need?** Usually a skill. Ask stablehand; it will tell you which of the five reasons an agent would serve, or why a skill is enough.
 
