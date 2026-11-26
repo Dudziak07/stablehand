@@ -398,6 +398,19 @@ def test_opencode_v2_permissions_shell_and_subagent_are_clean(tmp_path):
     assert oc_agent(tmp_path, rules) == set()
 
 
+def test_opencode_v2_image_and_video_actions(tmp_path):
+    rules = ('  - action: generate_image\n    resource: "*"\n    effect: allow\n'
+             '  - action: generate_video\n    resource: "*"\n    effect: allow\n')
+    assert oc_agent(tmp_path, rules) == set()
+    agent = write(tmp_path / ".opencode/agents/media.md",
+                  '---\ndescription: "Media."\nmode: subagent\npermissions:\n'
+                  '  - action: experimental_image_generate\n    resource: "*"\n    effect: allow\n'
+                  '---\nMedia.\n')
+    findings = [f for f in run_path(agent, "opencode").findings if f.code == "A049"]
+    assert [(f.level, f.code) for f in findings] == [("error", "A049")]
+    assert "generate_image" in findings[0].message
+
+
 def test_antigravity_agent_flash_lite_and_new_documented_tools(tmp_path):
     f = write(tmp_path / "agents" / "sweeper.md",
               '---\nname: sweeper\ndescription: "Sweeps."\n'
