@@ -10,7 +10,7 @@ A subagent is a separate worker with its own context, permissions and model. Bui
 Reference material:
 - `references/targets.md`: the target repo, access to it, and target platforms other than OpenCode.
 - `references/decision-guide.md`: the five reasons and the anti-patterns.
-- `references/opencode.md`, sections 3 and 4: fields, permissions, model tiers, delegation. When the target platform is Claude Code or Antigravity, read `references/claude-code.md` or `references/antigravity.md` instead.
+- `references/opencode.md`, sections 3 and 4: fields, permissions, model tiers, delegation. When the target platform is Claude Code, Antigravity or Codex, read `references/claude-code.md`, `references/antigravity.md` or `references/codex.md` instead.
 - `references/writing-for-agents.md`: the "Agent prompts" section.
 - `references/eval-protocol.md`: benchmark format and the decision rule.
 - `references/coexistence.md`: placement when other platforms open the repo.

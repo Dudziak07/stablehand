@@ -14,6 +14,7 @@ Reference material (read when a step says so):
 - `references/antigravity.md`: Antigravity agent frontmatter, exact tool names, model tiers, and delegation mechanics.
 - `references/claude-code.md`: Claude Code conventions when authoring for Claude Code.
 - `references/opencode.md`: OpenCode conventions when authoring for OpenCode.
+- `references/codex.md`: OpenAI Codex CLI conventions when authoring for Codex.
 
 ## Anti-pattern: the persona agent
 You create a "developer", "tester" or "architect" agent because the user named a role. Warning signs:

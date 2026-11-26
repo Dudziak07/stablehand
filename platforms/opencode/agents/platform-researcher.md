@@ -1,5 +1,5 @@
 ---
-description: "Re-verifies one question about Claude Code, Antigravity or OpenCode customization formats (skill/agent fields, paths, rules, plugins, hooks) against official docs and changelogs, and reports what changed versus a given reference card, with URLs and dates. Use when a card may be stale, before porting to a platform, or when an artifact fails to load and the card cannot explain why."
+description: "Re-verifies one question about Claude Code, Antigravity, OpenCode or Codex customization formats (skill/agent fields, paths, rules, plugins, hooks) against official docs and changelogs, and reports what changed versus a given reference card, with URLs and dates. Use when a card may be stale, before porting to a platform, or when an artifact fails to load and the card cannot explain why."
 mode: subagent
 model: deepseek/deepseek-flash
 permissions:
@@ -37,6 +37,7 @@ The caller must give you:
    | Claude Code | code.claude.com/docs | github.com/anthropics/claude-code CHANGELOG.md |
    | Antigravity | antigravity.google/llms.txt (`.md` mirrors at `antigravity.google/docs/*.md`) | antigravity.google/docs/changelog.md; github.com/google-antigravity/antigravity-cli |
    | OpenCode | opencode.ai/docs | github.com/anomalyco/opencode releases |
+   | Codex | developers.openai.com/codex | github.com/openai/codex releases |
 
 3. Use community posts only to find official sources, and label them if you cite them.
 4. Compare with the card. When sources conflict, prefer the newer official one and say so.

@@ -12,7 +12,7 @@ Reference material:
 - `references/opencode.md`, section 1: the instruction files OpenCode reads, the `instructions` array, and the Claude fallback.
 - `references/coexistence.md`: which file each platform reads, and the CLAUDE.md to AGENTS.md bridge.
 - `references/writing-for-agents.md`: what to leave out.
-- `references/claude-code.md` and `references/antigravity.md`: read the matching one when the repo is also opened by that platform.
+- `references/claude-code.md`, `references/antigravity.md` and `references/codex.md`: read the matching one when the repo is also opened by that platform.
 
 ## Process
 

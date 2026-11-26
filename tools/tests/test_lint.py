@@ -562,3 +562,72 @@ def test_cli_default_human_readable_output(good_skill, monkeypatch, capsys):
     assert "0 error(s), 0 warning(s), 0 info - 1 file(s) checked" in out
     with pytest.raises(json.JSONDecodeError):
         json.loads(out)
+
+
+def test_codex_agent_valid_toml_is_clean(tmp_path):
+    f = write(
+        tmp_path / ".codex" / "agents" / "artifact-reviewer.toml",
+        'name = "artifact-reviewer"\n'
+        'description = "Reviews artifacts."\n'
+        'sandbox_mode = "read-only"\n'
+        'model_reasoning_effort = "high"\n'
+        'nickname_candidates = ["Reviewer"]\n'
+        'developer_instructions = "Review carefully and stay read-only."\n',
+    )
+    report = run_path(f, "codex")
+    assert report.findings == []
+    for effort in ("none", "max"):
+        f_eff = write(
+            tmp_path / ".codex" / "agents" / f"eff-{effort}.toml",
+            f'name = "eff-{effort}"\ndescription = "Test."\nmodel_reasoning_effort = "{effort}"\ndeveloper_instructions = "Test."\n',
+        )
+        assert run_path(f_eff, "codex").findings == []
+
+
+def test_codex_agent_invalid_toml_and_fields(tmp_path):
+    bad_toml = write(tmp_path / "agents" / "broken.toml", 'name = "broken\n')
+    assert "A050" in codes(run_path(bad_toml, "codex"), "error")
+
+    missing = write(tmp_path / "agents" / "missing.toml", 'model = ""\nunknown_key = 1\n')
+    rep = run_path(missing, "codex")
+    assert {"A051", "A052", "A053", "A056"} <= codes(rep, "error")
+    assert "A056" in codes(rep, "warning")
+
+    bad_enums = write(
+        tmp_path / "agents" / "bad-enums.toml",
+        'name = "Bad Name"\n'
+        'description = "Test."\n'
+        'sandbox_mode = "yolo"\n'
+        'model_reasoning_effort = "ultra"\n'
+        'developer_instructions = "Use the Agent tool."\n',
+    )
+    rep2 = run_path(bad_enums, "codex")
+    assert {"A054", "A055"} <= codes(rep2, "error")
+    assert {"A051", "S024"} <= codes(rep2, "warning")
+
+    danger = write(
+        tmp_path / "agents" / "danger.toml",
+        'name = "danger"\n'
+        'description = "Test."\n'
+        'sandbox_mode = "danger-full-access"\n'
+        'developer_instructions = "' + ("line\\n" * 305) + '"\n',
+    )
+    rep3 = run_path(danger, "codex")
+    assert {"A054", "A003"} <= codes(rep3, "warning")
+
+
+def test_codex_project_detection_and_lint(tmp_path):
+    write(tmp_path / "AGENTS.override.md", "---\nfoo: bar\n---\n# Override\n")
+    write(
+        tmp_path / ".codex" / "agents" / "rev.toml",
+        'name = "rev"\ndescription = "Reviews."\nsandbox_mode = "read-only"\ndeveloper_instructions = "Review."\n',
+    )
+    d = tmp_path / ".agents" / "skills" / "my-skill"
+    write(d / "SKILL.md", GOOD_SKILL.replace("writing-tests", "my-skill").replace("references/conventions.md", "x.md"))
+    write(d / "x.md", "x")
+
+    assert "codex" in lint.detect_platforms(tmp_path)
+    report = lint.Report()
+    lint.lint_project(report, tmp_path, ["codex"])
+    assert "I003" in codes(report, "warning")
+    assert not codes(report, "error")

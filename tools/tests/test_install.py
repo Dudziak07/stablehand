@@ -33,10 +33,11 @@ def make_link(src: Path, dst: Path) -> None:
 @pytest.fixture
 def repo(tmp_path, monkeypatch):
     root = (tmp_path / "repo").resolve()
-    for platform in ("opencode", "antigravity"):
+    for platform in ("opencode", "antigravity", "codex"):
         for skill in ("alpha", "beta"):
             write(root / "platforms" / platform / "skills" / skill / "SKILL.md")
     write(root / "platforms" / "opencode" / "agents" / "rev.md")
+    write(root / "platforms" / "codex" / "agents" / "rev.toml", 'name = "rev"\n')
     write(root / "platforms" / "antigravity" / "plugin.json", "{}")
     home = (tmp_path / "home").resolve()
     home.mkdir()
@@ -167,3 +168,34 @@ def test_is_ours_rule(repo, tmp_path):
     assert install.is_ours(real, {str(real): "copy"})
     assert not install.is_ours(real, {str(real): "link"})  # a recorded link replaced by a real folder
     assert not install.is_ours(repo / "platforms", {})  # under ROOT but not a link
+
+
+@pytest.mark.parametrize("scope", ["project", "user"])
+@pytest.mark.parametrize("copy", [False, True])
+def test_codex_install_reinstall_uninstall(repo, project, scope, copy):
+    args = ["codex", "--scope", scope] + (["--project", str(project)] if scope == "project" else []) + (["--copy"] if copy else [])
+    base = project if scope == "project" else Path.home()
+    assert install.main(args) == 0
+    assert (base / ".agents" / "skills" / "alpha" / "SKILL.md").is_file()
+    assert (base / ".codex" / "agents" / "rev.toml").is_file()
+    assert install.is_link(base / ".agents" / "skills" / "alpha") is not copy
+
+    shutil.rmtree(repo / "platforms" / "codex" / "skills" / "beta")
+    assert install.main(args) == 0
+    assert not os.path.lexists(base / ".agents" / "skills" / "beta")
+
+    assert install.main(args + ["--uninstall"]) == 0
+    assert not (base / ".codex").exists()
+    assert not (base / ".agents").exists()
+
+
+def test_codex_workspace_preserves_auditing_stablehand(repo):
+    keep = write(repo / ".agents" / "skills" / "auditing-stablehand" / "SKILL.md", "keep")
+    assert install.main(["codex", "--scope", "workspace"]) == 0
+    assert (repo / ".agents" / "skills" / "alpha" / "SKILL.md").is_file()
+    assert (repo / ".codex" / "agents" / "rev.toml").is_file()
+
+    assert install.main(["codex", "--scope", "workspace", "--uninstall"]) == 0
+    assert keep.read_text(encoding="utf-8") == "keep"
+    assert not (repo / ".codex").exists()
+    assert not os.path.lexists(repo / ".agents" / "skills" / "alpha")

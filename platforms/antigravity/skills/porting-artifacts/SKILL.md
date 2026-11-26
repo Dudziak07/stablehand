@@ -10,6 +10,7 @@ Reference material (read source and target cards before mapping):
 - `references/antigravity.md`: Antigravity fields, exact tool names, model tiers, and limits.
 - `references/claude-code.md`: Claude Code conventions, tools, and frontmatter.
 - `references/opencode.md`: OpenCode conventions, permissions, and modes.
+- `references/codex.md`: OpenAI Codex CLI fields, `.codex/agents/*.toml`, and sandbox modes.
 - `references/coexistence.md`: safe placement preventing cross-platform contamination.
 - `references/writing-for-agents.md`: model calibration and output formats.
 - `references/targets.md`: establishing the destination repository and access.

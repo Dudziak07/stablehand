@@ -12,6 +12,7 @@ Reference material (read the source and target cards in full before mapping):
 - `references/opencode.md`
 - `references/claude-code.md`
 - `references/antigravity.md`
+- `references/codex.md`
 - `references/coexistence.md`: where the port may live without leaking into other platforms.
 - `references/writing-for-agents.md`: model calibration for the target.
 - `references/targets.md`: the target repo and access to it.

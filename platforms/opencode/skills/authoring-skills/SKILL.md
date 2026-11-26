@@ -10,7 +10,7 @@ A skill earns its place by changing behavior. Prove the failure first, write the
 Reference material:
 - `references/targets.md`: the target repo, access to it, and target platforms other than OpenCode.
 - `references/writing-for-agents.md`: read before drafting; DeepSeek calibration is in the last table.
-- `references/opencode.md`, section 2: fields, locations, limits. When the target platform is Claude Code or Antigravity, read `references/claude-code.md` or `references/antigravity.md` instead.
+- `references/opencode.md`, section 2: fields, locations, limits. When the target platform is Claude Code, Antigravity or Codex, read `references/claude-code.md`, `references/antigravity.md` or `references/codex.md` instead.
 - `references/eval-protocol.md`: eval file formats and the decision rule.
 - `references/decision-guide.md`: when the request is really an agent, a rule or a hook.
 - `references/coexistence.md`: placement when other platforms open the repo.

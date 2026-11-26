@@ -13,6 +13,7 @@ Reference material (read when a step says so):
 - `references/antigravity.md`: Antigravity locations, fields, triggers, tool names and limits.
 - `references/claude-code.md`: Claude Code conventions when designing for Claude Code.
 - `references/opencode.md`: OpenCode conventions when designing for OpenCode.
+- `references/codex.md`: OpenAI Codex CLI conventions when designing for Codex.
 
 ## Anti-pattern: the org chart
 You build a team of role agents (developer, tester, architect, orchestrator) because it mirrors a human team. Warning signs:

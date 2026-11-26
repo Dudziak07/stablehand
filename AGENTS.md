@@ -4,7 +4,7 @@ This repo is a workshop: people open it to build skills and agents **for other r
 
 ## Using this repo (read first)
 When the user asks for a skill, an agent, instructions or a whole agent setup **for a repository**, for example "I need a skill for ../shop-api that runs our migrations":
-1. Establish the **target repo path** and the **target platform** (Claude Code, Antigravity or OpenCode; default: the tool you are running in). Ask if either is unclear.
+1. Establish the **target repo path** and the **target platform** (Claude Code, Antigravity, OpenCode or Codex; default: the tool you are running in). Ask if either is unclear.
 2. Load the matching stablehand skill:
    - a whole setup, or "what does repo X need" → `designing-agent-setups`
    - one skill → `authoring-skills`
@@ -15,14 +15,14 @@ When the user asks for a skill, an agent, instructions or a whole agent setup **
 3. Artifacts are written into the **target repo**, never into this repository.
 
 If the stablehand skills are not available in your tool, wire this checkout first, then reload or reopen the folder:
-`uv run tools/install.py <claude-code|antigravity|opencode> --scope workspace`
+`uv run tools/install.py <claude-code|antigravity|opencode|codex> --scope workspace`
 
 ## Contributing to stablehand itself
 
 ### Commands
 - Full self-check (sync, tests, cards, all linters, parity, native validators): `uv run .agents/skills/auditing-stablehand/scripts/self_check.py` (or load the `auditing-stablehand` skill at `.agents/skills/auditing-stablehand/SKILL.md`).
 - Refresh generated copies: `uv run tools/sync.py`. CI checks this with `--check`.
-- Lint a platform implementation: `uv run tools/lint.py --platform <claude-code|antigravity|opencode> platforms/<p>`
+- Lint a platform implementation: `uv run tools/lint.py --platform <claude-code|antigravity|opencode|codex> platforms/<p>`
 - Linter tests: `uv run --with pytest --with pyyaml pytest tools/tests -q`
 - Validate the Claude plugin: `claude plugin validate .`
 - Claude evals: `claude plugin eval platforms/claude-code --allow-tools Write Edit --scaffold` (`--scaffold` builds the `external-target-repo` fixture; read its `setup.sh` first). Runs cost usage.
