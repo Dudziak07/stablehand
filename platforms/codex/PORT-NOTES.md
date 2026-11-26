@@ -25,6 +25,7 @@
 - Installed into a temporary scratch project via `uv run tools/install.py codex --scope project --project <scratch> --copy` and ran `"" | codex.cmd exec --ephemeral --trust --sandbox read-only --skip-git-repo-check -C <scratch> "..."`:
   - Loaded without any config or TOML parse errors (`exit 0`, model `gpt-6-luna`).
   - Discovered all 8 `.agents/skills/*/SKILL.md` skills and all 3 `.codex/agents/*.toml` custom agents.
+- Negative-control check (`"What is 2 + 2? Reply with only the number."` via `--json`): exited `0`, returned `"4"`, and triggered no stablehand skills.
 - **Observed Windows / headless gotchas:**
   - `codex.ps1` is blocked by default Windows PowerShell 5.1 `ExecutionPolicy`; use `codex.cmd` or `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
   - `codex exec` reads additional input from stdin and blocks if stdin stays open; pipe empty input (`"" | codex.cmd exec ...`) in non-interactive runners.

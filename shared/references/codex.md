@@ -52,8 +52,8 @@ Primary sources:
   | `name` | yes | unique agent identifier (lowercase letters/digits with `-` or `_`). |
   | `description` | yes | when the parent agent should delegate to this subagent. |
   | `developer_instructions` | yes | system prompt (TOML multi-line string `"""..."""`); keep concise and focused. |
-  | `model` | no | model override (e.g. `gpt-5.4`); omit to inherit the parent session model. |
-  | `model_reasoning_effort` | no | `"low"`, `"medium"`, `"high"`, `"xhigh"`. |
+  | `model` | no | model override (e.g. `gpt-6-luna` on Free/Go, or GPT-6.1/6.2 models on Plus/Pro); omit to inherit the parent session model. |
+  | `model_reasoning_effort` | no | `"none"`, `"low"`, `"medium"`, `"high"`, `"xhigh"`, `"max"`. |
   | `sandbox_mode` | no | `"read-only"`, `"workspace-write"`, `"danger-full-access"`. Use `"read-only"` for reviewers and researchers. |
   | `nickname_candidates` | no | array of display names for spawned agent threads. |
 
@@ -72,7 +72,7 @@ Primary sources:
 
 ## 5. Models and providers
 - **Authentication (`codex login`):**
-  - **ChatGPT account** (Free, Go, Plus, Pro): Free gives local CLI/IDE access within rolling 5-hour and weekly limits (no cloud tasks).
+  - **ChatGPT account** (Free, Go, Plus, Pro): Free and Go default to `gpt-6-luna` (fast, 1.05M context, \$0.10/\$0.50 per 1M API tokens) within rolling 5-hour and weekly limits (no cloud tasks on Free); Plus and Pro unlock larger GPT-6.1/6.2 models.
   - **API key / BYOK:** billed separately per token (`OPENAI_API_KEY` or custom `[model_providers.<name>]` in `~/.codex/config.toml`).
 - **Custom providers (`config.toml`):** Codex deprecated `wire_api = "chat"` and requires `wire_api = "responses"`. OpenRouter translates to Responses API; DeepSeek provides an official setup script for `config.toml` / `models.json`.
 - **Profiles:** `-p <name>` / `--profile <name>` layers `$CODEX_HOME/<name>.config.toml` over the base `config.toml`.
@@ -86,9 +86,11 @@ Primary sources:
 ## 7. Testing
 - **Headless single run:**
   ```bash
-  codex exec --ephemeral --json --sandbox read-only -C "<target-dir>" "<prompt>"
+  "" | codex exec --ephemeral --trust --json --sandbox read-only -C "<target-dir>" "<prompt>"
   ```
   - `--ephemeral` avoids persisting session files to disk.
+  - `--trust` allows project-local `.codex/` configuration in untrusted directories.
+  - Close or pipe empty stdin (`"" | codex.cmd exec ...` in PowerShell, `< /dev/null` on POSIX) so `codex exec` does not block waiting for additional stdin.
   - `--json` streams JSONL events to stdout (`-o <file>` writes the final message to a file).
   - `--output-schema <file>` enforces a JSON Schema on the final answer.
   - `--skip-git-repo-check` allows running in scratch directories without `.git`.
@@ -101,4 +103,5 @@ Primary sources:
 - **Windows PowerShell 5.1 shim:** global `pnpm` / `npm` installs create `codex.ps1`, which default Windows PowerShell `ExecutionPolicy` blocks. Run `codex.cmd` or allow local scripts with `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` in Windows PowerShell.
 - **Subagents are TOML, not Markdown:** `.codex/agents/*.toml` uses TOML keys (`developer_instructions`, `sandbox_mode`, `model_reasoning_effort`). Markdown files in `.codex/agents/` are ignored.
 - **Shared `.agents/skills/` folder:** Codex, Antigravity, and OpenCode all read `.agents/skills/`. Use `tools/install.py codex --scope workspace` carefully when Antigravity or OpenCode also use `.agents/skills/` in the same checkout.
+- **Headless stdin & project trust:** `codex exec` reads additional input from stdin and blocks if stdin stays open (pipe `""` in PowerShell or redirect `< /dev/null` on POSIX), and project-local `.codex/` config requires `--trust` in untrusted directories.
 - **Deprecated `wire_api = "chat"`:** custom `model_providers` entries must use `wire_api = "responses"`.

@@ -1,6 +1,6 @@
 ---
 name: platform-researcher
-description: "Re-verifies questions about Antigravity, Claude Code or OpenCode customization formats (skills, agents, rules, plugins, hooks, paths) against official documentation and changelogs, reporting discrepancies against reference cards with URLs. Delegate when a platform detail may be stale or unverified."
+description: "Re-verifies questions about Antigravity, Claude Code, OpenCode or Codex customization formats (skills, agents, rules, plugins, hooks, paths) against official documentation and changelogs, reporting discrepancies against reference cards with URLs. Delegate when a platform detail may be stale or unverified."
 tools:
   - search_web
   - read_url_content
@@ -29,6 +29,7 @@ The caller must provide:
    | Antigravity | antigravity.google/llms.txt (and `.md` page mirrors under `antigravity.google/docs/*.md`) | antigravity.google/docs/changelog.md and github.com/google-antigravity/antigravity-cli CHANGELOG.md |
    | Claude Code | code.claude.com/docs | github.com/anthropics/claude-code CHANGELOG.md |
    | OpenCode | opencode.ai/docs | github.com/anomalyco/opencode releases |
+   | Codex | developers.openai.com/codex | github.com/openai/codex releases |
 3. Consult secondary community posts only to locate primary sources, labeling them if cited.
 4. Compare findings against the reference card. When sources conflict, prefer the newer official source with explicit attribution.
 

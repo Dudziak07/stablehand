@@ -163,7 +163,7 @@ CODEX_AGENT_KEYS = {
     "model_reasoning_effort", "sandbox_mode", "nickname_candidates",
 }
 CODEX_SANDBOX_MODES = {"read-only", "workspace-write", "danger-full-access"}
-CODEX_EFFORTS = {"low", "medium", "high", "xhigh"}
+CODEX_EFFORTS = {"none", "low", "medium", "high", "xhigh", "max"}
 CODEX_AGENT_NAME_RE = re.compile(r"^[a-z0-9]+([-_][a-z0-9]+)*$")
 
 SKILL_KEYS = {

@@ -8,7 +8,7 @@ The usual flow: a developer opens **the stablehand repository** in their tool an
 2. **Never write artifacts into stablehand itself.** It holds the toolkit, not projects.
 3. **Target platform.**
    - Default: the platform you are running on (the host).
-   - If the user names another platform (Claude Code, Antigravity, OpenCode), use that platform's card for every format decision.
+   - If the user names another platform (Claude Code, Antigravity, OpenCode, Codex), use that platform's card for every format decision.
 4. **Confirm.** Restate in one line: target path, platform, what is being built.
 
 ## Access to a repository outside the workspace
@@ -18,6 +18,7 @@ The usual flow: a developer opens **the stablehand repository** in their tool an
 | Claude Code | Ask the user to run `/add-dir <path>`, or to start with `claude --add-dir <path>`. Then use absolute paths. | `cd "<target>" && claude -p "…" --output-format stream-json --verbose` |
 | Antigravity | File tools accept absolute paths, but `run_command` refuses a working directory outside the workspace. Add the target folder to the workspace (multi-root in App/IDE, or `agy --add-dir <path>` / `/add-dir` in CLI) before running anything in it. | `agy -p "…" --output-format stream-json`, started from a scratch copy of the target |
 | OpenCode | `external_directory` is allowed by default in V2; add an `ask`/`deny` rule to prompt, then approve. | run from the target: `cd "<target>" && opencode run "…" --format json` |
+| Codex | Start with `codex --add-dir <path>` (or `codex.cmd` on Windows), or pass `-C <path>` for target commands. | `codex exec --ephemeral --trust --json --sandbox read-only -C "<target>" "…"` |
 
 ## Same platform as the host vs another platform
 

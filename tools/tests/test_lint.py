@@ -576,6 +576,12 @@ def test_codex_agent_valid_toml_is_clean(tmp_path):
     )
     report = run_path(f, "codex")
     assert report.findings == []
+    for effort in ("none", "max"):
+        f_eff = write(
+            tmp_path / ".codex" / "agents" / f"eff-{effort}.toml",
+            f'name = "eff-{effort}"\ndescription = "Test."\nmodel_reasoning_effort = "{effort}"\ndeveloper_instructions = "Test."\n',
+        )
+        assert run_path(f_eff, "codex").findings == []
 
 
 def test_codex_agent_invalid_toml_and_fields(tmp_path):

@@ -46,7 +46,7 @@ Everything it builds goes into **your** repository, never into stablehand.
 
 ```bash
 git clone https://github.com/Dudziak07/stablehand && cd stablehand
-uv run tools/install.py claude-code --scope workspace    # or: antigravity, opencode, all
+uv run tools/install.py claude-code --scope workspace    # or: antigravity, opencode, codex, all
 ```
 
 **2. Open the stablehand folder with access to your repository:**
@@ -56,6 +56,7 @@ uv run tools/install.py claude-code --scope workspace    # or: antigravity, open
 | Claude Code | `claude --add-dir ../shop-api` (or `/add-dir ../shop-api` in a session), then accept the trust prompt |
 | Antigravity | IDE or App: open the stablehand folder, then add `../shop-api` to the workspace (multi-root). CLI: `agy --add-dir ../shop-api` in the stablehand folder. Antigravity runs commands only inside workspace folders |
 | OpenCode | run `opencode` in the stablehand folder; approve the `external_directory` prompt when it reaches `../shop-api` |
+| Codex | `codex --add-dir ../shop-api` (`codex.cmd` on Windows PowerShell 5.1), or open the folder in VS Code with the Codex extension (`openai.chatgpt`) |
 
 **3. Ask for what you need:**
 
@@ -135,7 +136,7 @@ On every platform the negative control passes: no stablehand skill fires on an u
 |---|---|---|
 | Workspace (recommended) | `uv run tools/install.py <platform> --scope workspace` | you open the stablehand folder and build for other repositories |
 | Project | `uv run tools/install.py <platform> --scope project --project <repo>` | you want stablehand available inside one repository |
-| User | `uv run tools/install.py <platform>` | you want it everywhere (`~/.config/opencode`, `~/.gemini/config/plugins`) |
+| User | `uv run tools/install.py <platform>` | you want it everywhere (`~/.config/opencode`, `~/.gemini/config/plugins`, `~/.agents/skills`, `~/.codex/agents`) |
 | Claude marketplace | `claude plugin marketplace add Dudziak07/stablehand` then `claude plugin install stablehand@stablehand` | you prefer Claude Code's plugin system |
 
 - Add `--dry-run` to see what an install would do, `--uninstall` to remove exactly what it created, and `--copy` to copy files instead of linking them. Links follow `git pull` automatically.
