@@ -3,7 +3,7 @@
 
 The platforms read each other's folders. A skill tailored for one platform can leak into another, and OpenCode rejects duplicate skill names. Read this before placing artifacts in a repository that more than one harness opens.
 
-Last verified: 2026-10-21 (Antigravity paths re-verified 2026-11-21; OpenCode re-verified 2026-11-22 on v2.3.2; Codex verified 2026-11-26 on codex-cli 0.172.0; sources in each platform card).
+Last verified: 2026-10-21 (Antigravity paths re-verified 2026-11-26; OpenCode re-verified 2026-11-22 on v2.3.2; Codex verified 2026-11-26 on codex-cli 0.172.0; sources in each platform card).
 
 ## Who reads what — project scope
 
@@ -34,7 +34,7 @@ Last verified: 2026-10-21 (Antigravity paths re-verified 2026-11-21; OpenCode re
 | `~/.claude/skills/` | yes | no | **yes** (disable: `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1`) | no |
 | `~/.claude/agents/` | yes | no | no | no |
 | Claude plugin cache (`~/.claude/plugins/cache/…`) | yes | no | no | no |
-| `~/.agents/skills/` | no | no | yes | yes |
+| `~/.agents/skills/` | no | CLI only (`1.5.16+`) | yes | yes |
 | `~/.gemini/config/{skills,agents,rules,plugins}`, `~/.gemini/config/{AGENTS,GEMINI}.md`, `~/.gemini/{AGENTS,GEMINI}.md` (CLI also loads `~/.gemini/antigravity-cli/skills/` and `~/.gemini/skills/`; prefer `~/.gemini/config/` so App and CLI share them) | no | yes | no | no |
 | `~/.config/opencode/{skills,agents,AGENTS.md}` | no | no | yes | no |
 | `~/.codex/{agents/*.toml,AGENTS.md,config.toml}` | no | no | no | yes |

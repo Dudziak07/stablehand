@@ -1,6 +1,6 @@
 # Platform card: Google Antigravity
 
-Last verified: 2026-11-24. Versions checked: App 2.37.0 (changelog), IDE 2.8.0 (docs; 2.7.0 local), CLI `agy` 1.5.16 (changelog; 1.5.5 local).
+Last verified: 2026-11-26. Versions checked: App 2.38.0 (changelog), IDE 2.8.0 (docs; 2.7.0 local), CLI `agy` 1.5.17 (changelog; 1.5.5 local).
 
 Antigravity moves fast. When a detail matters and may be stale, ask the `platform-researcher` agent to re-check it.
 
@@ -22,9 +22,9 @@ Primary sources:
 
 ## 1. Surfaces and roots
 - **Surfaces:**
-  - **App** (2.x desktop, v2.37.0; supports Remote SSH to 64-bit Linux hosts);
+  - **App** (2.x desktop, v2.38.0; remote tunnel and panel updates; supports Remote SSH to 64-bit Linux hosts);
   - **IDE** (VS Code fork, actively maintained, v2.8.0);
-  - **CLI `agy`** (Go, closed source, near-daily releases, v1.5.16);
+  - **CLI `agy`** (Go, closed source, near-daily releases, v1.5.17 — altscreen mouse cursor/selection, enterprise `.git`/`.env` boundary fix, `/model` fallback refinements);
   - **IDE extensions** (VS Code, Visual Studio, Eclipse, JetBrains, Android Studio, Zed, Xcode, plus any editor via **`agy acp`**);
   - **Python SDK** (`google-antigravity`).
 
@@ -33,7 +33,7 @@ Primary sources:
 - **Workspace boundaries for execution:** `run_command` requires `Cwd` to be located within an active workspace folder. When working on an external target repository, add the target folder to the workspace (multi-root workspace in App/IDE, or `agy --add-dir <path>` / `/add-dir` in CLI) or run commands directly from a scratch copy of the target via `agy -p`. In CLI `auto` mode (default since `v1.5.7` where the OS terminal sandbox is available — Linux namespaces, macOS Seatbelt, Windows 11 24H2 Aug 2026+ Process Security Environments), CLI 1.5.14 allows reading files outside the workspace without prompting; CLI 1.5.16 also allows creating/editing outside without prompting when targeting a VCS repo (Git, Jujutsu, Mercurial) or making strictly additive edits.
 - **Personal / global root:** `~/.gemini/config/`, shared by App, IDE and CLI, plus `~/.gemini/{AGENTS,GEMINI}.md`.
   - Antigravity 1.x used `~/.gemini/antigravity/`, which old codelabs still show.
-  - CLI also loads skills from `~/.gemini/antigravity-cli/skills/` and `~/.gemini/skills/`, which the App does not read. In the CLI, those two folders outrank all other scopes and are not hidden by manifest `exclude` lists. Prefer `~/.gemini/config/skills/` for cross-surface use.
+  - CLI also loads skills from `~/.gemini/antigravity-cli/skills/` and `~/.gemini/skills/`, plus `~/.agents/skills/` (CLI 1.5.16+), which the App does not read. In the CLI, `~/.gemini/antigravity-cli/skills/` and `~/.gemini/skills/` outrank all other scopes and are not hidden by manifest `exclude` lists. Prefer `~/.gemini/config/skills/` for cross-surface use.
 - **Personal folder in a shared repo:** `.gemini/config.json` at the repo root accepts `{"personal_customization_dir": "people/{user}"}` (`USER` or Windows `USERNAME`), overriding workspace `.agents/`.
 - **Precedence, high to low:**
   1. repository personal directory (`.gemini/config.json`)
@@ -220,7 +220,7 @@ Current CLI model slugs (`agy models`, checked 2026-11-24) include `gemini-4-neo
 - **Never paste model-facing aliases** (`read_file`, `edit_file`, `write_file`) into custom agent `tools:` frontmatter; use canonical Cortex names (`view_file`, `replace_file_content`, `multi_replace_file_content`, `write_to_file`).
 - Discovery walks up from the workspace folder to the repo root, never down into subfolders below the workspace.
 - `trigger: manual` rules cannot be `@`-mentioned in the CLI.
-- `.agents/skills/` is also read by OpenCode. Keep Antigravity-tailored skills in a workspace plugin (`.agents/plugins/<set>/skills/`) when the repo is also used with OpenCode (see `coexistence.md`).
+- `.agents/skills/` is also read by OpenCode and Codex. Keep Antigravity-tailored skills in a workspace plugin (`.agents/plugins/<set>/skills/`) when the repo is also used with OpenCode or Codex (see `coexistence.md`).
 - Native Antigravity plugins must place `hooks.json` directly at `<plugin-root>/hooks.json`, never `hooks/hooks.json`.
 - Google's own built-in skills are loose: underscores in folder names, missing frontmatter. Don't copy that style; follow the Agent Skills standard.
 - Claude Code plugins are not consumed as-is: there are no `commands/`, and hooks/MCP filenames differ (`hooks.json` and `mcp_config.json` at plugin root).
