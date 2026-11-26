@@ -2,6 +2,21 @@
 
 stablehand uses calendar versioning, `YYYY.M.N` (see [contracts/README.md](contracts/README.md#versioning)).
 
+## 2026.11.2
+
+Added full **OpenAI Codex CLI** platform support with headless evals, refreshed **OpenCode 2.4.2**, **Antigravity App 2.38.0 / CLI 1.5.17**, and **Claude Code 2.1.332**, added macOS CI coverage, and hardened `tools/lint.py` `--json` output.
+
+- **OpenAI Codex CLI platform (`shared/references/codex.md`, `platforms/codex/`, `tools/lint.py`, `tools/install.py`):**
+  - added Codex platform card (verified `2026-11-26` on `codex-cli 0.172.0`), coexistence rules (`.agents/skills/`, `.codex/agents/*.toml`, `AGENTS.override.md`), TOML subagent linting (`A050`–`A056`), and `workspace`/`project`/`user` installer support (#23);
+  - implemented all 8 skill contracts and 3 TOML agent contracts under `platforms/codex/`, plus a headless eval batch recorded in `platforms/codex/evals/RESULTS.md` (#26).
+- **Platform card & linter updates (`shared/references/`, `tools/lint.py`):**
+  - refreshed OpenCode for `v2.4.2` (`generate_image`, `generate_video`, `/automation`, Desktop Browser, default TUI) and moved `experimental_image_generate` to `OC_ACTION_V1` (`A049`) (#25);
+  - refreshed Antigravity for App `2.38.0` / CLI `1.5.17` (`~/.agents/skills/` discovery) (#17, #18, #24) and Claude Code for `2.1.332` (#16, #20), updating all `Last verified` dates to `2026-11-26`.
+- **Tooling, CI & docs (`.github/workflows/ci.yml`, `tools/`, `README.md`):**
+  - added `macos-latest` to the CI matrix and `--scope user` install/uninstall tests (#22);
+  - added deterministic sorting and unit tests for `tools/lint.py --json` (#21);
+  - added terminal demo GIF to `README.md` (#15) and aligned platform READMEs and `platform-researcher` official sources.
+
 ## 2026.11.1
 
 Added `upgrading-artifacts` and `.stablehand/manifest.json` lifecycle tracking, plus OpenCode 2.3.2 V2 migration and Gemini 4 authoring updates.

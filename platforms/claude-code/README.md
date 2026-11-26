@@ -1,6 +1,6 @@
 # stablehand for Claude Code
 
-This is the reference implementation. It is a Claude Code plugin with 7 skills and 3 subagents, built against the contracts in [`contracts/`](../../contracts/).
+This is the reference implementation. It is a Claude Code plugin with 8 skills and 3 subagents, built against the contracts in [`contracts/`](../../contracts/).
 
 ## Use it from the stablehand repo (main flow)
 

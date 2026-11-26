@@ -1,6 +1,6 @@
 # stablehand for OpenCode (with DeepSeek)
 
-**Status: ✅ implemented (evals: 3 runs).** Contracts: 2026.10.1. See [evals/RESULTS.md](evals/RESULTS.md). [BOOTSTRAP.md](BOOTSTRAP.md) records how the port was made.
+**Status: ✅ implemented (evals: 3 runs).** Contracts: 2026.11.1. See [evals/RESULTS.md](evals/RESULTS.md). [BOOTSTRAP.md](BOOTSTRAP.md) records how the port was made.
 
 ## Target layout
 

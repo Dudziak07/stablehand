@@ -3,7 +3,7 @@
 
 The platforms read each other's folders. A skill tailored for one platform can leak into another, and OpenCode rejects duplicate skill names. Read this before placing artifacts in a repository that more than one harness opens.
 
-Last verified: 2026-10-21 (Antigravity paths re-verified 2026-11-26; OpenCode re-verified 2026-11-22 on v2.3.2; Codex verified 2026-11-26 on codex-cli 0.172.0; sources in each platform card).
+Last verified: 2026-11-26 (Claude Code 2.1.332, Antigravity App 2.38.0 / CLI 1.5.17, OpenCode 2.4.2, Codex 0.172.0; sources in each platform card).
 
 ## Who reads what — project scope
 

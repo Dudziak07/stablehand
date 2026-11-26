@@ -1,6 +1,6 @@
 # stablehand for Antigravity
 
-**Status: [✅ implemented (evals: 3 runs)](evals/RESULTS.md).** Implements contracts 2026.10.1 (plugin manifest 2026.11.0). Platform review 2026-11-21 against App 2.34.0, IDE 2.8.0 (2.7.0 local), and CLI `agy` 1.5.14 (1.5.5 local); originally evaluated 2026-10-23 on `agy` 1.4.5 with Gemini 3.8 Flash. See [PORT-NOTES.md](PORT-NOTES.md) for mapping decisions and [evals/RESULTS.md](evals/RESULTS.md) for evaluation runs.
+**Status: [✅ implemented (evals: 3 runs)](evals/RESULTS.md).** Implements contracts 2026.11.1 (plugin manifest 2026.11.2). Platform review 2026-11-26 against App 2.38.0, IDE 2.8.0 (2.7.0 local), and CLI `agy` 1.5.17 (1.5.5 local); originally evaluated 2026-10-23 on `agy` 1.4.5 with Gemini 3.8 Flash. See [PORT-NOTES.md](PORT-NOTES.md) for mapping decisions and [evals/RESULTS.md](evals/RESULTS.md) for evaluation runs.
 
 ## Use it from the stablehand repo
 
