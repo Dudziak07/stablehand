@@ -139,10 +139,13 @@ OC_AGENT_KEYS = {
 OC_MODES = {"primary", "subagent", "all"}
 OC_ACTIONS = {
     "read", "edit", "glob", "grep", "shell", "subagent", "skill", "question", "webfetch",
-    "websearch", "experimental_image_generate", "external_directory", "execute",
+    "websearch", "generate_image", "generate_video", "external_directory", "execute",
     "opencode_list_mcp_resources", "opencode_read_mcp_resource",
 }
-OC_ACTION_V1 = {"bash": "shell", "task": "subagent", "write": "edit", "patch": "edit"}
+OC_ACTION_V1 = {
+    "bash": "shell", "task": "subagent", "write": "edit", "patch": "edit",
+    "experimental_image_generate": "generate_image",
+}
 OC_AGENT_V1_FIELDS = {
     "name": "the file name (it is the agent ID)",
     "temperature": "a model variant (temperature has no effect on an agent in V2)",
